@@ -44,6 +44,7 @@ const userSchema = new mongoose.Schema({
         enum: ['fr', 'en'], 
         default: 'fr' 
     },
+    discogsUsername: { type: String, default: '' },
     lastChange: {
         type: Date,
         default: Date.now

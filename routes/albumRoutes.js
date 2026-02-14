@@ -491,6 +491,8 @@ router.post('/import/discogs', requireAuth, async (req, res) => {
     if (!usernameMatch) return res.status(400).json({ error: "Invalid Discogs URL" });
     const username = usernameMatch[1];
 
+    await User.findByIdAndUpdate(userId, { discogsUsername: username });
+
     res.status(202).json({ success: true, message: "Import started" });
 
     try {

@@ -3,9 +3,18 @@
 <div class="max-w-screen-xl mx-auto px-4 pb-20">
     
     <nav class="flex py-6 text-sm text-neutral-500 dark:text-neutral-400 transition-colors">
-        <a href="/collection" class="hover:text-green-600 dark:hover:text-green-400 transition-colors flex items-center gap-2">
-            <i class="fa-solid fa-arrow-left"></i> <%= t('detail.back_to_collection') %>
-        </a>
+
+        <% if (album.in_wishlist) { %>
+            <a href="/wishlist" class="hover:text-green-600 dark:hover:text-green-400 transition-colors flex items-center gap-2">
+                <i class="fa-solid fa-arrow-left"></i> <%= t('detail.back_to_wishlist') %>
+            </a> 
+        <% } else { %>
+            <a href="/collection" class="hover:text-green-600 dark:hover:text-green-400 transition-colors flex items-center gap-2">
+                <i class="fa-solid fa-arrow-left"></i> <%= t('detail.back_to_collection') %>
+            </a> 
+        <% } %>
+
+
     </nav>
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
