@@ -14,6 +14,24 @@ async function getAdminId() {
     return admin ? admin._id : null;
 }
 
+const formatForView = (item) => {
+    if (!item) return null;
+    const obj = item.toObject ? item.toObject() : item;
+
+    return {
+        ...obj,
+        artist: obj.artist || obj.creator || obj.author || obj.director || 'Inconnu',
+        media_type: obj.media_type || obj.format || 'other',
+        cover_image: obj.cover_image || obj.coverUrl || '/ressources/logo.png',        
+        tracklist: obj.tracklist || [],
+        label: obj.label || obj.publisher || obj.studio || '',
+        year: obj.year || '',
+        format_type: obj.format_type || '',
+        variant_color: obj.variant_color || '',
+        location: obj.location || ''
+    };
+};
+
 // routes/albumRoutes.js
 // Dashboard: view collection summary
 router.get('/', requireAuth, async (req, res) => {
@@ -52,8 +70,8 @@ router.get('/', requireAuth, async (req, res) => {
         });
 
         res.render('index', { 
-            latestCollection,
-            latestWishlist,
+            latestCollection: latestCollection.map(formatForView),
+            latestWishlist: latestWishlist.map(formatForView),
             stats: {
                 total: totalCount,
                 vinylCount,
@@ -107,7 +125,7 @@ router.get('/collection', requireAuth, async (req, res) => {
         const locations = await Item.distinct('location', { owner: adminId, in_wishlist: false, location: { $ne: "" } });
         
         res.render('collection', { 
-            albums,
+            albums: albums.map(formatForView),
             locations,
             currentType: typeFilter || 'all',
             searchQuery: searchQuery || '',
@@ -129,15 +147,15 @@ router.get('/add-vinyl', requireAuth, requireAdmin, (req, res) => {
 router.get('/edit/:id', requireAuth, async (req, res) => {
     try {
         const album = await Item.findById(req.params.id);
-        
         if (!album) {
             return res.redirect('/collection');
         }
+        const albumFormatted = formatForView(album);
 
         const adminId = await getAdminId();
         const locations = await Item.distinct('location', { owner: adminId, location: { $ne: "" } });
         
-        res.render('edit-vinyl', { vinyl: album, user: res.locals.user, locations });
+        res.render('edit-vinyl', { vinyl: albumFormatted, user: res.locals.user, locations });
     } catch (err) {
         console.error(err);
         res.redirect('/collection');
@@ -349,8 +367,9 @@ router.get('/album/:id', requireAuth, async (req, res) => {
     try {
         const album = await Item.findById(req.params.id);
         if (!album) return res.redirect('/collection');
-        
-        res.render('vinyl-detail', { album, vinyl: album, user: res.locals.user });
+        const albumFormatted = formatForView(album);
+
+        res.render('vinyl-detail', { album: albumFormatted, vinyl: albumFormatted, user: res.locals.user });
     } catch (err) {
         res.redirect('/collection');
     }
@@ -596,7 +615,7 @@ router.post('/api/album/:id/import-tracklist', requireAuth, requireAdmin, async 
             return res.status(404).json({ success: false, error: "No tracklist found on Discogs" });
         }
 
-        await Item.findByIdAndUpdate(albumId, { tracklist: tracklist });
+        await Vinyl.findByIdAndUpdate(albumId, { tracklist: tracklist });
         res.status(200).json({ success: true });
 
     } catch (err) {

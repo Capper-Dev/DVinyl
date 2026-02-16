@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Album = require('../models/Vinyl');
+const Item = require('../models/Item');
 const User = require('../models/User');
 const LoginLog = require('../models/LoginLog');
 const { requireAuth, requireAdmin } = require('../middleware/authMiddleware');
@@ -34,10 +34,10 @@ router.get('/export', requireAuth, requireAdmin, async (req, res) => {
     try {
         const data = {
             users: await User.find({}).lean(),
-            albums: await Album.find({}).lean(),
+            albums: await Item.find({}).lean(), 
             logs: await LoginLog.find({}).lean(),
             metadata: {
-                version: "1.0.0",
+                version: "2.0.0",
                 date: new Date()
             }
         };
@@ -54,58 +54,56 @@ router.get('/export', requireAuth, requireAdmin, async (req, res) => {
 
 /**
  * POST /import
- *
- * Import a previously exported backup JSON. The payload may be either a
- * direct JSON body with the expected structure or an object containing
- * `backupData` (stringified JSON or object).
- *
- * Expected structure:
- * {
- *   users: [...],
- *   albums: [...],
- *   logs: [...]
- * }
- *
- * Behavior:
- * - Clears existing `LoginLog`, `Album` and `User` collections.
- * - Inserts provided arrays into their respective collections.
- * - Clears the `jwt` cookie to force re-login after restore.
- *
- * Returns:
- * - 200 { success: true } on success
- * - 400 on invalid payload
- * - 500 on server error
  */
 router.post('/import', async (req, res) => {
     try {
         let data = req.body;
 
         if (data.backupData) {
-            data = typeof data.backupData === 'string' ? JSON.parse(data.backupData) : data.backupData;
+            try {
+                data = typeof data.backupData === 'string' ? JSON.parse(data.backupData) : data.backupData;
+            } catch (e) {
+                return res.status(400).json({ error: "invalid JSON" });
+            }
         }
 
-        if (!data || !data.users) {
-            return res.status(400).json({ error: "Invalid backup data" });
+        if (!data || (!data.users && !data.albums)) {
+            return res.status(400).json({ error: "Backup file missing required fields" });
         }
 
         await Promise.all([
             LoginLog.deleteMany({}),
-            Album.deleteMany({}),
+            Item.deleteMany({}),
             User.deleteMany({})
         ]);
 
-        if (data.users && data.users.length > 0) await User.insertMany(data.users);
-        if (data.albums && data.albums.length > 0) await Album.insertMany(data.albums);
-        if (data.logs && data.logs.length > 0) await LoginLog.insertMany(data.logs);
+        if (data.users && data.users.length > 0) {
+            await User.insertMany(data.users);
+        }
 
+        if (data.albums && data.albums.length > 0) {
+            
+            const cleanAlbums = data.albums.map(album => {
+                if (!album.kind) {
+                    return { ...album, kind: 'Music' };
+                }
+                return album;
+            });
+
+            await Item.insertMany(cleanAlbums);
+        }
+
+        if (data.logs && data.logs.length > 0) {
+            await LoginLog.insertMany(data.logs);
+        }
+        
         res.cookie('jwt', '', { maxAge: 1 });
-        res.status(200).json({ success: true });
+        res.status(200).json({ success: true, message: "Import successful" });
 
     } catch (err) {
-        console.error("Erreur Import Backup :", err);
-        res.status(500).json({ error: "Internal error" });
+        console.error("[ERR] Import :", err);
+        res.status(500).json({ error: err.message });
     }
 });
-
 
 module.exports = router;
