@@ -304,5 +304,25 @@
   },
   "placeholders": {
     "location": "e.g. Shelf A - Box 3"
+  },
+    "perso": {
+    "title": "Personnalisation",
+    "subtitle": "Customize the appearance of your DVinyl interface.",
+    "backAdmin": "Back to Admin Panel",
+    "save": "Save Preferences",
+
+    "modules": {
+      "title": "Active Modules",
+      "music": "Music",
+      "books": "Library",
+      "dvd": "DVD Collection"
+    },
+    "themes": {
+      "title": "Themes & Colors",
+      "home": "Home Page",
+      "music": "Music",
+      "books": "Books",
+      "dvd": "Movies / DVD"
+    }
   }
 }

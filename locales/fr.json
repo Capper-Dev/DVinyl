@@ -304,5 +304,25 @@
   },
   "placeholders": {
     "location": "ex: Étagère A - Carton 3"
+  },
+  "perso": {
+    "title": "Personnalisation",
+    "subtitle": "Gérez les modules et l'apparence de {{siteName}}",
+    "backAdmin": "Retour Admin",
+    "save": "Enregistrer les préférences",
+
+    "modules": {
+      "title": "Modules Actifs",
+      "music": "Musique",
+      "books": "Bibliothèque",
+      "dvd": "Vidéothèque"
+    },
+    "themes": {
+      "title": "Thèmes & Couleurs",
+      "home": "Page d'Accueil",
+      "music": "Musique",
+      "books": "Livres",
+      "dvd": "Films / DVD"
+    }
   }
 }

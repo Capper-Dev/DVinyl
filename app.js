@@ -21,6 +21,8 @@ require("dotenv").config();
 const i18next = require('i18next');
 const i18nMiddleware = require('i18next-http-middleware');
 
+const settingsMiddleware = require('./middleware/settingsMiddleware');
+const themesConfig = require('./config/themes');
 
 // Models
 const User = require('./models/User.js');
@@ -117,6 +119,7 @@ app.use(async (req, res, next) => {
 
 // Check user middleware (populate res.locals.user for all views)
 app.use(checkUser);
+app.use(settingsMiddleware);
 
 // Installation gatekeeper middleware
 app.use(async (req, res, next) => {
@@ -144,6 +147,10 @@ app.use(async (req, res, next) => {
     next();
 });
 
+app.use((req, res, next) => {
+    res.locals.allThemes = themesConfig; 
+    next();
+});
 
 
 // Route mounting

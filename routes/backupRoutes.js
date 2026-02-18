@@ -3,6 +3,7 @@ const router = express.Router();
 const Item = require('../models/Item');
 const User = require('../models/User');
 const LoginLog = require('../models/LoginLog');
+const Settings = require('../models/Settings');
 const { requireAuth, requireAdmin } = require('../middleware/authMiddleware');
 
 /**
@@ -36,6 +37,7 @@ router.get('/export', requireAuth, requireAdmin, async (req, res) => {
             users: await User.find({}).lean(),
             albums: await Item.find({}).lean(), 
             logs: await LoginLog.find({}).lean(),
+            settings: await Settings.findOne().lean(),
             metadata: {
                 version: "2.0.0",
                 date: new Date()
@@ -88,7 +90,8 @@ router.post('/import', async (req, res) => {
         await Promise.all([
             LoginLog.deleteMany({}),
             Item.deleteMany({}),
-            User.deleteMany({})
+            User.deleteMany({}),
+            Settings.deleteMany({})
         ]);
 
         if (data.users && data.users.length > 0) {
@@ -107,6 +110,11 @@ router.post('/import', async (req, res) => {
             await LoginLog.insertMany(data.logs);
         }
         
+        if (data.settings) {
+            await Settings.create(data.settings);
+        } else {
+            await Settings.create({});
+        }
         res.cookie('jwt', '', { maxAge: 1 });
         res.status(200).json({ success: true, message: "Import successful" });
 

@@ -4,7 +4,9 @@ const bcrypt = require('bcrypt');
 const User = require('../models/User');
 const BlockedIP = require('../models/blockedIP');
 const LoginLog = require('../models/LoginLog');
+const Settings = require('../models/Settings');
 const { requireAuth, requireAdmin } = require('../middleware/authMiddleware');
+const PRESETS = require('../config/themes');
 
 /**
  * routes/adminRoutes.js
@@ -151,6 +153,47 @@ router.post('/unblock-ip', requireAuth, requireAdmin, async (req, res) => {
         await BlockedIP.findByIdAndDelete(req.body.ipId);
         res.redirect('/admin?msg=ip_unblocked');
     } catch (err) { res.redirect('/admin'); }
+});
+
+
+router.get('/personnalisation', requireAuth, requireAdmin, async (req, res) => {
+    try {
+        const settings = await Settings.findOne().lean(); 
+        
+        res.render('personnalisation', { 
+            settings: settings, 
+            presets: PRESETS
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Erreur de chargement");
+    }
+});
+
+router.post('/personnalisation/save', requireAuth, requireAdmin, async (req, res) => {
+    try {
+        const { 
+            musicActive, booksActive, dvdActive,
+            homePreset, musicPreset, booksPreset, dvdPreset
+        } = req.body;
+
+        const update = {
+            'modules.music': musicActive === 'on',
+            'modules.books': booksActive === 'on',
+            'modules.dvd': dvdActive === 'on',
+            'theme.home.preset': homePreset,
+            'theme.music.preset': musicPreset,
+            'theme.books.preset': booksPreset,
+            'theme.dvd.preset': dvdPreset
+        };
+
+        await Settings.findOneAndUpdate({}, { $set: update }, { upsert: true });
+        
+        res.redirect('/admin/personnalisation?msg=saved');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Erreur lors de la sauvegarde.");
+    }
 });
 
 module.exports = router;

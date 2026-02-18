@@ -4,40 +4,40 @@
     
     <div class="flex items-center justify-between mb-6 md:mb-8 pt-6">
         
-        <h1 class="text-2xl md:text-3xl font-bold text-neutral-900 dark:text-white flex items-center gap-2 md:gap-3 transition-colors truncate mr-4">
-            <span class="flex items-center gap-2 md:gap-3">
-                <i class="fa-solid fa-gift text-pink-500 flex-shrink-0"></i> 
+        <h1 class="text-2xl md:text-3xl font-bold flex items-center gap-2 md:gap-3 transition-colors truncate mr-4">
+            <span class="flex items-center gap-2 md:gap-3 text-primary-theme">
+                <i class="fa-solid fa-gift flex-shrink-0"></i> 
                 <span class="truncate"><%= t('wishlist.title') %></span>
             </span>
-            <span class="text-neutral-500 dark:text-neutral-400 text-base md:text-lg font-normal transition-colors flex-shrink-0">
+            <span class="opacity-60 text-base md:text-lg font-normal transition-colors flex-shrink-0">
                 (<%= albums.length %>)
             </span>
         </h1>
 
         <% if (user.isAdmin && user.discogsUsername) { %>
-            <button onclick="refreshCollection()" id="refreshBtn" class="flex-shrink-0 w-10 h-10 md:w-auto md:h-auto md:p-2.5 bg-white dark:bg-neutral-800 text-neutral-500 hover:text-green-600 dark:hover:text-green-500 border border-neutral-300 dark:border-neutral-700 rounded-lg transition-colors shadow-sm flex items-center justify-center active:scale-95" title="refresh discogs">
-                <i class="fa-solid fa-sync"></i>
+            <button onclick="refreshCollection()" id="refreshBtn" class="flex-shrink-0 w-10 h-10 md:w-auto md:h-auto md:p-2.5 card-theme hover:text-primary-theme hover:border-primary-theme rounded-lg transition-all shadow-sm flex items-center justify-center active:scale-95 group" title="refresh discogs">
+                <i class="fa-solid fa-sync group-hover:rotate-180 transition-transform duration-500"></i>
             </button>
         <% } %>
 
     </div>
 
     <% if (albums.length === 0) { %>
-        <div class="text-center py-16 md:py-20 bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800 transition-colors shadow-sm">
-            <i class="fa-regular fa-heart text-5xl md:text-6xl text-neutral-300 dark:text-neutral-700 mb-4 transition-colors"></i>
-            <p class="text-neutral-500 dark:text-neutral-400 transition-colors px-4"><%= t('wishlist.empty_msg') %></p>
-            <a href="/add-vinyl" class="text-green-600 dark:text-green-400 hover:underline mt-2 inline-block font-medium transition-colors">
+        <div class="text-center py-16 md:py-20 card-theme rounded-xl border-dashed opacity-80 transition-colors shadow-sm">
+            <i class="fa-regular fa-heart text-5xl md:text-6xl opacity-20 mb-4 transition-colors"></i>
+            <p class="opacity-60 px-4"><%= t('wishlist.empty_msg') %></p>
+            <a href="/add-vinyl" class="text-primary-theme hover:underline mt-2 inline-block font-medium transition-colors">
                 <%= t('wishlist.search_link') %>
             </a>
         </div>
     <% } else { %>
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-6">
             <% albums.forEach(album => { %>
-                <div class="group relative bg-white dark:bg-neutral-900 rounded-lg border border-neutral-200 dark:border-neutral-800 hover:border-pink-500/50 transition-all duration-300 hover:shadow-lg dark:hover:shadow-[0_10px_30px_-10px_rgba(236,72,153,0.3)] flex flex-col justify-between">
+                <div class="group relative card-theme rounded-lg hover:border-primary-theme transition-all duration-300 hover:shadow-lg hover:-translate-y-1 flex flex-col justify-between overflow-hidden">
                     
                     <a href="/album/<%= album._id %>" class="block flex-grow">
-                        <div class="aspect-square w-full overflow-hidden rounded-t-lg relative transition-all duration-500">
-                            <img src="<%= album.cover_image %>" class="w-full h-full object-cover" loading="lazy">
+                        <div class="aspect-square w-full overflow-hidden relative">
+                            <img src="<%= album.cover_image %>" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
                             
                             <% 
                                 let badgeColor = 'bg-green-600/90 text-white';
@@ -51,20 +51,20 @@
                         </div>
 
                         <div class="p-2 md:p-3">
-                            <h3 class="text-neutral-900 dark:text-white font-bold text-xs md:text-sm truncate transition-colors leading-tight mb-0.5"><%= album.title %></h3>
-                            <p class="text-neutral-500 dark:text-neutral-400 text-[10px] md:text-xs truncate mb-2 transition-colors"><%= album.artist %></p>
+                            <h3 class="font-bold text-xs md:text-sm truncate transition-colors leading-tight mb-0.5"><%= album.title %></h3>
+                            <p class="text-[10px] md:text-xs opacity-60 truncate mb-2 transition-colors"><%= album.artist %></p>
 
                             <% if(album.variant_color) { %>
                                 <div class="flex items-center gap-1 mb-1">
-                                    <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-pink-500 inline-block flex-shrink-0"></span>
-                                    <span class="text-[9px] md:text-[10px] text-neutral-500 dark:text-neutral-400 truncate max-w-full transition-colors"><%= album.variant_color %></span>
+                                    <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-primary-theme inline-block flex-shrink-0"></span>
+                                    <span class="text-[9px] md:text-[10px] opacity-60 truncate max-w-full transition-colors"><%= album.variant_color %></span>
                                 </div>
                             <% } %>
                         </div>
                     </a>
 
                     <% if (user.isAdmin) { %>
-                        <button onclick="moveToCollection('<%= album._id %>')" class="w-full py-2.5 md:py-2 bg-gray-50 dark:bg-neutral-800/50 hover:bg-green-600 hover:text-white text-green-600 dark:text-green-400 text-[10px] md:text-xs font-bold uppercase transition-colors rounded-b-lg flex items-center justify-center gap-1.5 border-t border-neutral-200 dark:border-neutral-800 active:bg-green-700">
+                        <button onclick="moveToCollection('<%= album._id %>')" class="w-full py-2.5 md:py-2 bg-black/5 dark:bg-white/5 hover:bg-primary-theme hover:text-white text-primary-theme text-[10px] md:text-xs font-bold uppercase transition-colors flex items-center justify-center gap-1.5 border-t border-black/10 dark:border-white/10 active:brightness-90">
                             <i class="fa-solid fa-check"></i> 
                             <span><%= t('wishlist.btn_received') %></span>
                         </button>
@@ -97,53 +97,62 @@
         }
     }
 
-    const socket = io();
+    <% if (user.isAdmin) { %>
+        const socket = io();
 
-    async function refreshCollection() {
-        const btn = document.getElementById('refreshBtn');
-        const icon = btn.querySelector('i');
-        
-        icon.classList.add('fa-spin');
-        btn.disabled = true;
-        
-        socket.once('import_finished', (data) => {
-            window.location.reload();
-        });
-
-        socket.once('import_error', (data) => {
-            alert("import error: " + data.message);
-            icon.classList.remove('fa-spin');
-            btn.disabled = false;
-        });
-        try {
-            const pseudo = "<%= user.discogsUsername %>";
-            let fakeUrl = `https://www.discogs.com/user/${pseudo}`;
+        async function refreshCollection() {
+            const btn = document.getElementById('refreshBtn');
+            const icon = btn.querySelector('i');
             
-            const isWishlistPage = window.location.pathname.includes('wishlist');
-            const type = isWishlistPage ? 'wishlist' : 'collection';
-
-            const res = await fetch('/import/discogs', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    discogsUrl: fakeUrl,
-                    full: false,
-                    type: type
-                })
+            icon.classList.add('fa-spin');
+            btn.disabled = true;
+            
+            socket.once('import_finished', (data) => {
+                window.location.reload();
             });
 
-            if(!res.ok) {
-                socket.off('import_finished');
-                socket.off('import_error');
+            socket.once('import_error', (data) => {
+                alert("import error: " + data.message);
+                icon.classList.remove('fa-spin');
+                btn.disabled = false;
+            });
+            try {
+                const pseudo = "<%= user.discogsUsername %>";
+                let fakeUrl = `https://www.discogs.com/user/${pseudo}`;
+                
+                const isWishlistPage = window.location.pathname.includes('wishlist');
+                const type = isWishlistPage ? 'wishlist' : 'collection';
+
+                const res = await fetch('/import/discogs', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        discogsUrl: fakeUrl,
+                        full: false,
+                        type: type
+                    })
+                });
+
+                if(!res.ok) {
+                    socket.off('import_finished');
+                    socket.off('import_error');
+                    icon.classList.remove('fa-spin');
+                    btn.disabled = false;
+                }
+            } catch(e) {
+                console.error(e);
                 icon.classList.remove('fa-spin');
                 btn.disabled = false;
             }
-        } catch(e) {
-            console.error(e);
-            icon.classList.remove('fa-spin');
-            btn.disabled = false;
         }
-    }
+    <% } %>
 </script>
+
+<style>
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(100,100,100,0.2); border-radius: 2px; }
+    .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); }
+</style>
 
 <%- include('partials/footer') %>

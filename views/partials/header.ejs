@@ -1,129 +1,233 @@
 <!DOCTYPE html>
 <% 
-  const isDark = (typeof user !== 'undefined' && user.theme === 'light') ? false : true; 
+  const isDark = (typeof locals.isDark !== 'undefined') ? locals.isDark : true;
+  const currentLng = (typeof locals.currentLng !== 'undefined') ? locals.currentLng : 'fr';
+  const THEMES = (typeof locals.allThemes !== 'undefined') ? locals.allThemes : {};
+  
+  const rawCategory = (typeof locals.currentType !== 'undefined') ? locals.currentType : (locals.detectedType || 'home');
+
+  let themeKey = 'home'; 
+  
+  const musicTypes = ['music', 'vinyl', 'cd', 'cassette', 'collection', 'wishlist', 'add-vinyl', 'album'];
+  const bookTypes  = ['books', 'add-book', 'book'];
+  const dvdTypes   = ['dvd', 'add-dvd'];
+
+  if (musicTypes.includes(rawCategory)) {
+      themeKey = 'music';
+  } else if (bookTypes.includes(rawCategory)) {
+      themeKey = 'books';
+  } else if (dvdTypes.includes(rawCategory)) {
+      themeKey = 'dvd';
+  }
+
+  let activePresetKey = 'default';
+   if (typeof settings !== 'undefined' && settings.theme) {
+      if (settings.theme[themeKey] && settings.theme[themeKey].preset) {
+          activePresetKey = settings.theme[themeKey].preset;
+      } 
+      else if (settings.theme.home && settings.theme.home.preset) {
+          activePresetKey = settings.theme.home.preset;
+      }
+  }
+
+  const safeFallback = { 
+      light: { bg: '#e2e8f0', card: '#ffffff', navbar: '#1e293b', navText: '#ffffff', text: '#0f172a', subtext: '#475569', highlight: '#10b981' },
+      dark:  { bg: '#171717', card: '#262626', navbar: '#0a0a0a', navText: '#ffffff', text: '#ffffff', subtext: '#a3a3a3', highlight: '#10b981' }
+  };
+
+  const activeTheme = (THEMES[activePresetKey]) ? THEMES[activePresetKey] : (THEMES['default'] || safeFallback);
 %>
+
 <html lang="<%= currentLng %>" class="<%= isDark ? 'dark' : '' %>">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>DVinyl</title>
   
-  <style>
-    #page-loader {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 9999;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      transition: opacity 0.5s ease-out;
-      background-color: <%= isDark ? '#0a0a0a' : '#ffffff' %>;
-      color: <%= isDark ? '#ffffff' : '#171717' %>;
-    }
-    body { visibility: hidden; }
-    body.js-ready { visibility: visible; }
-  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            theme: {
+                bg: 'var(--bg-page)',
+                card: 'var(--bg-card)',
+                nav: 'var(--bg-nav)',
+                text: 'var(--text-main)',
+                subtext: 'var(--text-sub)',
+                highlight: 'var(--highlight)'
+            }
+          }
+        }
+      }
+    };
+  </script>
 
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.2/dist/tailwind.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
   <link rel="icon" type="image/png" href="/ressources/logo.png">
+
+  <style>
+    :root {
+        --bg-page: <%= activeTheme.light.bg %>;
+        --bg-card: <%= activeTheme.light.card %>;
+        --bg-nav:  <%= activeTheme.light.navbar %>;
+        --text-main: <%= activeTheme.light.text %>;
+        --text-sub: <%= activeTheme.light.subtext %>;
+        --highlight: <%= activeTheme.light.highlight %>;
+        
+        --shadow-color: 0 0 0 rgba(0,0,0,0.05);
+        --border-color: rgba(0,0,0,0.1);
+    }
+
+    html.dark {
+        --bg-page: <%= activeTheme.dark.bg %>;
+        --bg-card: <%= activeTheme.dark.card %>;
+        --bg-nav:  <%= activeTheme.dark.navbar %>;
+        --text-main: <%= activeTheme.dark.text %>;
+        --text-sub: <%= activeTheme.dark.subtext %>;
+        --highlight: <%= activeTheme.dark.highlight %>;
+        
+        --shadow-color: 0 0 20px <%= activeTheme.dark.highlight %>20;
+        --border-color: rgba(255,255,255,0.1);
+    }
+
+    body {
+        background-color: var(--bg-page) !important;
+        color: var(--text-main) !important;
+    }
+
+    .nav-custom {
+        background-color: var(--bg-nav) !important;
+        border-bottom: 1px solid var(--border-color);
+        color: var(--text-main) !important;
+    }
+
+    .text-primary-theme { color: var(--highlight) !important; }
+    .bg-primary-theme { background-color: var(--highlight) !important; color: #fff; }
+    
+    .card-theme {
+        background-color: var(--bg-card) !important;
+        border: 1px solid var(--border-color);
+        color: var(--text-main) !important;
+    }
+    
+    #page-loader {
+      background-color: var(--bg-page);
+      color: var(--text-main);
+    }
+  </style>
 </head>
 
-<body class="bg-gray-50 dark:bg-neutral-900 text-neutral-900 dark:text-white font-sans transition-colors duration-300">
-
-  <div id="page-loader">
+<body class="font-sans transition-colors duration-300">
+    
+  <div id="page-loader" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center transition-opacity duration-500">
     <div class="relative">
-        <i class="fa-solid fa-compact-disc fa-spin text-6xl text-green-500 shadow-green-500/50 drop-shadow-[0_0_15px_rgba(34,197,94,0.5)]"></i>
-        <div class="absolute inset-0 flex items-center justify-center">
-            <div class="w-4 h-4 bg-white dark:bg-neutral-950 rounded-full"></div>
-        </div>
+        <i class="fa-solid fa-compact-disc fa-spin text-6xl text-primary-theme drop-shadow-md"></i>
     </div>
-    <p class="mt-4 text-neutral-500 dark:text-neutral-400 text-sm font-bold tracking-widest animate-pulse uppercase">
-        <%= t('nav.loading') %>
-    </p>
   </div>
 
-  <nav class="bg-white dark:bg-neutral-950 border-b border-neutral-200 dark:border-neutral-800 transition-colors duration-300">
-    <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+  <nav class="nav-custom transition-colors duration-300">
+      <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
       
-      <a href="/" class="flex items-center space-x-3">
-        <img src="/ressources/logo.png" alt="Logo" class="h-8 w-8 rounded-full object-cover">
-        <span class="self-center text-2xl font-semibold text-neutral-900 dark:text-white">Vinyl</span>
+      <a href="/" class="flex items-center space-x-3 group">
+        <img src="/ressources/logo.png" alt="Logo" class="h-8 w-8 rounded-full object-cover group-hover:rotate-12 transition-transform">
+        <span class="self-center text-2xl font-semibold text-inherit">Vinyl</span>
       </a>
 
       <div class="flex items-center md:order-2 gap-4">
         
-        <button type="button" class="flex text-sm bg-neutral-800 rounded-full focus:ring-4 focus:ring-neutral-200 dark:focus:ring-neutral-700" id="user-menu-button" data-dropdown-toggle="user-dropdown">
+        <% if (locals.user) { %>
+        <button type="button" class="flex text-sm bg-black/5 dark:bg-white/10 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" id="user-menu-button" data-dropdown-toggle="user-dropdown">
           <img class="w-8 h-8 rounded-full object-cover" src="<%= user.img %>" alt="user photo">
         </button>
   
-        <div class="z-50 hidden my-4 text-base list-none bg-white dark:bg-neutral-900 rounded-lg shadow-lg border border-neutral-200 dark:border-neutral-800 min-w-[200px]" id="user-dropdown">          
-          <div class="flex justify-center py-4">
-            <img src="<%= user.img %>" alt="user photo" class="w-20 h-20 rounded-full border-4 border-neutral-200 dark:border-neutral-700 object-cover">
+        <div class="z-50 hidden my-4 text-base list-none card-theme rounded-lg shadow-xl min-w-[200px]" id="user-dropdown">          
+          <div class="flex justify-center py-4 rounded-t-lg">
+            <img src="<%= user.img %>" alt="user photo" class="w-20 h-20 rounded-full border-4 border-white dark:border-white/10 object-cover shadow-lg">
           </div>
        
-          <div class="divide-y divide-neutral-200 dark:divide-neutral-800">
-            <div class="px-4 pt-1 pb-3">
-              <span class="block text-sm font-bold text-neutral-900 dark:text-white"><%= user.username %></span>
-              <span class="block text-sm text-neutral-500 dark:text-neutral-400 truncate"><%= user.email %></span>
+          <div class="divide-y divide-black/5 dark:divide-white/10">
+            <div class="px-4 pt-1 pb-3 text-center">
+              <span class="block text-sm font-bold opacity-90 text-[var(--text-main)]"><%= user.username %></span>
+              <span class="block text-xs opacity-60 truncate text-[var(--text-sub)]"><%= user.email %></span>
             </div>
             <ul class="py-2">
               <li>
-                <a href="/settings" class="block px-4 py-2 text-sm text-neutral-700 dark:text-white rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800 mx-2 my-1 flex items-center space-x-3">
-                  <i class="fa-solid fa-user-gear w-5 text-neutral-400 text-center"></i>
-                  <span><%= t('nav.settings') %></span>
+                <a href="/settings" class="block px-4 py-2 text-sm text-[var(--text-main)] hover:bg-black/5 dark:hover:bg-white/10 mx-2 rounded transition flex items-center gap-3">
+                  <i class="fa-solid fa-user-gear w-5 text-center opacity-70"></i> <span><%= t('nav.settings') %></span>
                 </a>
               </li>
               <% if (user.isAdmin) { %>
               <li>
-                <a href="/admin" class="block px-4 py-2 text-sm text-neutral-700 dark:text-white rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800 mx-2 my-1 flex items-center space-x-3">
-                  <i class="fa-solid fa-crown w-5 text-neutral-400 text-center"></i>
-                  <span><%= t('nav.admin') %></span>
+                <a href="/admin" class="block px-4 py-2 text-sm text-[var(--text-main)] hover:bg-black/5 dark:hover:bg-white/10 mx-2 rounded transition flex items-center gap-3">
+                  <i class="fa-solid fa-crown w-5 text-center opacity-70"></i> <span><%= t('nav.admin') %></span>
+                </a>
+              </li>
+              <li>
+                <a href="/admin/personnalisation" class="block px-4 py-2 text-sm text-[var(--text-main)] hover:bg-black/5 dark:hover:bg-white/10 mx-2 rounded transition flex items-center gap-3">
+                  <i class="fa-solid fa-wand-magic-sparkles w-5 text-center opacity-70"></i> <span>Personnalisation</span>
                 </a>
               </li>
               <% } %>
               <li>
-                <button id="theme-toggle" class="w-[calc(100%-1rem)] text-left block px-4 py-2 text-sm text-neutral-700 dark:text-white rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800 mx-2 my-1 flex items-center space-x-3">
+                <button id="theme-toggle" class="w-[calc(100%-1rem)] text-left block px-4 py-2 text-sm text-[var(--text-main)] hover:bg-black/5 dark:hover:bg-white/10 mx-2 rounded transition flex items-center gap-3">
                     <i id="theme-icon" class="fa-solid fa-moon w-5 text-center"></i> 
                     <span id="theme-text"><%= isDark ? t('nav.theme_light') : t('nav.theme_dark') %></span>
                 </button>
               </li>
 
-              <li class="pt-2">
-                <a href="/logout" class="block px-4 py-2 text-sm font-medium text-center text-white bg-red-600 rounded-md hover:bg-red-700 mx-2 my-1 transition-colors">
+              <li class="pt-2 border-t border-black/5 dark:border-white/10 mt-2">
+                <a href="/logout" class="block px-4 py-2 text-sm font-bold text-center text-white bg-red-500 hover:bg-red-600 rounded-md mx-4 mb-2 transition-colors shadow-sm">
                   <%= t('nav.logout') %>
                 </a>
               </li>
             </ul>
           </div>
         </div>
+        <% } else { %>
+          <a href="/login" class="text-sm font-bold text-primary-theme hover:underline"><%= t('nav.login') %></a>
+        <% } %>
 
-        <button data-collapse-toggle="navbar-user" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-neutral-500 dark:text-neutral-400 rounded-lg md:hidden hover:bg-neutral-100 dark:hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-neutral-200 dark:focus:ring-neutral-700">
-          <svg class="w-5 h-5" fill="none" viewBox="0 0 17 14"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/></svg>
+        <button data-collapse-toggle="navbar-user" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm opacity-70 rounded-lg md:hidden hover:bg-black/5 dark:hover:bg-white/10 focus:outline-none text-[var(--text-main)]">
+          <i class="fa-solid fa-bars text-xl"></i>
         </button>
       </div>
 
       <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-user">
-        <ul class="flex flex-col font-medium p-4 md:p-0 mt-4 border border-neutral-200 dark:border-neutral-800 rounded-lg bg-gray-50 dark:bg-neutral-950 md:space-x-8 md:flex-row md:mt-0 md:border-0 md:bg-transparent">
+        <ul class="flex flex-col font-medium p-4 md:p-0 mt-4 rounded-lg md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-transparent">
           <li>
-            <a href="/" class="block py-2 px-3 text-green-600 dark:text-green-400 md:p-0" aria-current="page"><%= t('nav.home') %></a>
+            <a href="/" class="block py-2 px-3 md:p-0 text-[var(--text-sub)] hover:text-primary-theme transition-colors"><%= t('nav.home') %></a>
+          </li>
+          
+          <% if (settings && settings.modules && settings.modules.music) { %>
+          <li>
+            <a href="/collection?type=vinyl" class="block py-2 px-3 md:p-0 text-[var(--text-sub)] hover:text-primary-theme transition-colors"><%= t('media.vinyls') %></a>
           </li>
           <li>
-            <a href="/collection?type=vinyl" class="block py-2 px-3 text-neutral-900 dark:text-white rounded-sm hover:bg-neutral-100 dark:hover:bg-neutral-800 md:hover:bg-transparent md:hover:text-green-600 md:dark:hover:text-green-400 md:p-0"><%= t('media.vinyls') %></a>
+            <a href="/collection?type=cd" class="block py-2 px-3 md:p-0 text-[var(--text-sub)] hover:text-primary-theme transition-colors"><%= t('media.cds') %></a>
           </li>
           <li>
-            <a href="/collection?type=cd" class="block py-2 px-3 text-neutral-900 dark:text-white rounded-sm hover:bg-neutral-100 dark:hover:bg-neutral-800 md:hover:bg-transparent md:hover:text-green-600 md:dark:hover:text-green-400 md:p-0"><%= t('media.cds') %></a>
+            <a href="/collection?type=cassette" class="block py-2 px-3 md:p-0 text-[var(--text-sub)] hover:text-primary-theme transition-colors"><%= t('media.cassettes') %></a>
           </li>
+          <% } %>
+
+          <% if (settings && settings.modules && settings.modules.books) { %>
           <li>
-            <a href="/collection?type=cassette" class="block py-2 px-3 text-neutral-900 dark:text-white rounded-sm hover:bg-neutral-100 dark:hover:bg-neutral-800 md:hover:bg-transparent md:hover:text-green-600 md:dark:hover:text-green-400 md:p-0"><%= t('media.cassettes') %></a>
+            <a href="/collection?type=books" class="block py-2 px-3 md:p-0 text-[var(--text-sub)] hover:text-primary-theme transition-colors"><%= t('media.books') %></a>
           </li>
+          <% } %>
+          
+          <% if (settings && settings.modules && settings.modules.dvd) { %>
           <li>
-            <a href="/wishlist" class="block py-2 px-3 text-neutral-900 dark:text-white rounded-sm hover:bg-neutral-100 dark:hover:bg-neutral-800 md:hover:bg-transparent md:hover:text-green-600 md:dark:hover:text-green-400 md:p-0"><%= t('nav.wishlist') %></a>
+            <a href="/collection?type=dvd" class="block py-2 px-3 md:p-0 text-[var(--text-sub)] hover:text-primary-theme transition-colors"><%= t('media.dvds') %></a>
+          </li>
+          <% } %>
+
+          <li>
+            <a href="/wishlist" class="block py-2 px-3 md:p-0 text-[var(--text-sub)] hover:text-primary-theme transition-colors"><%= t('nav.wishlist') %></a>
           </li>
         </ul>
       </div>
@@ -132,12 +236,11 @@
 
   <script>
     document.body.classList.add('js-ready');
-
     const navTranslations = {
         themeDark: "<%= t('nav.theme_dark') %>",
         themeLight: "<%= t('nav.theme_light') %>"
     };
-
+    
     document.addEventListener('DOMContentLoaded', () => {
         const themeToggleBtn = document.getElementById('theme-toggle');
         const themeIcon = document.getElementById('theme-icon');
@@ -146,12 +249,14 @@
   
         function updateButtonVisuals() {
             const isDark = htmlElement.classList.contains('dark');
-            if (isDark) {
-                themeIcon.className = 'fa-solid fa-sun w-5 text-center text-yellow-400';
-                themeText.textContent = navTranslations.themeLight;
-            } else {
-                themeIcon.className = 'fa-solid fa-moon w-5 text-center text-indigo-500';
-                themeText.textContent = navTranslations.themeDark;
+            if(themeIcon && themeText) {
+                if (isDark) {
+                    themeIcon.className = 'fa-solid fa-sun w-5 text-center text-yellow-400';
+                    themeText.textContent = navTranslations.themeLight;
+                } else {
+                    themeIcon.className = 'fa-solid fa-moon w-5 text-center text-indigo-500';
+                    themeText.textContent = navTranslations.themeDark;
+                }
             }
         }
         
