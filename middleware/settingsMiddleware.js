@@ -28,7 +28,7 @@ module.exports = async (req, res, next) => {
         
         let detectedType = 'home';
 
-        if (path.includes('vinyl') || path.includes('cd') || path.includes('cassette') || path.includes('cd') || path.includes('album') || path.includes('music') || path.includes('collection') || path.includes('wishlist')) {
+        if (path.includes('vinyl') || path.includes('search-discogs') || path.includes('cd') || path.includes('cassette') || path.includes('cd') || path.includes('album') || path.includes('music') || path.includes('collection') || path.includes('wishlist')) {
             detectedType = 'music';
         } else if (path.includes('book')) {
             detectedType = 'books';

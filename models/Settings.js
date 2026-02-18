@@ -16,6 +16,10 @@ const settingsSchema = new mongoose.Schema({
         music:   { type: Object, default: themeSchema },
         books:   { type: Object, default: themeSchema },
         dvd:     { type: Object, default: themeSchema }
+    },
+    navbarShortcuts: { 
+        type: [String], 
+        default: ['global_home', 'music_vinyl', 'music_cd', 'music_cassette', 'global_wishlist']
     }
 });
 

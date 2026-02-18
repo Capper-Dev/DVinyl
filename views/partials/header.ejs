@@ -198,37 +198,41 @@
 
       <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-user">
         <ul class="flex flex-col font-medium p-4 md:p-0 mt-4 rounded-lg md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-transparent">
-          <li>
-            <a href="/" class="block py-2 px-3 md:p-0 text-[var(--text-sub)] hover:text-primary-theme transition-colors"><%= t('nav.home') %></a>
-          </li>
-          
-          <% if (settings && settings.modules && settings.modules.music) { %>
-          <li>
-            <a href="/collection?type=vinyl" class="block py-2 px-3 md:p-0 text-[var(--text-sub)] hover:text-primary-theme transition-colors"><%= t('media.vinyls') %></a>
-          </li>
-          <li>
-            <a href="/collection?type=cd" class="block py-2 px-3 md:p-0 text-[var(--text-sub)] hover:text-primary-theme transition-colors"><%= t('media.cds') %></a>
-          </li>
-          <li>
-            <a href="/collection?type=cassette" class="block py-2 px-3 md:p-0 text-[var(--text-sub)] hover:text-primary-theme transition-colors"><%= t('media.cassettes') %></a>
-          </li>
-          <% } %>
+          <% 
+            const shortcutConfig = {
+                'global_home':       { label: t('nav.home'), url: '/' },
+                'global_collection': { label: t('nav.collection'), url: '/collection' },
+                'global_wishlist':   { label: t('nav.wishlist'), url: '/wishlist' },
+                'music_vinyl':       { label: t('media.vinyls'), url: '/collection?type=vinyl', module: 'music' },
+                'music_cd':          { label: t('media.cds'), url: '/collection?type=cd', module: 'music' },
+                'music_cassette':    { label: t('media.cassettes'), url: '/collection?type=cassette', module: 'music' },
+                'book_hardcover':    { label: t('media.hardcover'), url: '/collection?type=books&format=hardcover', module: 'books' },
+                'book_paperback':    { label: t('media.paperback'), url: '/collection?type=books&format=paperback', module: 'books' },
+                'book_manga':        { label: t('media.manga'), url: '/collection?type=books&format=manga', module: 'books' },
+                'book_comic':        { label: t('media.comic'), url: '/collection?type=books&format=comic', module: 'books' },
+                'dvd_dvd':           { label: t('media.dvd'), url: '/collection?type=dvd&format=dvd', module: 'dvd' },
+                'dvd_bluray':        { label: t('media.bluray'), url: '/collection?type=dvd&format=bluray', module: 'dvd' },
+                'dvd_4k':            { label: t('media.4k'), url: '/collection?type=dvd&format=4k', module: 'dvd' },
+                'dvd_vhs':           { label: t('media.vhs'), url: '/collection?type=dvd&format=vhs', module: 'dvd' },
+                'dvd_laserdisc':     { label: t('media.laserdisc'), url: '/collection?type=dvd&format=laserdisc', module: 'dvd' }
+            };
 
-          <% if (settings && settings.modules && settings.modules.books) { %>
-          <li>
-            <a href="/collection?type=books" class="block py-2 px-3 md:p-0 text-[var(--text-sub)] hover:text-primary-theme transition-colors"><%= t('media.books') %></a>
-          </li>
-          <% } %>
-          
-          <% if (settings && settings.modules && settings.modules.dvd) { %>
-          <li>
-            <a href="/collection?type=dvd" class="block py-2 px-3 md:p-0 text-[var(--text-sub)] hover:text-primary-theme transition-colors"><%= t('media.dvds') %></a>
-          </li>
-          <% } %>
-
-          <li>
-            <a href="/wishlist" class="block py-2 px-3 md:p-0 text-[var(--text-sub)] hover:text-primary-theme transition-colors"><%= t('nav.wishlist') %></a>
-          </li>
+            if (settings && settings.navbarShortcuts) {
+              settings.navbarShortcuts.forEach(id => {
+                const item = shortcutConfig[id];
+                if (item) {
+                  const isModuleActive = item.module ? settings.modules[item.module] : true;
+                  
+                  if (isModuleActive) { %>
+                    <li>
+                      <a href="<%= item.url %>" class="block py-2 px-3 md:p-0 text-[var(--text-sub)] hover:text-primary-theme transition-colors">
+                        <%= item.label %>
+                      </a>
+                    </li>
+                  <% }
+                }
+              });
+          } %>
         </ul>
       </div>
     </div>

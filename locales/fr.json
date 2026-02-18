@@ -79,7 +79,16 @@
     "cd": "CD",
     "cds": "CDs",
     "cassette": "Cassette",
-    "cassettes": "Cassettes"
+    "cassettes": "Cassettes",
+    "hardcover": "Relié",
+    "paperback": "Broché",
+    "manga": "Manga",
+    "comic": "Comics",
+    "dvd": "DVD",
+    "bluray": "Blu-ray",
+    "4k": "4K Ultra HD",
+    "vhs": "VHS",
+    "laserdisc": "Laserdisc"
   },
   "index": {
     "welcome": "Salut",
@@ -263,7 +272,8 @@
     "theme_dark": "Mode Sombre",
     "theme_light": "Mode Clair",
     "home": "Accueil",
-    "wishlist": "Souhaits"
+    "wishlist": "Souhaits",
+    "collection": "Collection"
   },
   "footer": {
     "made_with": "Développé avec",
@@ -310,12 +320,14 @@
     "subtitle": "Gérez les modules et l'apparence de {{siteName}}",
     "backAdmin": "Retour Admin",
     "save": "Enregistrer les préférences",
-
+    "nav_title": "Configuration de la Navigation",
+    "nav_desc": "Choisissez jusqu'à 6 raccourcis à afficher dans votre barre de navigation.",
     "modules": {
       "title": "Modules Actifs",
       "music": "Musique",
       "books": "Bibliothèque",
-      "dvd": "Vidéothèque"
+      "dvd": "Vidéothèque",
+      "global": "Général"
     },
     "themes": {
       "title": "Thèmes & Couleurs",

@@ -79,7 +79,16 @@
     "cd": "CD",
     "cds": "CDs",
     "cassette": "Cassette",
-    "cassettes": "Cassettes"
+    "cassettes": "Cassettes",
+    "hardcover": "Hardcover",
+    "paperback": "Paperback",
+    "manga": "Manga",
+    "comic": "Comics",
+    "dvd": "DVD",
+    "bluray": "Blu-ray",
+    "4k": "4K Ultra HD",
+    "vhs": "VHS",
+    "laserdisc": "Laserdisc"
   },
   "index": {
     "welcome": "Hello",
@@ -263,7 +272,8 @@
     "theme_dark": "Dark Mode",
     "theme_light": "Light Mode",
     "home": "Home",
-    "wishlist": "Wishlist"
+    "wishlist": "Wishlist",
+    "collection": "Collection"
   },
   "footer": {
     "made_with": "Made with",
@@ -310,12 +320,14 @@
     "subtitle": "Customize the appearance of your DVinyl interface.",
     "backAdmin": "Back to Admin Panel",
     "save": "Save Preferences",
-
+    "nav_title": "Navigation Configuration",
+    "nav_desc": "Choose up to 6 shortcuts to display in your navigation bar.",
     "modules": {
       "title": "Active Modules",
       "music": "Music",
       "books": "Library",
-      "dvd": "DVD Collection"
+      "dvd": "DVD Collection",
+      "global": "General"
     },
     "themes": {
       "title": "Themes & Colors",

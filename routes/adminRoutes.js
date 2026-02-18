@@ -174,25 +174,36 @@ router.post('/personnalisation/save', requireAuth, requireAdmin, async (req, res
     try {
         const { 
             musicActive, booksActive, dvdActive,
-            homePreset, musicPreset, booksPreset, dvdPreset
+            homePreset, musicPreset, booksPreset, dvdPreset,
+            navbarShortcuts
         } = req.body;
+
+        let shortcuts = [];
+        if (Array.isArray(navbarShortcuts)) {
+            shortcuts = navbarShortcuts;
+        } else if (navbarShortcuts) {
+            shortcuts = [navbarShortcuts];
+        }
 
         const update = {
             'modules.music': musicActive === 'on',
             'modules.books': booksActive === 'on',
-            'modules.dvd': dvdActive === 'on',
-            'theme.home.preset': homePreset,
+            'modules.dvd':   dvdActive === 'on',
+            
+            'theme.home.preset':  homePreset,
             'theme.music.preset': musicPreset,
             'theme.books.preset': booksPreset,
-            'theme.dvd.preset': dvdPreset
+            'theme.dvd.preset':   dvdPreset,
+
+            'navbarShortcuts': shortcuts 
         };
 
         await Settings.findOneAndUpdate({}, { $set: update }, { upsert: true });
         
         res.redirect('/admin/personnalisation?msg=saved');
     } catch (err) {
-        console.error(err);
-        res.status(500).send("Erreur lors de la sauvegarde.");
+        console.error("[ERR] save", err);
+        res.status(500).send("Error while saving settings.");
     }
 });
 
