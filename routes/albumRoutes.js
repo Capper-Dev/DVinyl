@@ -97,48 +97,58 @@ router.get('/', requireAuth, async (req, res) => {
 
 router.get('/collection', requireAuth, async (req, res) => {
     try {
-        const typeFilter = req.query.type;
-        const searchQuery = req.query.search;
         const adminId = await getAdminId();
+        const { search, type, format } = req.query;
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 25;
 
-        let query = { 
-            owner: adminId, 
-            in_wishlist: false 
-        };
-        
-        if (typeFilter) {
-            if (typeFilter === 'books') {
-                query.kind = 'Book';
-            } else if (typeFilter === 'dvd') {
-                query.kind = 'Dvd';
-            } else if (['vinyl', 'cd', 'cassette'].includes(typeFilter)) {
-                query.kind = 'Music';
-                query.media_type = typeFilter;
-            }
-        }
+        let query = { owner: adminId, in_wishlist: false };
 
-        if (searchQuery) {
+        if (search) {
+            const regex = new RegExp(search, 'i');
             query.$or = [
-                { title: { $regex: searchQuery, $options: 'i' } },
-                { artist: { $regex: searchQuery, $options: 'i' } },
-                { creator: { $regex: searchQuery, $options: 'i' } },
-                { author: { $regex: searchQuery, $options: 'i' } },
-                { location: { $regex: searchQuery, $options: 'i' } }
+                { title: regex },
+                { artist: regex },
+                { author: regex },
+                { director: regex }
             ];
         }
 
-        const albums = await Item.find(query).sort({ added_at: -1 });
-        const locations = await Item.distinct('location', { owner: adminId, in_wishlist: false, location: { $ne: "" } });
-        
-        res.render('collection', { 
+        if (type && type !== 'all') {
+            const typeMap = { music: 'Music', books: 'Book', dvd: 'Dvd' };
+            query.kind = typeMap[type];
+        }
+
+        if (format && format !== 'all') {
+            const formatFilter = { $or: [{ media_type: format }, { format: format }] };
+            if (query.$or) {
+                query.$and = [{ $or: query.$or }, formatFilter];
+                delete query.$or;
+            } else {
+                Object.assign(query, formatFilter);
+            }
+        }
+
+        const totalItems = await Item.countDocuments(query);
+        const albums = await Item.find(query)
+            .sort({ added_at: -1 })
+            .skip((page - 1) * limit)
+            .limit(limit);
+
+        res.render('collection', {
             albums: albums.map(formatForView),
-            locations,
-            currentType: typeFilter || 'all',
-            searchQuery: searchQuery || '',
-            user: res.locals.user 
+            totalItems,
+            totalPages: Math.ceil(totalItems / limit),
+            currentPage: page,
+            queryLimit: limit,
+            queryType: type || 'all',
+            queryFormat: format || 'all',
+            querySearch: search || '',
+            locations: await Item.distinct('location', { owner: adminId })
         });
+
     } catch (err) {
-        console.log(err);
+        console.error(err);
         res.status(500).send(req.t('errors.generic_server_error'));
     }
 });

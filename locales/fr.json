@@ -16,7 +16,9 @@
     "go": "Go",
     "location": "Emplacement",
     "not_specified": "Non renseigné",
-    "or": "OU"
+    "or": "OU",
+    "all": "Tout",
+    "items": "éléments"
   },
   "settings": {
     "page_title": "Paramètres du compte",

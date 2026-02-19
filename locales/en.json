@@ -16,7 +16,9 @@
     "go": "Go",
     "location": "Location",
     "not_specified": "Not specified",
-    "or": "OR"
+    "or": "OR",
+    "all": "All",
+    "items": "items"
   },
   "settings": {
     "page_title": "Account Settings",
