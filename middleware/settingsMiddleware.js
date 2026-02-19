@@ -14,9 +14,9 @@ module.exports = async (req, res, next) => {
                 statsWidgets: ['total', 'vinyl', 'cd', 'cassette', 'artist'],
                 theme: {
                     home: { preset: 'default' },
-                    music: { preset: 'emerald' },
-                    books: { preset: 'amber' },
-                    dvd: { preset: 'blue' }
+                    music: { preset: 'default' },
+                    books: { preset: 'default' },
+                    dvd: { preset: 'default' }
                 }
             };
         } else {

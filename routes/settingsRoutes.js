@@ -181,5 +181,21 @@ router.post('/update-language', requireAuth, async (req, res) => {
   }
 });
 
+router.post('/update-currency', requireAuth, async (req, res) => {
+    const { currency } = req.body;
+    const userId = res.locals.user._id;
+
+    if (!['EUR', 'USD', 'GBP'].includes(currency)) {
+        return res.status(400).send('Devise non supportée');
+    }
+
+    try {
+        await User.findByIdAndUpdate(userId, { currency });
+        res.redirect('/settings');
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: req.t('messages.generic_error') });
+    }
+});
 
 module.exports = router;

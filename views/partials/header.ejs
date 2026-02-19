@@ -21,8 +21,8 @@
   }
 
   let activePresetKey = 'default';
-   if (typeof settings !== 'undefined' && settings.theme) {
-      if (settings.theme[themeKey] && settings.theme[themeKey].preset) {
+  if (typeof settings !== 'undefined' && settings && settings.theme) {
+        if (settings.theme[themeKey] && settings.theme[themeKey].preset) {
           activePresetKey = settings.theme[themeKey].preset;
       } 
       else if (settings.theme.home && settings.theme.home.preset) {

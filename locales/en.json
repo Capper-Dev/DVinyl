@@ -18,7 +18,8 @@
     "not_specified": "Not specified",
     "or": "OR",
     "all": "All",
-    "items": "items"
+    "items": "items",
+    "back_home": "Back to Home"
   },
   "settings": {
     "page_title": "Account Settings",
@@ -40,7 +41,12 @@
     "password_warning": "You will be logged out after the change.",
     "current_password_label": "Current password",
     "new_password_label": "New password",
-    "confirm_password_label": "Confirm new password"
+    "confirm_password_label": "Confirm new password",
+    "currency_title": "Currency",
+    "currency_label": "Preferred currency",
+    "currency_eur": "Euro (€)",
+    "currency_usd": "US Dollar ($)",
+    "currency_gbp": "British Pound (£)"
   },
   "errors": {
     "username_taken": "This username is already taken.",
@@ -54,7 +60,9 @@
     "delete_self_error": "You cannot delete yourself.",
     "invalid_credentials": "Invalid credentials",
     "too_many_attempts_timed": "Too many attempts. Try again in {{seconds}} seconds.",
-    "too_many_attempts_blocked": "Too many attempts. Try again in 5 minutes."
+    "too_many_attempts_blocked": "Too many attempts. Try again in 5 minutes.",
+    "404_title": "Oops! Groove not found.",
+    "404_desc": "The page you are looking for seems to have been scratched from the collection or the associated module is currently disabled."
   },
   "messages": {
     "username_current": "This is your current username.",

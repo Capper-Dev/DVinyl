@@ -161,6 +161,9 @@ app.use('/admin', adminRoutes);
 app.use('/settings', settingsRoutes);
 app.use('/backup', backupRoutes);
 
+app.use((req, res) => {
+    res.status(404).render('404');
+});
 
 const migrateDatabase = require('./utils/migrate.js');
 // Database connection and server start

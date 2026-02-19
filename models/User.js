@@ -36,13 +36,18 @@ const userSchema = new mongoose.Schema({
     },
     theme: {
         type: String,
-        default: 'admin-default', 
-        enum: ['light', 'dark', 'admin-default']
+        default: 'dark', 
+        enum: ['light', 'dark']
     },
     language: { 
         type: String, 
         enum: ['fr', 'en'], 
         default: 'fr' 
+    },
+    currency: { 
+        type: String, 
+        enum: ['EUR', 'USD', 'GBP'], 
+        default: 'USD' 
     },
     discogsUsername: { type: String, default: '' },
     lastChange: {

@@ -1,0 +1,26 @@
+<%- include('partials/header') %>
+
+<div class="max-w-screen-xl mx-auto flex flex-col items-center justify-center min-h-[60vh] px-4 text-center">
+    <div class="relative mb-8">
+        <i class="fa-solid fa-compact-disc text-9xl opacity-10 rotate-12 text-theme-highlight"></i>
+        <div class="absolute inset-0 flex items-center justify-center">
+            <span class="text-6xl font-black text-theme-highlight drop-shadow-sm">404</span>
+        </div>
+    </div>
+
+    <div class="card-theme p-8 rounded-3xl shadow-xl max-w-md w-full transition-colors border border-theme-highlight/10">
+        <h1 class="text-2xl font-bold mb-4">
+            <%= t('errors.404_title') %>
+        </h1>
+        <p class="text-theme-subtext mb-8 transition-colors">
+            <%= t('errors.404_desc') %>
+        </p>
+        
+        <a href="/" class="inline-flex items-center justify-center gap-2 w-full py-4 bg-theme-highlight text-white font-bold rounded-2xl hover:brightness-110 transition-all shadow-lg shadow-theme-highlight/20">
+            <i class="fa-solid fa-house"></i>
+            <%= t('common.back_home') %>
+        </a>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

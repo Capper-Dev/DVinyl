@@ -18,7 +18,8 @@
     "not_specified": "Non renseigné",
     "or": "OU",
     "all": "Tout",
-    "items": "éléments"
+    "items": "éléments",
+    "back_home": "Retourner à l'accueil"
   },
   "settings": {
     "page_title": "Paramètres du compte",
@@ -40,7 +41,12 @@
     "password_warning": "Vous serez déconnecté après le changement.",
     "current_password_label": "Mot de passe actuel",
     "new_password_label": "Nouveau mot de passe",
-    "confirm_password_label": "Confirmer le nouveau mot de passe"
+    "confirm_password_label": "Confirmer le nouveau mot de passe",
+    "currency_title": "Devise",
+    "currency_label": "Devise préférée",
+    "currency_eur": "Euro (€)",
+    "currency_usd": "Dollar ($)",
+    "currency_gbp": "Livre sterling (£)"
   },
   "errors": {
     "username_taken": "Ce pseudo est déjà utilisé.",
@@ -54,7 +60,9 @@
     "delete_self_error": "Impossible de se supprimer soi-même.",
     "invalid_credentials": "Identifiants invalides",
     "too_many_attempts_timed": "Trop de tentatives. Réessaie dans {{seconds}} secondes.",
-    "too_many_attempts_blocked": "Trop de tentatives. Réessaie dans 5 minutes."
+    "too_many_attempts_blocked": "Trop de tentatives. Réessaie dans 5 minutes.",
+    "404_title": "Oups ! Sillon sans issue.",
+    "404_desc": "La page que vous cherchez semble avoir été rayée de la collection ou le module associé est actuellement désactivé."
   },
   "messages": {
     "username_current": "C'est votre pseudo actuel.",

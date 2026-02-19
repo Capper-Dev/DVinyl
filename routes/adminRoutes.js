@@ -158,15 +158,12 @@ router.post('/unblock-ip', requireAuth, requireAdmin, async (req, res) => {
 
 router.get('/personnalisation', requireAuth, requireAdmin, async (req, res) => {
     try {
-        const settings = await Settings.findOne().lean(); 
-        
         res.render('personnalisation', { 
-            settings: settings, 
             presets: PRESETS
         });
     } catch (err) {
         console.error(err);
-        res.status(500).send("Erreur de chargement");
+        res.status(500).send("ERR");
     }
 });
 

@@ -323,7 +323,7 @@ router.post('/save-vinyl', requireAuth, requireAdmin, async (req, res) => {
         if (isWishlist) {
             res.redirect('/wishlist');
         } else {
-            res.redirect(`/collection?type=${media_type || 'vinyl'}`);
+            res.redirect(`/collection?type=music`);
         }
 
     } catch (err) {
@@ -443,9 +443,11 @@ router.get('/api/estimate/:discogsId', requireAuth, async (req, res) => {
         const discogsId = req.params.discogsId;
         const token = process.env.DISCOGS_TOKEN;
 
+        const userCurrency = res.locals.user.currency || 'USD';
+
         // PLAN A: Active marketplace prices
         try {
-            const statsRes = await fetch(`https://api.discogs.com/marketplace/stats/${discogsId}?curr_abbr=EUR&token=${token}`, {
+            const statsRes = await fetch(`https://api.discogs.com/marketplace/stats/${discogsId}?curr_abbr=${userCurrency}&token=${token}`, {
                 headers: { 'User-Agent': 'DVinylApp/1.0' }
             });
 

@@ -72,6 +72,35 @@
                 </div>
             </div>
 
+            <div class="card-theme rounded-2xl p-6 transition-colors shadow-sm mt-6">
+                <h2 class="text-lg font-bold flex items-center gap-2 mb-6 transition-colors">
+                    <i class="fas fa-coins opacity-50"></i> <%= t('settings.currency_title') %>
+                </h2>
+
+                <div class="flex items-center justify-between p-4 bg-black/5 dark:bg-white/5 rounded-xl border border-transparent transition-colors">
+                    <span class="opacity-60 text-sm"><%= t('settings.currency_label') %></span>
+
+                    <form action="/settings/update-currency" method="POST" class="flex items-center">
+                        <select name="currency" onchange="this.form.submit()"
+                            class="bg-white dark:bg-black/20 border border-transparent rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-primary-theme transition-colors">
+
+                            <option value="EUR" <%= user.currency === 'EUR' ? 'selected' : '' %>>
+                                <%= t('settings.currency_eur') %>
+                            </option>
+
+                            <option value="USD" <%= user.currency === 'USD' ? 'selected' : '' %>>
+                                <%= t('settings.currency_usd') %>
+                            </option>
+
+                            <option value="GBP" <%= user.currency === 'GBP' ? 'selected' : '' %>>
+                                <%= t('settings.currency_gbp') %>
+                            </option>
+
+                        </select>
+                    </form>
+                </div>
+            </div>
+
             <div class="card-theme rounded-2xl p-6 transition-colors shadow-sm">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-lg font-bold flex items-center gap-2 transition-colors">

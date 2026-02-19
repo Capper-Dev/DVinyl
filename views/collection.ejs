@@ -343,7 +343,7 @@
     const percentSpan = document.getElementById('estimatePercent');
     const estimateErrorMsg = "<%= t('messages.estimate_error') %>";
     const currentLocale = '<%= currentLng === "fr" ? "fr-FR" : "en-US" %>';
-    const currentCurrency = '<%= currentLng === "fr" ? "EUR" : "USD" %>';
+    const currentCurrency = '<%= user.currency || "USD" %>';
 
     let totalAlbums = 0;
     let currentProcessed = 0;
@@ -409,10 +409,16 @@
     }
 
     function showResults() {
-        const fmt = (val) => new Intl.NumberFormat(currentLocale, { 
-            style: 'currency', 
-            currency: currentCurrency 
-        }).format(val);
+    const fmt = (val) => {
+        try {
+            return new Intl.NumberFormat(currentLocale, { 
+                style: 'currency', 
+                currency: currentCurrency 
+            }).format(val);
+        } catch (e) {
+            return val.toFixed(2) + ' ' + currentCurrency;
+        }
+    };
 
         document.getElementById('finalPrice').innerText = fmt(totalPriceVG);
         document.getElementById('minPrice').innerText = fmt(totalPriceMin);
