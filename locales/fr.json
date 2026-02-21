@@ -428,7 +428,9 @@
   "format": {
     "paperback": "Broché",
     "hardcover": "Relié",
-    "graphic_novel": "Roman Graphique"
+    "graphic_novel": "Roman Graphique",
+    "manga": "Manga",
+    "comic": "Comic"
   },
   "status": {
     "to_read": "À lire",

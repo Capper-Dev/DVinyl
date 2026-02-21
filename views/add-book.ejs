@@ -65,7 +65,7 @@
                     <a href="/confirm-book/<%= item.google_id %>" class="card-theme rounded-xl overflow-hidden hover:border-primary-theme transition-all group flex flex-col hover:shadow-lg hover:-translate-y-1">
                         <div class="relative aspect-square bg-black/5 dark:bg-white/5">
                             <% if(item.cover_image && !item.cover_image.includes('spacer.gif')) { %>
-                                <img src="<%= item.cover_image %>" class="w-full h-full object-cover">
+                                <img src="<%= item.cover_image %>" onerror="this.onerror=null; this.src='/ressources/no_book.png';" class="w-full h-full object-cover">
                             <% } else { %>
                                 <div class="w-full h-full flex items-center justify-center opacity-30">
                                     <i class="fa-solid fa-book-open text-3xl"></i>

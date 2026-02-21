@@ -64,13 +64,27 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                         <div class="md:col-span-2">
-                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest text-primary-theme"><%= t('confirm_book.field_format') %></label>
-                            <select name="format" class="bg-black/5 dark:bg-white/5 border border-primary-theme/30 text-sm rounded-lg focus:ring-primary-theme block w-full p-3 transition-colors outline-none cursor-pointer">
-                                <option value="paperback" <%= book.format === 'paperback' ? 'selected' : '' %>><%= t('format.paperback') %></option>
-                                <option value="hardcover" <%= book.format === 'hardcover' ? 'selected' : '' %>><%= t('format.hardcover') %></option>
-                                <option value="manga" <%= book.format === 'manga' ? 'selected' : '' %>>Manga</option>
-                                <option value="comic" <%= book.format === 'comic' ? 'selected' : '' %>>Comic</option>
-                                <option value="graphic_novel" <%= book.format === 'graphic_novel' ? 'selected' : '' %>><%= t('format.graphic_novel') %></option>
+                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest text-primary-theme opacity-60">
+                                <%= t('confirm_book.field_format') %>
+                            </label>
+                            <select name="format" 
+                                    class="bg-black/5 dark:bg-white/5 border border-transparent text-gray-900 dark:text-white text-sm rounded-lg focus:ring-primary-theme focus:border-primary-theme block w-full p-3 transition-colors outline-none cursor-pointer">
+                                
+                                <option value="paperback" class="bg-white dark:bg-[#1a1a1a]" <%= book.format === 'paperback' ? 'selected' : '' %>>
+                                    <%= t('format.paperback') %>
+                                </option>
+                                <option value="hardcover" class="bg-white dark:bg-[#1a1a1a]" <%= book.format === 'hardcover' ? 'selected' : '' %>>
+                                    <%= t('format.hardcover') %>
+                                </option>
+                                <option value="manga" class="bg-white dark:bg-[#1a1a1a]" <%= book.format === 'manga' ? 'selected' : '' %>>
+                                    <%= t('format.manga') %>
+                                </option>
+                                <option value="comic" class="bg-white dark:bg-[#1a1a1a]" <%= book.format === 'comic' ? 'selected' : '' %>>
+                                    <%= t('format.comic') %>
+                                </option>
+                                <option value="graphic_novel" class="bg-white dark:bg-[#1a1a1a]" <%= book.format === 'graphic_novel' ? 'selected' : '' %>>
+                                    <%= t('format.graphic_novel') %>
+                                </option>
                             </select>
                         </div>
 

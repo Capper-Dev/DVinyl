@@ -51,7 +51,9 @@ module.exports = async (req, res, next) => {
 
         res.locals.detectedType = detectedType;
         const activeType = queryType || detectedType;
-
+        
+        res.locals.currentType = activeType;
+        
         if (activeType === 'books' && !settings.modules.books && path !== '/') {
             return res.status(404).render('404');
         }

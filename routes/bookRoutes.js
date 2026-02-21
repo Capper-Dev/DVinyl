@@ -15,17 +15,30 @@ const formatGoogleBook = (item) => {
     const volumeInfo = item.volumeInfo || {};
     const isbnObj = volumeInfo.industryIdentifiers?.find(id => id.type === 'ISBN_13') 
                  || volumeInfo.industryIdentifiers?.find(id => id.type === 'ISBN_10');
-    
+    const isbn = isbnObj ? isbnObj.identifier : '';
+
+    let cover = '/ressources/no_book.png';
+
+    if (volumeInfo.imageLinks) {
+        cover = (volumeInfo.imageLinks.medium || 
+                 volumeInfo.imageLinks.small || 
+                 volumeInfo.imageLinks.thumbnail)
+                 .replace('http:', 'https:')
+                 .replace('&zoom=1', '&zoom=2');
+    } else if (isbn) {
+        cover = `https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg?default=false`;
+    }
+
     return {
         google_id: item.id,
         title: volumeInfo.title || 'Titre inconnu',
         author: volumeInfo.authors ? volumeInfo.authors.join(', ') : 'Auteur inconnu',
         publisher: volumeInfo.publisher || '',
         year: volumeInfo.publishedDate ? volumeInfo.publishedDate.substring(0, 4) : '',
-        isbn: isbnObj ? isbnObj.identifier : '',
+        isbn: isbn,
         pages: volumeInfo.pageCount || null,
         language: volumeInfo.language || '',
-        cover_image: volumeInfo.imageLinks?.thumbnail?.replace('http:', 'https:') || '/ressources/no_book.png',
+        cover_image: cover,
         description: volumeInfo.description || ''
     };
 };

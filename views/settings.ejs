@@ -64,9 +64,13 @@
                 <div class="flex items-center justify-between p-4 bg-black/5 dark:bg-white/5 rounded-xl border border-transparent transition-colors">
                     <span class="opacity-60 text-sm"><%= t('settings.language_label') %></span>
                     <form action="/settings/update-language" method="POST" class="flex items-center">
-                        <select name="language" onchange="this.form.submit()" class="bg-white dark:bg-black/20 border border-transparent rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-primary-theme transition-colors">
-                            <option value="fr" <%= currentLng === 'fr' ? 'selected' : '' %>>Français</option>
-                            <option value="en" <%= currentLng === 'en' ? 'selected' : '' %>>English</option>
+                        <select name="language" onchange="this.form.submit()" class="bg-black/5 dark:bg-white/5 border border-transparent text-gray-900 dark:text-white text-sm rounded-lg focus:ring-primary-theme focus:border-primary-theme block w-full p-3 transition-colors outline-none cursor-pointer">
+                            <option value="fr" class="bg-white dark:bg-[#1a1a1a]" <%= currentLng === 'fr' ? 'selected' : '' %>>
+                                Français
+                            </option>
+                            <option value="en" class="bg-white dark:bg-[#1a1a1a]" <%= currentLng === 'en' ? 'selected' : '' %>>
+                                English
+                            </option>
                         </select>
                     </form>
                 </div>
@@ -81,21 +85,18 @@
                     <span class="opacity-60 text-sm"><%= t('settings.currency_label') %></span>
 
                     <form action="/settings/update-currency" method="POST" class="flex items-center">
-                        <select name="currency" onchange="this.form.submit()"
-                            class="bg-white dark:bg-black/20 border border-transparent rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-primary-theme transition-colors">
-
-                            <option value="EUR" <%= user.currency === 'EUR' ? 'selected' : '' %>>
+                        <select name="currency" onchange="this.form.submit()" class="bg-black/5 dark:bg-white/5 border border-transparent text-gray-900 dark:text-white text-sm rounded-lg focus:ring-primary-theme focus:border-primary-theme block w-full p-3 transition-colors outline-none cursor-pointer">
+                            <option value="EUR" class="bg-white dark:bg-[#1a1a1a]" <%= user.currency === 'EUR' ? 'selected' : '' %>>
                                 <%= t('settings.currency_eur') %>
                             </option>
 
-                            <option value="USD" <%= user.currency === 'USD' ? 'selected' : '' %>>
+                            <option value="USD" class="bg-white dark:bg-[#1a1a1a]" <%= user.currency === 'USD' ? 'selected' : '' %>>
                                 <%= t('settings.currency_usd') %>
                             </option>
 
-                            <option value="GBP" <%= user.currency === 'GBP' ? 'selected' : '' %>>
+                            <option value="GBP" class="bg-white dark:bg-[#1a1a1a]" <%= user.currency === 'GBP' ? 'selected' : '' %>>
                                 <%= t('settings.currency_gbp') %>
                             </option>
-
                         </select>
                     </form>
                 </div>
