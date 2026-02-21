@@ -102,8 +102,18 @@
             
                         <div class="p-3 flex flex-col flex-grow">
                             <h3 class="font-bold text-sm leading-tight mb-1 line-clamp-2 transition-colors"><%= item.title %></h3>
-                            <p class="opacity-60 text-xs mb-2 transition-colors"><%= item.year %></p>
                             
+                            <p class="opacity-60 text-[10px] mb-2 transition-colors">
+                                <%= item.country ? item.country + ' • ' : '' %><%= item.year %>
+                            </p>
+                            
+                            <% if(item.variant_info) { %>
+                                <div class="flex items-center gap-1 mb-3">
+                                    <span class="w-2 h-2 rounded-full bg-primary-theme inline-block flex-shrink-0"></span>
+                                    <span class="text-[10px] opacity-70 truncate max-w-full font-medium italic"><%= item.variant_info %></span>
+                                </div>
+                            <% } %>
+
                             <div class="flex flex-wrap gap-1 mt-auto">
                                 <% if(item.format) { %>
                                     <% item.format.slice(0, 2).forEach(fmt => { %>

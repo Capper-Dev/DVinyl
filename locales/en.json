@@ -268,7 +268,8 @@
     "source_search": "Search",
     "browse_files": "Browse files",
     "no_results": "No visuals found.",
-    "network_error": "Network error."
+    "network_error": "Network error.",
+    "country": "Country"
   },
   "edit_vinyl": {
     "title": "Edit Album",

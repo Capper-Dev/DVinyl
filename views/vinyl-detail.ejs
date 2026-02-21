@@ -12,7 +12,7 @@
                 <i class="fa-solid fa-arrow-left"></i> <%= t('detail.back_to_wishlist') %>
             </a> 
         <% } else { %>
-            <a href="/collection" class="hover:opacity-100 hover:text-primary-theme transition-colors flex items-center gap-2">
+            <a href="/collection?type=music" class="hover:opacity-100 hover:text-primary-theme transition-colors flex items-center gap-2">
                 <i class="fa-solid fa-arrow-left"></i> <%= t('detail.back_to_collection') %>
             </a> 
         <% } %>
@@ -107,6 +107,14 @@
                 <div>
                     <span class="block text-xs opacity-50 uppercase font-bold mb-1"><%= t('confirm_vinyl.catalog_label') %></span>
                     <span class="font-mono text-sm bg-black/5 dark:bg-white/5 px-2 py-1 rounded transition-colors"><%= album.catalog_number || 'N/A' %></span>
+                </div>
+                <div>
+                    <span class="block text-xs opacity-50 uppercase font-bold mb-1"><%= t('confirm_vinyl.year_label') %></span>
+                    <span class="font-mono text-sm bg-black/5 dark:bg-white/5 px-2 py-1 rounded transition-colors"><%= album.year || 'N/A' %></span>
+                </div>
+                <div>
+                    <span class="block text-xs opacity-50 uppercase font-bold mb-1"><%= t('confirm_vinyl.country') %></span>
+                    <span class="font-medium transition-colors"><%= album.country || 'N/A' %></span>
                 </div>
                 <div>
                     <span class="block text-xs opacity-50 uppercase font-bold mb-1"><%= t('detail.added_at') %></span>

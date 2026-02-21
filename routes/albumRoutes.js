@@ -29,7 +29,8 @@ const formatForView = (item) => {
         format_type: obj.format_type || '',
         variant_color: obj.variant_color || '',
         location: obj.location || '',
-        quantity: obj.quantity || 1
+        quantity: obj.quantity || 1,
+        country: obj.country || ''
     };
 };
 
@@ -168,7 +169,7 @@ router.get('/album/edit/:id', requireAuth, async (req, res) => {
             return res.redirect('/collection');
         }
         const albumFormatted = formatForView(album);
-
+        console.log(albumFormatted)
         const adminId = await getAdminId();
         const locations = await Item.distinct('location', { owner: adminId, location: { $ne: "" } });
         
@@ -181,21 +182,38 @@ router.get('/album/edit/:id', requireAuth, async (req, res) => {
 
 router.post('/search-discogs', requireAuth, requireAdmin, async (req, res) => {
   const query = req.body.query;
-  const type = req.body.type || 'vinyl'; // Default to vinyl if not specified
+  const type = req.body.type || 'vinyl';
   const token = process.env.DISCOGS_TOKEN;
 
-    try {
-        // Adapt the Discogs API request according to the media type
-        // format=vinyl or format=cd or format=cassette
+  try {
     const url = `https://api.discogs.com/database/search?q=${query}&type=release&format=${type}&token=${token}`;
-    
-    const response = await axios.get(url, {
-      headers: { 'User-Agent': 'DVinylApp/1.0' }
+    const response = await axios.get(url, { headers: { 'User-Agent': 'DVinylApp/1.0' } });
+
+    const technicalBlacklist = [
+        'Vinyl', 'LP', 'Album', 'Reissue', 'Repress', 'Stereo', 'Gatefold', 
+        '12"', '7"', 'Limited Edition', 'Compilation', 'Deluxe Edition', 'Numbered', 'Promo'
+    ];
+
+    const processedResults = response.data.results.slice(0, 10).map(item => {
+        let variant_info = '';
+        
+        if (item.formats && item.formats[0] && item.formats[0].text) {
+            variant_info = item.formats[0].text.split(',')
+                .map(p => p.trim())
+                .filter(part => !technicalBlacklist.some(term => part.toLowerCase().includes(term.toLowerCase())))
+                .join(', ');
+        }
+
+        return {
+            ...item,
+            variant_info: variant_info,
+            country: item.country || ''
+        };
     });
 
     res.render('add-vinyl', { 
-        results: response.data.results.slice(0, 10),
-        searchType: type, // Return the type to keep the correct button selected
+        results: processedResults,
+        searchType: type,
         user: res.locals.user
     });
   } catch (err) {
@@ -203,6 +221,7 @@ router.post('/search-discogs', requireAuth, requireAdmin, async (req, res) => {
     res.render('add-vinyl', { results: [], error: req.t('errors.api_error'), searchType: type, user: res.locals.user });
   }
 });
+
 // Confirmation with extended info
 router.get('/confirm-vinyl/:id', requireAuth, async (req, res) => {
     const discogsId = req.params.id;
@@ -213,26 +232,42 @@ router.get('/confirm-vinyl/:id', requireAuth, async (req, res) => {
         const response = await axios.get(url, { headers: { 'User-Agent': 'DVinylApp/1.0' } });
         const data = response.data;
 
-        // Logic to separate format vs. color/variant
-        // Define standard terms to distinguish format descriptors from variants
-        const standardTerms = ['Vinyl', 'LP', 'Album', 'Reissue', 'Repress', 'Stereo', 'Gatefold', '12"', '7"'];
-        
+        const standardTerms = [
+            'Vinyl', 'LP', 'Album', 'Reissue', 'Repress', 'Stereo', 'Gatefold', 
+            '12"', '7"', 'Limited Edition', 'Compilation', 'Deluxe Edition', 'Numbered', 'Promo'
+        ];        
+
         let formatType = [];
         let variantColor = [];
 
         if (data.formats && data.formats.length > 0) {
             const f = data.formats[0];
-            formatType.push(f.name); // e.g. "Vinyl"
+            formatType.push(f.name);
+
+            if (f.text) {
+                const parts = f.text.split(',').map(p => p.trim());
+                parts.forEach(part => {
+                    if (standardTerms.includes(part)) {
+                        if (!formatType.includes(part)) formatType.push(part);
+                    } else {
+                        if (!variantColor.includes(part)) variantColor.push(part);
+                    }
+                });
+            }
+
             if (f.descriptions) {
                 f.descriptions.forEach(desc => {
                     if (standardTerms.includes(desc)) {
-                        formatType.push(desc);
+                        if (!formatType.includes(desc)) formatType.push(desc);
                     } else {
-                        variantColor.push(desc); // Non-standard term likely a color or special edition
+                        if (!variantColor.includes(desc)) {
+                            variantColor.push(desc);
+                        }
                     }
                 });
             }
         }
+        
         const adminId = await User.findOne({ isAdmin: true }).select('_id').lean();
         const locations = await Item.distinct('location', { owner: adminId, location: { $ne: "" } });
 
@@ -242,15 +277,12 @@ router.get('/confirm-vinyl/:id', requireAuth, async (req, res) => {
             year: data.year || '',
             label: data.labels && data.labels.length > 0 ? data.labels[0].name : '',
             catalog_number: data.labels && data.labels.length > 0 ? data.labels[0].catno : '',
-            
-            // Separate format and variant info
             format_type: formatType.join(', '),
-            variant_color: variantColor.join(', '), // e.g. "Red, Limited Edition"
-
-            tracklist: data.tracklist || [], // Discogs returns a proper array
+            variant_color: variantColor.join(', '), 
+            tracklist: data.tracklist || [],
             cover_image: data.images && data.images.length > 0 ? data.images[0].resource_url : '',
-            discogs_id: data.id,
-            // location: locations.length > 0 ? locations[0] : '',
+            discogs_id: data.id, 
+            country: data.country || '',
         };
 
         res.render('confirm-vinyl', { vinyl, user: res.locals.user, locations });
@@ -265,7 +297,7 @@ router.get('/confirm-vinyl/:id', requireAuth, async (req, res) => {
 router.post('/save-vinyl', requireAuth, requireAdmin, async (req, res) => {
     try {
         const { 
-            mongo_id, title, artist, year, label, catalog_number, 
+            mongo_id, title, artist, year, label, catalog_number, country,
             format_type, variant_color, cover_image, user_image, discogs_id, tracklist_json,
             media_type, in_wishlist, comments, location, quantity
         } = req.body;
@@ -300,6 +332,7 @@ router.post('/save-vinyl', requireAuth, requireAdmin, async (req, res) => {
             album.comments = comments || '';
             album.location = location || '';
             album.quantity = parseInt(quantity) || 1;
+            album.country = country || '';
             
             if (user_image && user_image.length > 0) {
                 album.user_image = user_image;
@@ -319,7 +352,8 @@ router.post('/save-vinyl', requireAuth, requireAdmin, async (req, res) => {
                 owner: adminId,
                 comments: comments || '',
                 location: location || '',
-                quantity: parseInt(quantity) || 1
+                quantity: parseInt(quantity) || 1,
+                country: country || '',
             });
         }
 
