@@ -113,30 +113,55 @@ router.get('/collection', requireAuth, async (req, res) => {
         const limit = parseInt(req.query.limit) || 25;
 
         let query = { owner: adminId, in_wishlist: false };
+        let conditions = []; 
 
+        
         if (search) {
             const regex = new RegExp(search, 'i');
-            query.$or = [{ title: regex }, { artist: regex }, { author: regex }, { director: regex }];
+            conditions.push({ 
+                $or: [{ title: regex }, { artist: regex }, { author: regex }, { director: regex }] 
+            });
+        }
+
+        
+        if (type && type !== 'all') {
+            const typeMap = { music: 'Music', books: 'Book', dvd: 'Dvd' };
+            if (type === 'music') {
+                
+                conditions.push({ 
+                    $or: [{ kind: 'Music' }, { kind: { $exists: false } }] 
+                });
+            } else {
+                query.kind = typeMap[type];
+            }
+        }
+
+        
+        if (format && format !== 'all') {
+            
+            const formatRegex = new RegExp(`^${format}$`, 'i');
+            conditions.push({ 
+                $or: [{ media_type: formatRegex }, { format: formatRegex }] 
+            });
         }
 
         if (location) {
             query.location = new RegExp(location, 'i');
         }
 
-        if (type && type !== 'all') {
-            const typeMap = { music: 'Music', books: 'Book', dvd: 'Dvd' };
-            query.kind = typeMap[type];
-        }
-
-        if (format && format !== 'all') {
-            query.$or = [{ media_type: format }, { format: format }];
+        
+        if (conditions.length > 0) {
+            query.$and = conditions;
         }
 
         const totalItems = await Item.countDocuments(query);
+        
+        
         const albums = await Item.find(query)
             .sort({ added_at: -1 })
             .skip((page - 1) * limit)
-            .limit(limit);
+            .limit(limit)
+            .lean(); 
 
         const filterMap = {
             music: [
