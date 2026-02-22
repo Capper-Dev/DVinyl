@@ -76,13 +76,13 @@ Access the application at `http://localhost:3099`.
 | **Localization** | i18next                        |
 | **API**          | Discogs / Google Books / TMDB  |
 
-# Screenshots
+# Screenshots <small>with Ocean theme</small>
 
 | 🖥️ Desktop View | 📱 Mobile View |
 |-----------------|----------------|
-| ![Dashboard Desktop](./docs/img/desktop-dashboard.jpg) | ![Dashboard Mobile](./docs/img/mobile-dashboard.png) |
-| [![Collection Desktop](./docs/img/desktop-collection.jpg)](./docs/img/desktop-collection.jpg) | [![Collection Mobile](./docs/img/mobile-collection.png)](./docs/img/mobile-collection.png) |
-| [![Detail Desktop](./docs/img/desktop-detail.jpg)](./docs/img/desktop-detail.jpg) | [![Detail Mobile](./docs/img/mobile-detail.png)](./docs/img/mobile-detail.png) |
+| ![Dashboard Desktop](./docs/img/desktop-dashboard.jpg) | ![Dashboard Mobile](./docs/img/mobile-dashboard.jpg) |
+| [![Collection Desktop](./docs/img/desktop-collection.jpg)](./docs/img/desktop-collection.jpg) | [![Collection Mobile](./docs/img/mobile-collection.jpg)](./docs/img/mobile-collection.jpg) |
+| [![Detail Desktop](./docs/img/desktop-detail.jpg)](./docs/img/desktop-detail.jpg) | [![Detail Mobile](./docs/img/mobile-detail.jpg)](./docs/img/mobile-detail.jpg) |
 
 
 # 🤝 Contributing
