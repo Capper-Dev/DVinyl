@@ -364,28 +364,35 @@ router.post('/save-vinyl', requireAuth, requireAdmin, async (req, res) => {
         }
 
         if (album) {
-            album.title = title;
-            if (artist) album.artist = artist;
-            album.discogs_id = discogs_id;
-            album.year = year;
-            album.label = label;
-            album.catalog_number = catalog_number;
-            album.format_type = format_type;
-            album.variant_color = variant_color;
-            album.tracklist = tracklist;
-            album.cover_image = cover_image;
-            album.in_wishlist = isWishlist;
-            album.media_type = media_type || 'vinyl';
-            album.comments = comments || '';
-            album.location = location || '';
-            album.quantity = parseInt(quantity) || 1;
-            album.country = country || '';
+            const updateData = {
+                title: title,
+                artist: artist || album.artist,
+                discogs_id: discogs_id,
+                year: year,
+                label: label,
+                catalog_number: catalog_number,
+                format_type: format_type,
+                variant_color: variant_color,
+                tracklist: tracklist,
+                cover_image: cover_image,
+                in_wishlist: isWishlist,
+                media_type: media_type || 'vinyl',
+                comments: comments || '',
+                location: location || '',
+                quantity: parseInt(quantity) || 1,
+                country: country || '',
+                kind: 'Music'
+            };
             
             if (user_image && user_image.length > 0) {
                 album.user_image = user_image;
             }
 
-            await album.save();
+            await Item.updateOne(
+                { _id: album._id }, 
+                { $set: updateData }, 
+                { strict: false }
+            );
         } else {
             await Vinyl.create({
                 title, artist, year, label, catalog_number,
@@ -612,6 +619,7 @@ router.post('/import/discogs', requireAuth, async (req, res) => {
     try {
         let page = 1;
         let totalImported = 0;
+        let totalProcessed = 0;
         let hasMore = true;
         const standardTerms = ['Vinyl', 'LP', 'Album', 'Reissue', 'Repress', 'Stereo', 'Gatefold', '12"', '7"'];
         
@@ -633,10 +641,35 @@ router.post('/import/discogs', requireAuth, async (req, res) => {
             const albumsToInsert = [];
             
             for (const item of listItems) {
-
                 const info = item.basic_information;
                 const existing = await Item.findOne({ discogs_id: info.id, owner: userId });
-                if (existing) continue;
+
+                if (existing) {
+                    if (full === true && (!existing.tracklist || existing.tracklist.length === 0)) {
+                        try {
+                            console.log(`🔄 Updating tracklist for existing album ID ${info.id}`);
+                            const detailRes = await axios.get(`https://api.discogs.com/releases/${info.id}`, {
+                                headers: { 'Authorization': `Discogs token=${token}`, 'User-Agent': 'DVinylApp/2.0' }
+                            });
+                            const fetchedTracklist = detailRes.data.tracklist || [];
+                            
+                            if (fetchedTracklist.length > 0) {
+                                await Item.updateOne(
+                                    { _id: existing._id },
+                                    { $set: { tracklist: fetchedTracklist } },
+                                    { strict: false }
+                                );
+                            }
+                            await new Promise(resolve => setTimeout(resolve, 1000));
+                        } catch (e) { 
+                            console.error(`Tracklist update error ID ${info.id}`); 
+                        }
+                    }
+                    
+                    totalProcessed++;
+                    req.io.emit('import_progress', { current: totalProcessed, total: pagination.items }); 
+                    continue; 
+                }
 
                 let tracklist = [];
                 if (full === true) {
@@ -676,21 +709,20 @@ router.post('/import/discogs', requireAuth, async (req, res) => {
                     kind: 'Music'
                 });
                 
-                req.io.emit('import_progress', { current: totalImported + albumsToInsert.length });
+                totalProcessed++;
+                req.io.emit('import_progress', { current: totalProcessed, total: pagination.items });
             }
 
             if (albumsToInsert.length > 0) {
                 await Vinyl.insertMany(albumsToInsert);
                 totalImported += albumsToInsert.length;
-
-                req.io.emit('import_progress', { current: totalImported });
             }
 
             if (page >= pagination.pages) hasMore = false;
             else page++;
         }
 
-        req.io.emit('import_finished', { count: totalImported });
+        req.io.emit('import_finished', { count: totalImported }); 
 
     } catch (err) {
         req.io.emit('import_error', { message: err.message });
@@ -718,7 +750,7 @@ router.post('/api/album/:id/import-tracklist', requireAuth, requireAdmin, async 
             return res.status(404).json({ success: false, error: "No tracklist found on Discogs" });
         }
 
-        await Item.findByIdAndUpdate(albumId, { tracklist: tracklist });
+        await Item.findByIdAndUpdate(albumId, { tracklist: tracklist }, { strict: false });
         res.status(200).json({ success: true });
 
     } catch (err) {
