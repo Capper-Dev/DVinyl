@@ -14,20 +14,31 @@ Built in JavaScript.
 
 ## Overview
 
-DVinyl allows you to keep track of your physical music collection. It uses the Discogs API to retrieve important metadata and market valuations for your collection. This provides you with a convenient dashboard for your home server.
+DVinyl allows you to keep track of your physical music, books or even DVD collection. It uses the Discogs API, Google Books API & TMDB API to retrieve important metadata and, for music, market valuations for your collection. This provides you with a convenient and full customizable dashboard for your home server.
 
-### ✨ Key Features
+## ✨ Key Features
 
-* Manage Vinyls, CDs, and Cassettes in a unified library.
-* Instant import using Discogs Release IDs.
-* Scan your physical media to easily add it to your digital collection*
-* Get market estimates (Low/Median/High) for your entire collection.
-* Whishlist system.
-* Fully localized in English 🇬🇧 and French 🇫🇷.
-* Optimized for mobile management with native Dark & Light modes.
-* Authentication system for people who want to see your collection.
-* Import your Discogs collection if needed.
-* Easily locate your records in their physical location.
+### 📚 Universal Collection Management
+
+   * **Multi-Format Support:** Manage your Music (Vinyls, CDs, Cassettes), Books (Manga, Comics, Hardcover), and Movies (Blu-ray, 4K, VHS, LaserDisc) in one unified library.
+   * **Smart Import:** Add items instantly using Discogs Release IDs or import your entire existing Discogs collection in one click.
+   * **Physical Scanner:*** Scan your physical media to bridge the gap between your shelf and your digital database.
+   * **Advanced Organization:** Easily track the physical location of every item in your home.
+
+### 🎨 Fully Customizable Experience
+
+   * **Tailored Interface:** Customize your navigation bar with shortcuts that matter to you.
+   * **Personalized Analytics:** Build your dashboard with modular statistics widgets.
+   * **Category Themes:** Apply unique visual themes to differentiate your music, book, and movie libraries.
+   * **Native Design:** Optimized for mobile with seamless Dark & Light modes.
+
+### 💎 Advanced Tools & Privacy
+
+   * **Market Insights:** Get real-time value estimates (Low/Median/High) for your **music** collection.
+   * **Wishlist System:** Keep track of your future finds.
+   * **Secure Access:** Integrated authentication system for private viewing or sharing your collection with others.
+   * **Multilingual:** Fully localized in English 🇬🇧 and French 🇫🇷.
+
 
 *<small>(may only work in France)</small>
 

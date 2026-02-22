@@ -37,9 +37,49 @@ volumes:
   mongo_data:
 ```
 
+If you are stuggling with the deploy, you can try this config (thank you @mistic100) :
+
+```yaml
+services:
+  dvinyl-app:
+    image: ghcr.io/kyonew/dvinyl:latest
+    pull_policy: missing
+    container_name: dvinyl_app
+    restart: unless-stopped
+    depends_on:
+      - mongodb
+    environment:
+      - MONGODB_URL=mongodb://mongodb:27017/dvinyl
+      - VINYL_PORT=80
+      - PROD=false
+      - PASSJWT=<something>
+      - SESSION_SECRET=<something>
+      - DISCOGS_TOKEN=<something>
+    ports:
+      - '<external_port>:80'
+    volumes:
+      - /mnt/<uploads_dataset>:/app/public/uploads
+
+  mongodb:
+    image: mongo:latest
+    pull_policy: missing
+    container_name: dvinyl_db
+    restart: unless-stopped
+    volumes:
+      - /mnt/<mongo_dataset>:/data/db
+
+x-portals:
+  - host: 0.0.0.0
+    name: Web UI
+    path: /
+    port: <external_port>
+    scheme: http
+```
+
 ### 2. Prepare Environment
 
-Ensure you have a `.env` file in the root directory. You can use the provided `.env.example` as a starting point.
+If you don't use `environment` in your conf file, ensure you have a `.env` file in the root directory.  
+For both case, you can use the provided `.env.example` as a starting point.
 
 [Get your API keys here.](./api-keys.md)
 
@@ -63,7 +103,6 @@ docker compose up --build -d
 
 ## 🔄 Updating
 
-
 ### Updating (Pre-built Image)
 
 If you are using the GHCR image (Option 1):
@@ -81,6 +120,7 @@ If you cloned the repository (Option 2):
 git pull
 docker compose up --build -d
 ```
+
 
 ## 💾 Persistence
 
