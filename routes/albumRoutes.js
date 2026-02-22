@@ -40,8 +40,8 @@ router.get('/', requireAuth, async (req, res) => {
     try {
         const adminId = await getAdminId();
         const settings = res.locals.settings;
-        const allItems = await Item.find({ owner: adminId, in_wishlist: false });
-
+        const allItems = await Item.find({ owner: adminId, in_wishlist: false }).lean();
+        
         const countByFormat = (items, format) => {
             return items
                 .filter(i => {
