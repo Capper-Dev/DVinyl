@@ -89,7 +89,7 @@
         <% } else { %>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 <% results.forEach(item => { %>
-                    <a href="/confirm-vinyl/<%= item.id %>" class="card-theme rounded-xl overflow-hidden hover:border-primary-theme transition-all group flex flex-col hover:shadow-lg hover:-translate-y-1">
+                    <a href="/confirm-vinyl/<%= item.id %><%= locals.searchType ? '?type=' + locals.searchType : '' %>" class="card-theme rounded-xl overflow-hidden hover:border-primary-theme transition-all group flex flex-col hover:shadow-lg hover:-translate-y-1">
                         <div class="relative aspect-square bg-black/5 dark:bg-white/5">
                             <% if(item.cover_image && !item.cover_image.includes('spacer.gif')) { %>
                                 <img src="<%= item.cover_image %>" class="w-full h-full object-cover">

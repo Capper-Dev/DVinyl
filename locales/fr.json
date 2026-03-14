@@ -294,6 +294,7 @@
     "config_title": "Configurer l'album",
     "field_title": "Titre",
     "field_artist": "Artiste",
+    "field_media_type": "Support / Format",
     "field_format": "Format",
     "field_edition": "Couleur / Édition",
     "edition_placeholder": "Ex: Blue Splatter",

@@ -171,7 +171,7 @@ router.get('/confirm-book/:id', requireAuth, async (req, res) => {
 
         const adminId = await User.findOne({ isAdmin: true }).select('_id').lean();
         const locations = await Item.distinct('location', { owner: adminId, location: { $ne: "" } });
-        const genres = await Book.distinct('genre', { owner: adminId, genre: { $ne: "" } });
+        const genres = await Item.distinct('genre', { owner: adminId, genre: { $ne: "" }, kind: 'Book' });
 
         res.render('confirm-book', { book: bookData, user: res.locals.user, locations, genres });
     } catch (err) {
@@ -257,7 +257,7 @@ router.get('/book/edit/:id', requireAuth, async (req, res) => {
 
         const adminId = await getAdminId();
         const locations = await Item.distinct('location', { owner: adminId, location: { $ne: "" } });
-        const genres = await Book.distinct('genre', { owner: adminId, genre: { $ne: "" } });
+        const genres = await Item.distinct('genre', { owner: adminId, genre: { $ne: "" }, kind: 'Book' });
         
         res.render('edit-book', { book: book.toObject(), user: res.locals.user, locations, genres });
     } catch (err) {

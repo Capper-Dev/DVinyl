@@ -119,7 +119,7 @@ router.get('/confirm-dvd/:media_type/:tmdb_id', requireAuth, requireAdmin, async
 
         const adminId = await User.findOne({ isAdmin: true }).select('_id').lean();
         const locations = await Item.distinct('location', { owner: adminId ? adminId._id : null, location: { $ne: "" } });
-        const genres = await Dvd.distinct('genre', { owner: adminId ? adminId._id : null, genre: { $ne: "" } });
+        const genres = await Item.distinct('genre', { owner: adminId ? adminId._id : null, genre: { $ne: "" }, kind: 'Dvd' });
 
         res.render('confirm-dvd', { 
             dvd: dvdData, 
@@ -209,7 +209,7 @@ router.get('/dvd/edit/:id', requireAuth, requireAdmin, async (req, res) => {
 
         const adminId = await getAdminId();
         const locations = await Item.distinct('location', { owner: adminId, location: { $ne: "" } });
-        const genres = await Dvd.distinct('genre', { owner: adminId, genre: { $ne: "" } });
+        const genres = await Item.distinct('genre', { owner: adminId, genre: { $ne: "" }, kind: 'Dvd' });
         
         res.render('edit-dvd', { dvd: dvd.toObject(), user: res.locals.user, locations, genres });
     } catch (err) {

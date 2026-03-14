@@ -230,7 +230,11 @@ router.get('/album/edit/:id', requireAuth, async (req, res) => {
         console.log(albumFormatted)
         const adminId = await getAdminId();
         const locations = await Item.distinct('location', { owner: adminId, location: { $ne: "" } });
-        const genres = await Vinyl.distinct('genre', { owner: adminId, genre: { $ne: "" } });
+        const genres = await Item.distinct('genre', { 
+            owner: adminId, 
+            genre: { $ne: "" },
+            $or: [{ kind: 'Music' }, { kind: { $exists: false } }]
+        });
         
         res.render('edit-vinyl', { vinyl: albumFormatted, user: res.locals.user, locations, genres });
     } catch (err) {
@@ -315,6 +319,7 @@ router.post('/search-discogs', requireAuth, requireAdmin, async (req, res) => {
 // Confirmation with extended info
 router.get('/confirm-vinyl/:id', requireAuth, async (req, res) => {
     const discogsId = req.params.id;
+    const searchTypeHint = req.query.type; // 'vinyl', 'cd', or 'cassette'
     const token = process.env.DISCOGS_TOKEN;
 
     try {
@@ -329,13 +334,21 @@ router.get('/confirm-vinyl/:id', requireAuth, async (req, res) => {
 
         let formatType = [];
         let variantColor = [];
+        let finalMediaType = 'vinyl';
 
         if (data.formats && data.formats.length > 0) {
-            const f = data.formats[0];
-            formatType.push(f.name);
+            // Find the best matching format if we have a search hint
+            let bestFormat = data.formats[0];
+            if (searchTypeHint) {
+                const hint = searchTypeHint.toLowerCase();
+                const matched = data.formats.find(f => f.name.toLowerCase().includes(hint));
+                if (matched) bestFormat = matched;
+            }
 
-            if (f.text) {
-                const parts = f.text.split(',').map(p => p.trim());
+            formatType.push(bestFormat.name);
+
+            if (bestFormat.text) {
+                const parts = bestFormat.text.split(',').map(p => p.trim());
                 parts.forEach(part => {
                     if (standardTerms.includes(part)) {
                         if (!formatType.includes(part)) formatType.push(part);
@@ -345,8 +358,8 @@ router.get('/confirm-vinyl/:id', requireAuth, async (req, res) => {
                 });
             }
 
-            if (f.descriptions) {
-                f.descriptions.forEach(desc => {
+            if (bestFormat.descriptions) {
+                bestFormat.descriptions.forEach(desc => {
                     if (standardTerms.includes(desc)) {
                         if (!formatType.includes(desc)) formatType.push(desc);
                     } else {
@@ -356,11 +369,25 @@ router.get('/confirm-vinyl/:id', requireAuth, async (req, res) => {
                     }
                 });
             }
+
+            // Determine finalMediaType
+            const rawFormat = bestFormat.name.toLowerCase();
+            if (rawFormat.includes('cassette')) { finalMediaType = 'cassette'; }
+            else if (rawFormat.includes('cd')) { finalMediaType = 'cd'; }
+            else { finalMediaType = 'vinyl'; }
         }
+
+        // Overwrite finalMediaType with searchTypeHint if it exists and logic above didn't catch it
+        // (Ensures consistency with what the user selected in search)
+        if (searchTypeHint) finalMediaType = searchTypeHint;
         
         const adminId = await User.findOne({ isAdmin: true }).select('_id').lean();
         const locations = await Item.distinct('location', { owner: adminId, location: { $ne: "" } });
-        const genres = await Vinyl.distinct('genre', { owner: adminId, genre: { $ne: "" } });
+        const genres = await Item.distinct('genre', { 
+            owner: adminId, 
+            genre: { $ne: "" },
+            $or: [{ kind: 'Music' }, { kind: { $exists: false } }]
+        });
 
         const vinyl = {
             title: data.title,
@@ -374,6 +401,7 @@ router.get('/confirm-vinyl/:id', requireAuth, async (req, res) => {
             cover_image: data.images && data.images.length > 0 ? data.images[0].resource_url : '',
             discogs_id: data.id, 
             country: data.country || '',
+            media_type: finalMediaType // Pass it to the view
         };
 
         res.render('confirm-vinyl', { vinyl, user: res.locals.user, locations, genres });

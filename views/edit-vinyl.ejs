@@ -173,16 +173,38 @@
                         </div>
                     </div>
                     <div class="mt-6">
-                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60"><%= t('confirm_vinyl.field_comments') %></label>
-                            <textarea name="comments" rows="2" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg focus:ring-primary-theme block w-full p-3 outline-none"><%= vinyl.comments %></textarea>
-                        </div>
+                        <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60"><%= t('confirm_vinyl.field_comments') %></label>
+                        <textarea name="comments" rows="2" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg focus:ring-primary-theme block w-full p-3 outline-none"><%= vinyl.comments %></textarea>
                     </div>
 
-                    <input type="hidden" name="year" value="<%= vinyl.year %>">
-                    <input type="hidden" name="label" value="<%= vinyl.label %>">
-                    <input type="hidden" name="catalog_number" value="<%= vinyl.catalog_number %>">
-                    <input type="hidden" name="tracklist_json" value="<%= JSON.stringify(vinyl.tracklist) %>">
-                    <input type="hidden" name="media_type" value="<%= vinyl.media_type %>">
+                    <div class="mt-8 pt-6 border-t border-black/10 dark:border-white/10">
+                        <label class="block mb-4 text-sm font-bold uppercase tracking-widest opacity-60"><%= t('confirm_vinyl.field_media_type') %></label>
+                        <div class="grid grid-cols-3 gap-3">
+                            <label class="cursor-pointer">
+                                <input type="radio" name="media_type" value="vinyl" class="peer sr-only" <%= (vinyl.media_type === 'vinyl') ? 'checked' : '' %>>
+                                <div class="p-3 rounded-xl border border-transparent bg-black/5 dark:bg-white/5 text-center transition-all peer-checked:bg-green-600 peer-checked:text-white hover:bg-black/10 dark:hover:bg-white/10 opacity-70 peer-checked:opacity-100">
+                                    <i class="fa-solid fa-record-vinyl block mb-1"></i>
+                                    <span class="text-xs font-bold"><%= t('media.vinyl') %></span>
+                                </div>
+                            </label>
+                            
+                            <label class="cursor-pointer">
+                                <input type="radio" name="media_type" value="cd" class="peer sr-only" <%= (vinyl.media_type === 'cd') ? 'checked' : '' %>>
+                                <div class="p-3 rounded-xl border border-transparent bg-black/5 dark:bg-white/5 text-center transition-all peer-checked:bg-blue-600 peer-checked:text-white hover:bg-black/10 dark:hover:bg-white/10 opacity-70 peer-checked:opacity-100">
+                                    <i class="fa-solid fa-compact-disc block mb-1"></i>
+                                    <span class="text-xs font-bold"><%= t('media.cd') %></span>
+                                </div>
+                            </label>
+
+                            <label class="cursor-pointer">
+                                <input type="radio" name="media_type" value="cassette" class="peer sr-only" <%= (vinyl.media_type === 'cassette') ? 'checked' : '' %>>
+                                <div class="p-3 rounded-xl border border-transparent bg-black/5 dark:bg-white/5 text-center transition-all peer-checked:bg-orange-600 peer-checked:text-white hover:bg-black/10 dark:hover:bg-white/10 opacity-70 peer-checked:opacity-100">
+                                    <i class="fa-solid fa-tape block mb-1"></i>
+                                    <span class="text-xs font-bold"><%= t('media.cassette') %></span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
                     <input type="hidden" name="in_wishlist" value="<%= vinyl.in_wishlist %>">
                     <input type="hidden" name="mongo_id" value="<%= vinyl._id %>">
                     
