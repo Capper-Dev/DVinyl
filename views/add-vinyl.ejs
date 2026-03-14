@@ -107,6 +107,14 @@
                                 <%= item.country ? item.country + ' • ' : '' %><%= item.year %>
                             </p>
                             
+                            <% if(item.is_advanced_cd) { %>
+                                <div class="flex items-center gap-1 mb-2">
+                                    <span class="text-[10px] font-bold text-white px-2 py-0.5 rounded-full shadow-md truncate max-w-full <%= item.is_advanced_cd === 'sacd' ? 'bg-red-600/90' : 'bg-blue-600/90' %>">
+                                        <%= item.is_advanced_cd === 'sacd' ? t('media.sacd') : t('media.cdr') %>
+                                    </span>
+                                </div>
+                            <% } %>
+
                             <% if(item.variant_info) { %>
                                 <div class="flex items-center gap-1 mb-3">
                                     <span class="w-2 h-2 rounded-full bg-primary-theme inline-block flex-shrink-0"></span>

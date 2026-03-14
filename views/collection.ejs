@@ -119,6 +119,18 @@
 
                 const formatKey = (isDvd) ? album.format : (album.media_type || album.format);
 
+                let isAdvancedCD = false;
+                let advancedCDType = '';
+                if (settings && settings.modules && settings.modules.advancedCD && formatKey === 'cd' && album.format_type) {
+                    if (album.format_type.toLowerCase().includes('sacd')) {
+                        isAdvancedCD = true;
+                        advancedCDType = 'sacd';
+                    } else if (album.format_type.toLowerCase().includes('cdr')) {
+                        isAdvancedCD = true;
+                        advancedCDType = 'cdr';
+                    }
+                }
+
                 const badgeMap = {
                         'vinyl': 'bg-green-600/90', 'cd': 'bg-blue-600/90', 'cassette': 'bg-orange-600/90',
                         'manga': 'bg-pink-600/90', 'comic': 'bg-indigo-600/90', 'hardcover': 'bg-purple-600/90',
@@ -127,7 +139,8 @@
                         'vhs': 'bg-amber-600/90', 'laserdisc': 'bg-purple-600/90'
                     };
 
-                let badgeClass = badgeMap[formatKey] || 'bg-gray-600/90';
+                let badgeClass = isAdvancedCD ? (advancedCDType === 'sacd' ? 'bg-red-600/90' : 'bg-blue-600/90') : (badgeMap[formatKey] || 'bg-gray-600/90');
+                let displayFormat = isAdvancedCD ? t('media.' + advancedCDType) : t('media.' + formatKey);
             %>
             
             <div class="album-card group relative card-theme rounded-xl overflow-hidden hover:border-primary-theme transition-all duration-300 hover:shadow-lg hover:-translate-y-1" 
@@ -146,7 +159,7 @@
                             loading="lazy">
                         
                         <span class="absolute bottom-2 left-2 z-20 text-white text-[10px] font-bold px-2 py-1 rounded backdrop-blur-md border border-white/10 shadow-sm <%= badgeClass %>">
-                            <%= t('media.' + formatKey) %>
+                            <%= displayFormat %>
                         </span>
                     </div>
 

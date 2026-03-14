@@ -207,7 +207,7 @@ router.post('/personnalisation/save', requireAuth, requireAdmin, async (req, res
 
 router.post('/modules/save', requireAuth, requireAdmin, async (req, res) => {
     try {
-        const { musicActive, booksActive, dvdActive } = req.body;
+        const { musicActive, booksActive, dvdActive, advancedCDActive } = req.body;
 
         if (!musicActive && !booksActive && !dvdActive) {
             return res.redirect('/admin?msg=error_no_module');
@@ -216,7 +216,8 @@ router.post('/modules/save', requireAuth, requireAdmin, async (req, res) => {
         const update = {
             'modules.music': musicActive === 'on',
             'modules.books': booksActive === 'on',
-            'modules.dvd':   dvdActive === 'on'
+            'modules.dvd':   dvdActive === 'on',
+            'modules.advancedCD': advancedCDActive === 'on'
         };
 
         await Settings.findOneAndUpdate({}, { $set: update }, { upsert: true });

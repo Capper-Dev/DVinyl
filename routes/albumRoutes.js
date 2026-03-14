@@ -245,15 +245,46 @@ router.post('/search-discogs', requireAuth, requireAdmin, async (req, res) => {
   const token = process.env.DISCOGS_TOKEN;
 
   try {
-    const url = `https://api.discogs.com/database/search?q=${query}&type=release&format=${type}&token=${token}`;
-    const response = await axios.get(url, { headers: { 'User-Agent': 'DVinylApp/1.0' } });
+    const Settings = require('../models/Settings');
+    const settings = await Settings.findOne({});
+    const enableAdvancedCD = settings && settings.modules && settings.modules.advancedCD;
+
+    let searchUrls = [];
+    if (type === 'cd' && enableAdvancedCD) {
+        searchUrls.push(`https://api.discogs.com/database/search?q=${encodeURIComponent(query)}&type=release&format=CD&token=${token}`);
+        searchUrls.push(`https://api.discogs.com/database/search?q=${encodeURIComponent(query)}&type=release&format=SACD&token=${token}`);
+        searchUrls.push(`https://api.discogs.com/database/search?q=${encodeURIComponent(query)}&type=release&format=CDr&token=${token}`);
+    } else {
+        searchUrls.push(`https://api.discogs.com/database/search?q=${encodeURIComponent(query)}&type=release&format=${type}&token=${token}`);
+    }
+
+    const responses = await Promise.all(searchUrls.map(url => axios.get(url, { headers: { 'User-Agent': 'DVinylApp/1.0' } })));
+    
+    let allResults = [];
+    responses.forEach((response, index) => {
+        let results = response.data.results || [];
+        if (type === 'cd' && enableAdvancedCD) {
+            if (index === 1) results = results.map(item => ({...item, is_advanced_cd: 'sacd'}));
+            else if (index === 2) results = results.map(item => ({...item, is_advanced_cd: 'cdr'}));
+        }
+        allResults = allResults.concat(results);
+    });
 
     const technicalBlacklist = [
         'Vinyl', 'LP', 'Album', 'Reissue', 'Repress', 'Stereo', 'Gatefold', 
         '12"', '7"', 'Limited Edition', 'Compilation', 'Deluxe Edition', 'Numbered', 'Promo'
     ];
 
-    const processedResults = response.data.results.slice(0, 100).map(item => {
+    const uniqueIds = new Set();
+    const deduplicatedResults = [];
+    for (const item of allResults) {
+        if (!uniqueIds.has(item.id)) {
+            uniqueIds.add(item.id);
+            deduplicatedResults.push(item);
+        }
+    }
+
+    const processedResults = deduplicatedResults.slice(0, 100).map(item => {
         let variant_info = '';
         
         if (item.formats && item.formats[0] && item.formats[0].text) {

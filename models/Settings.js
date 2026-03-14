@@ -9,7 +9,8 @@ const settingsSchema = new mongoose.Schema({
     modules: {
         music:   { type: Boolean, default: true },
         books:   { type: Boolean, default: false },
-        dvd:     { type: Boolean, default: false }
+        dvd:     { type: Boolean, default: false },
+        advancedCD: { type: Boolean, default: false }
     },
     theme: {
         home:    { type: Object, default: themeSchema },

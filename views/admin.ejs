@@ -31,7 +31,8 @@
                     <% const mods = [
                         {key: 'music', label: t('perso.modules.music'), icon: 'fa-music', needsKey: false},
                         {key: 'books', label: t('perso.modules.books'), icon: 'fa-book', needsKey: true},
-                        {key: 'dvd', label: t('media.dvds'), icon: 'fa-film', needsKey: true}
+                        {key: 'dvd', label: t('media.dvds'), icon: 'fa-film', needsKey: true},
+                        {key: 'advancedCD', label: t('admin.advanced_cd'), icon: 'fa-compact-disc', needsKey: false}
                     ] %>
                     <% mods.forEach((mod) => { %>
                         <div class="flex flex-col gap-2">
@@ -43,7 +44,7 @@
                                     <span class="text-sm font-bold opacity-70 group-hover:opacity-100 transition-opacity"><%= mod.label %></span>
                                 </div>
                                 <div class="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" name="<%= mod.key %>Active" <%= settings.modules[mod.key] ? 'checked' : '' %> class="sr-only peer">
+                                    <input type="checkbox" name="<%= mod.key %>Active" <%= settings.modules && settings.modules[mod.key] ? 'checked' : '' %> class="sr-only peer">
                                     <div class="w-11 h-6 bg-black/10 dark:bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-theme"></div>
                                 </div>
                             </label>
