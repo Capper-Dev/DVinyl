@@ -163,6 +163,16 @@
                             </datalist>
                         </div>
                         <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider opacity-60 mb-2">
+                                <i class="fa-solid fa-compact-disc mr-1"></i> Genre / Style
+                            </label>
+                            <input type="text" name="genre" list="genreList" value="<%= vinyl.genre || '' %>" placeholder="Style..." class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary-theme outline-none">
+                            <datalist id="genreList">
+                                <% genres.forEach(gen => { %> <option value="<%= gen %>"> <% }) %>
+                            </datalist>
+                        </div>
+                    </div>
+                    <div class="mt-6">
                             <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60"><%= t('confirm_vinyl.field_comments') %></label>
                             <textarea name="comments" rows="2" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg focus:ring-primary-theme block w-full p-3 outline-none"><%= vinyl.comments %></textarea>
                         </div>

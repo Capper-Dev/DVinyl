@@ -224,19 +224,37 @@
                         <textarea name="comments" rows="3" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg focus:ring-primary-theme focus:border-primary-theme block w-full p-3 placeholder-opacity-50 transition-colors outline-none" placeholder="<%= t('confirm_vinyl.comments_placeholder') %>"></textarea>
                     </div>
 
-                    <div class="mb-6">
-                        <label class="block text-xs font-bold uppercase tracking-wider opacity-60 mb-2">
-                            <i class="fa-solid fa-box-archive mr-1"></i> <%= t('common.location') %>
-                        </label>
-                        <input type="text" name="location" list="locationList" 
-                            placeholder="<%= t('placeholders.location') %>"
-                            class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary-theme outline-none transition-all">
-                        
-                        <datalist id="locationList">
-                            <% locations.forEach(loc => { %>
-                                <option value="<%= loc %>">
-                            <% }) %>
-                        </datalist>
+                    <div class="mb-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider opacity-60 mb-2">
+                                <i class="fa-solid fa-box-archive mr-1"></i> <%= t('common.location') %>
+                            </label>
+                            <input type="text" name="location" list="locationList" 
+                                placeholder="<%= t('placeholders.location') %>"
+                                value="<%= typeof book !== 'undefined' ? (book.location || '') : '' %>"
+                                class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary-theme outline-none transition-all">
+                            
+                            <datalist id="locationList">
+                                <% locations.forEach(loc => { %>
+                                    <option value="<%= loc %>">
+                                <% }) %>
+                            </datalist>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider opacity-60 mb-2">
+                                <i class="fa-solid fa-book-open mr-1"></i> Genre / Style
+                            </label>
+                            <input type="text" name="genre" list="genreList" 
+                                placeholder="Style..."
+                                value="<%= typeof book !== 'undefined' ? (book.genre || '') : '' %>"
+                                class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary-theme outline-none transition-all">
+                            
+                            <datalist id="genreList">
+                                <% genres.forEach(gen => { %>
+                                    <option value="<%= gen %>">
+                                <% }) %>
+                            </datalist>
+                        </div>
                     </div>
 
                     <div class="pt-6 grid grid-cols-1 md:grid-cols-2 gap-4">

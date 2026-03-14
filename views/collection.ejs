@@ -51,11 +51,20 @@
             </div>
 
             <div class="w-full md:w-48">
-                <input type="text" id="locationInput" list="locations-list" placeholder="<%= t('common.location') %>" class="block w-full p-2.5 text-sm card-theme rounded-lg border focus:ring-1 focus:ring-primary-theme outline-none placeholder-opacity-50">
+                <input type="text" id="locationInput" list="locations-list" placeholder="<%= t('common.location') %>" value="<%= locals.queryLocation || '' %>" class="block w-full p-2.5 text-sm card-theme rounded-lg border focus:ring-1 focus:ring-primary-theme outline-none placeholder-opacity-50">
                 <datalist id="locations-list">
                     <% locations.forEach(loc => { %> <option value="<%= loc %>"></option> <% }) %>
                 </datalist>
             </div>
+
+            <% if (currentType !== 'all') { %>
+            <div class="w-full md:w-48">
+                <input type="text" id="genreInput" list="genres-list" placeholder="Genre / Style" value="<%= locals.queryGenre || '' %>" class="block w-full p-2.5 text-sm card-theme rounded-lg border focus:ring-1 focus:ring-primary-theme outline-none placeholder-opacity-50">
+                <datalist id="genres-list">
+                    <% genres.forEach(gen => { %> <option value="<%= gen %>"></option> <% }) %>
+                </datalist>
+            </div>
+            <% } %>
 
             <% if (user.isAdmin) { %>
                 <%
@@ -291,6 +300,13 @@
     if (locationInput) {
         locationInput.addEventListener('change', (e) => {
             updateURLParams('location', e.target.value);
+        });
+    }
+
+    const genreInput = document.getElementById('genreInput');
+    if (genreInput) {
+        genreInput.addEventListener('change', (e) => {
+            updateURLParams('genre', e.target.value);
         });
     }
 

@@ -29,6 +29,7 @@ const formatForView = (item) => {
         format_type: obj.format_type || '',
         variant_color: obj.variant_color || '',
         location: obj.location || '',
+        genre: obj.genre || '',
         quantity: obj.quantity || 1,
         country: obj.country || ''
     };
@@ -108,7 +109,7 @@ router.get('/', requireAuth, async (req, res) => {
 router.get('/collection', requireAuth, async (req, res) => {
     try {
         const adminId = await getAdminId();
-        const { search, type, format, location } = req.query;
+        const { search, type, format, location, genre } = req.query;
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 25;
 
@@ -147,6 +148,10 @@ router.get('/collection', requireAuth, async (req, res) => {
 
         if (location) {
             query.location = new RegExp(location, 'i');
+        }
+
+        if (genre) {
+            query.genre = new RegExp(genre, 'i');
         }
 
         
@@ -192,8 +197,12 @@ router.get('/collection', requireAuth, async (req, res) => {
             currentFormat: format || 'all',
             querySearch: search || '',
             queryLocation: location || '',
+            queryGenre: genre || '',
             activeFilters: filterMap[type] || [],
-            locations: await Item.distinct('location', { owner: adminId })
+            locations: await Item.distinct('location', { owner: adminId }),
+            genres: (type && type !== 'all') ? await Item.distinct('genre', Object.assign({ owner: adminId, genre: { $nin: ['', null] } }, 
+                type === 'music' ? { $or: [{ kind: 'Music' }, { kind: { $exists: false } }] } : { kind: { music: 'Music', books: 'Book', dvd: 'Dvd' }[type] }
+            )) : []
         });
 
     } catch (err) {
@@ -221,8 +230,9 @@ router.get('/album/edit/:id', requireAuth, async (req, res) => {
         console.log(albumFormatted)
         const adminId = await getAdminId();
         const locations = await Item.distinct('location', { owner: adminId, location: { $ne: "" } });
+        const genres = await Vinyl.distinct('genre', { owner: adminId, genre: { $ne: "" } });
         
-        res.render('edit-vinyl', { vinyl: albumFormatted, user: res.locals.user, locations });
+        res.render('edit-vinyl', { vinyl: albumFormatted, user: res.locals.user, locations, genres });
     } catch (err) {
         console.error(err);
         res.redirect('/collection?type=music');
@@ -319,6 +329,7 @@ router.get('/confirm-vinyl/:id', requireAuth, async (req, res) => {
         
         const adminId = await User.findOne({ isAdmin: true }).select('_id').lean();
         const locations = await Item.distinct('location', { owner: adminId, location: { $ne: "" } });
+        const genres = await Vinyl.distinct('genre', { owner: adminId, genre: { $ne: "" } });
 
         const vinyl = {
             title: data.title,
@@ -334,7 +345,7 @@ router.get('/confirm-vinyl/:id', requireAuth, async (req, res) => {
             country: data.country || '',
         };
 
-        res.render('confirm-vinyl', { vinyl, user: res.locals.user, locations });
+        res.render('confirm-vinyl', { vinyl, user: res.locals.user, locations, genres });
     } catch (err) {
         console.log(err);
         res.status(500).send(req.t('errors.generic_server_error'));
@@ -348,7 +359,7 @@ router.post('/save-vinyl', requireAuth, requireAdmin, async (req, res) => {
         const { 
             mongo_id, title, artist, year, label, catalog_number, country,
             format_type, variant_color, cover_image, user_image, discogs_id, tracklist_json,
-            media_type, in_wishlist, comments, location, quantity
+            media_type, in_wishlist, comments, location, genre, quantity
         } = req.body;
         
         const tracklist = tracklist_json ? JSON.parse(tracklist_json) : [];
@@ -382,6 +393,7 @@ router.post('/save-vinyl', requireAuth, requireAdmin, async (req, res) => {
                 media_type: media_type || 'vinyl',
                 comments: comments || '',
                 location: location || '',
+                genre: genre || '',
                 quantity: parseInt(quantity) || 1,
                 country: country || '',
                 kind: 'Music'
@@ -409,6 +421,7 @@ router.post('/save-vinyl', requireAuth, requireAdmin, async (req, res) => {
                 owner: adminId,
                 comments: comments || '',
                 location: location || '',
+                genre: genre || '',
                 quantity: parseInt(quantity) || 1,
                 country: country || '',
             });
@@ -687,6 +700,7 @@ router.post('/import/discogs', requireAuth, async (req, res) => {
                     owner: userId, 
                     added_at: new Date(),
                     location: '',
+                    genre: '',
                     in_wishlist: isWishlist,
                     kind: 'Music'
                 });

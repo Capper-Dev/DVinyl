@@ -119,12 +119,14 @@ router.get('/confirm-dvd/:media_type/:tmdb_id', requireAuth, requireAdmin, async
 
         const adminId = await User.findOne({ isAdmin: true }).select('_id').lean();
         const locations = await Item.distinct('location', { owner: adminId ? adminId._id : null, location: { $ne: "" } });
+        const genres = await Dvd.distinct('genre', { owner: adminId ? adminId._id : null, genre: { $ne: "" } });
 
         res.render('confirm-dvd', { 
             dvd: dvdData, 
             scanned_barcode: req.query.barcode || '',
             user: res.locals.user, 
-            locations 
+            locations,
+            genres
         });
     } catch (err) {
         console.error("[ERR] DVD retrieval:", err);
@@ -137,7 +139,7 @@ router.post('/save-dvd', requireAuth, requireAdmin, async (req, res) => {
         const { 
             mongo_id, title, director, studio, year, duration, 
             tmdb_id, media_type, format, zone, barcode, is_boxset,
-            cover_image, in_wishlist, comments, location, watchStatus, user_rating, quantity
+            cover_image, in_wishlist, comments, location, genre, watchStatus, user_rating, quantity
         } = req.body;
         
         const adminId = req.user._id;
@@ -162,6 +164,7 @@ router.post('/save-dvd', requireAuth, requireAdmin, async (req, res) => {
             dvd.in_wishlist = isWishlist;
             dvd.comments = comments || '';
             dvd.location = location || '';
+            dvd.genre = genre || '';
             dvd.watchStatus = watchStatus || 'to_watch';
             dvd.user_rating = user_rating || 0;
             dvd.quantity = quantity || 1;
@@ -178,6 +181,7 @@ router.post('/save-dvd', requireAuth, requireAdmin, async (req, res) => {
                 owner: adminId,
                 comments: comments || '',
                 location: location || '',
+                genre: genre || '',
                 watchStatus: watchStatus || 'to_watch',
                 user_rating: user_rating || 0,
                 quantity: quantity || 1,
@@ -205,8 +209,9 @@ router.get('/dvd/edit/:id', requireAuth, requireAdmin, async (req, res) => {
 
         const adminId = await getAdminId();
         const locations = await Item.distinct('location', { owner: adminId, location: { $ne: "" } });
+        const genres = await Dvd.distinct('genre', { owner: adminId, genre: { $ne: "" } });
         
-        res.render('edit-dvd', { dvd: dvd.toObject(), user: res.locals.user, locations });
+        res.render('edit-dvd', { dvd: dvd.toObject(), user: res.locals.user, locations, genres });
     } catch (err) {
         console.error(err);
         res.redirect('/collection?type=dvd');

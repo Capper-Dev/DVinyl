@@ -171,8 +171,9 @@ router.get('/confirm-book/:id', requireAuth, async (req, res) => {
 
         const adminId = await User.findOne({ isAdmin: true }).select('_id').lean();
         const locations = await Item.distinct('location', { owner: adminId, location: { $ne: "" } });
+        const genres = await Book.distinct('genre', { owner: adminId, genre: { $ne: "" } });
 
-        res.render('confirm-book', { book: bookData, user: res.locals.user, locations });
+        res.render('confirm-book', { book: bookData, user: res.locals.user, locations, genres });
     } catch (err) {
         console.error("[ERR] Hardcover API Error:", err?.response?.data || err.message);
         res.status(500).send(req.t('errors.generic_server_error'));
@@ -184,7 +185,7 @@ router.post('/save-book', requireAuth, requireAdmin, async (req, res) => {
         const { 
             mongo_id, title, author, publisher, year, isbn, pages, language, 
             format, series, volume, cover_image, hardcover_id, hardcover_slug,
-            in_wishlist, comments, location, readingStatus, rating, quantity
+            in_wishlist, comments, location, genre, readingStatus, rating, quantity
         } = req.body;
         
         const adminId = req.user._id;
@@ -210,6 +211,7 @@ router.post('/save-book', requireAuth, requireAdmin, async (req, res) => {
             book.in_wishlist = isWishlist;
             book.comments = comments || '';
             book.location = location || '';
+            book.genre = genre || '';
             book.readingStatus = readingStatus || 'to_read';
             book.rating = rating || 0;
             book.quantity = quantity || 1;
@@ -225,6 +227,7 @@ router.post('/save-book', requireAuth, requireAdmin, async (req, res) => {
                 owner: adminId,
                 comments: comments || '',
                 location: location || '',
+                genre: genre || '',
                 readingStatus: readingStatus || 'to_read',
                 rating: rating || 0,
                 quantity: quantity || 1,
@@ -254,8 +257,9 @@ router.get('/book/edit/:id', requireAuth, async (req, res) => {
 
         const adminId = await getAdminId();
         const locations = await Item.distinct('location', { owner: adminId, location: { $ne: "" } });
+        const genres = await Book.distinct('genre', { owner: adminId, genre: { $ne: "" } });
         
-        res.render('edit-book', { book: book.toObject(), user: res.locals.user, locations });
+        res.render('edit-book', { book: book.toObject(), user: res.locals.user, locations, genres });
     } catch (err) {
         console.error(err);
         res.redirect('/collection?type=books');
@@ -427,6 +431,7 @@ router.post('/import/goodreads', requireAuth, requireAdmin, async (req, res) => 
                     in_wishlist: false,
                     comments:    item['user_review']?.trim() || '',
                     added_at:    dateAdded,
+                    genre:       '',
                 });
 
                 totalImported++;

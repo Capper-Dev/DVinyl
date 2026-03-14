@@ -33,7 +33,8 @@ const dvdSchema = new mongoose.Schema({
       min: 0,
       max: 5,
       default: 0
-  }
+  },
+  genre: { type: String, default: '' }
 });
 
 const Dvd = Item.discriminator('Dvd', dvdSchema);
