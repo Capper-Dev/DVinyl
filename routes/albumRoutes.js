@@ -8,6 +8,7 @@ const Vinyl = require('../models/Vinyl');
 
 const { requireAuth, requireAdmin } = require('../middleware/authMiddleware'); // Protect routes
 const User = require('../models/User');
+const { STANDARD_FORMAT_TERMS } = require('../config/constants');
 
 async function getAdminId() {
     const admin = await User.findOne({ isAdmin: true }).select('_id');
@@ -109,14 +110,13 @@ router.get('/', requireAuth, async (req, res) => {
 router.get('/collection', requireAuth, async (req, res) => {
     try {
         const adminId = await getAdminId();
-        const { search, type, format, location, genre } = req.query;
+        const { search, type, format, location, genre, formatTerms} = req.query;
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 25;
 
         let query = { owner: adminId, in_wishlist: false };
         let conditions = []; 
 
-        
         if (search) {
             const regex = new RegExp(search, 'i');
             conditions.push({ 
@@ -152,6 +152,12 @@ router.get('/collection', requireAuth, async (req, res) => {
 
         if (genre) {
             query.genre = new RegExp(genre, 'i');
+        }
+
+        if (formatTerms && formatTerms.length > 0) {
+            conditions = [...conditions, ...formatTerms.split(',').map(term => ({
+                format_type: { $regex: term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), $options: 'i' }
+            }))];
         }
 
         
@@ -198,11 +204,13 @@ router.get('/collection', requireAuth, async (req, res) => {
             querySearch: search || '',
             queryLocation: location || '',
             queryGenre: genre || '',
+            currentFormatTerms: formatTerms || '',
             activeFilters: filterMap[type] || [],
             locations: await Item.distinct('location', { owner: adminId }),
             genres: (type && type !== 'all') ? await Item.distinct('genre', Object.assign({ owner: adminId, genre: { $nin: ['', null] } }, 
                 type === 'music' ? { $or: [{ kind: 'Music' }, { kind: { $exists: false } }] } : { kind: { music: 'Music', books: 'Book', dvd: 'Dvd' }[type] }
-            )) : []
+            )) : [],
+            standardFormatTerms: STANDARD_FORMAT_TERMS,
         });
 
     } catch (err) {
@@ -325,12 +333,7 @@ router.get('/confirm-vinyl/:id', requireAuth, async (req, res) => {
     try {
         const url = `https://api.discogs.com/releases/${discogsId}?token=${token}`;
         const response = await axios.get(url, { headers: { 'User-Agent': 'DVinylApp/1.0' } });
-        const data = response.data;
-
-        const standardTerms = [
-            'Vinyl', 'LP', 'Album', 'Reissue', 'Repress', 'Stereo', 'Gatefold', 
-            '12"', '7"', 'Limited Edition', 'Compilation', 'Deluxe Edition', 'Numbered', 'Promo'
-        ];        
+        const data = response.data;       
 
         let formatType = [];
         let variantColor = [];
@@ -350,7 +353,7 @@ router.get('/confirm-vinyl/:id', requireAuth, async (req, res) => {
             if (bestFormat.text) {
                 const parts = bestFormat.text.split(',').map(p => p.trim());
                 parts.forEach(part => {
-                    if (standardTerms.includes(part)) {
+                    if (STANDARD_FORMAT_TERMS.includes(part)) {
                         if (!formatType.includes(part)) formatType.push(part);
                     } else {
                         if (!variantColor.includes(part)) variantColor.push(part);
@@ -360,7 +363,7 @@ router.get('/confirm-vinyl/:id', requireAuth, async (req, res) => {
 
             if (bestFormat.descriptions) {
                 bestFormat.descriptions.forEach(desc => {
-                    if (standardTerms.includes(desc)) {
+                    if (STANDARD_FORMAT_TERMS.includes(desc)) {
                         if (!formatType.includes(desc)) formatType.push(desc);
                     } else {
                         if (!variantColor.includes(desc)) {
@@ -675,7 +678,6 @@ router.post('/import/discogs', requireAuth, async (req, res) => {
         let totalImported = 0;
         let totalProcessed = 0;
         let hasMore = true;
-        const standardTerms = ['Vinyl', 'LP', 'Album', 'Reissue', 'Repress', 'Stereo', 'Gatefold', '12"', '7"'];
         
         const isWishlist = (type === 'wishlist');
         const apiUrl = isWishlist ? `https://api.discogs.com/users/${username}/wants` : `https://api.discogs.com/users/${username}/collection/folders/0/releases`;
@@ -739,7 +741,7 @@ router.post('/import/discogs', requireAuth, async (req, res) => {
                 let formatType = [info.formats?.[0]?.name].filter(Boolean);
                 let variantColor = [];
                 if (info.formats?.[0]?.descriptions) {
-                    info.formats[0].descriptions.forEach(d => standardTerms.includes(d) ? formatType.push(d) : variantColor.push(d));
+                    info.formats[0].descriptions.forEach(d => STANDARD_FORMAT_TERMS.includes(d) ? formatType.push(d) : variantColor.push(d));
                 }
                 const rawFormat = info.formats?.[0]?.name.toLowerCase() || 'vinyl';
                 let mediaType = rawFormat.includes('cd') ? 'cd' : (rawFormat.includes('cassette') ? 'cassette' : 'vinyl');
