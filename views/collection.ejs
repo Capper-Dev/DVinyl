@@ -59,13 +59,13 @@
 
             <% if (currentType === 'all') { %>
                 <% mainTypes.forEach(type => { %>
-                    <button onclick="currentType = '<%= type.id %>'; reloadPage();" 
+                    <button onclick="currentType = '<%= type.id %>'; currentFormat = 'all'; reloadPage();" 
                         class="px-4 py-2 rounded-full text-xs font-bold transition-all active:scale-95 <%= currentType === type.id ? 'bg-primary-theme text-white shadow-lg' : 'bg-black/5 dark:bg-white/10 opacity-60' %>">
                         <%= type.label %>
                     </button>
                 <% }) %>
             <% } else { %>
-                <button onclick="currentType = 'all'; reloadPage();" 
+                <button onclick="currentType = 'all'; currentFormat = 'all'; reloadPage();" 
                     class="px-4 py-2 rounded-full text-xs font-bold transition-all active:scale-95 bg-black/5 dark:bg-white/10 opacity-60">
                     <i class="fa-solid fa-arrow-left mr-2"></i> <%= t('common.all') %>
                 </button>
@@ -79,15 +79,15 @@
             <% } %>
         </div>
 
-        <div class="flex flex-col md:flex-row gap-3">
-            <div class="relative flex-grow">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:flex lg:flex-row gap-3">
+            <div class="relative sm:col-span-2 md:col-span-3 lg:flex-grow">
                 <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                    <i class="fa-solid fa-search opacity-50"></i>
+                    <i class="fa-solid fa-search opacity-40"></i>
                 </div>
-                <input type="text" id="filterInput" class="filter-input-textbox block w-full p-2.5 pl-10 text-sm card-theme rounded-lg border focus:ring-1 focus:ring-primary-theme placeholder-opacity-50" value="<%= locals.querySearch || '' %>" placeholder="<%= t('collection.filter_placeholder') %>">
+                <input type="text" id="filterInput" class="filter-input-textbox block w-full p-2.5 pl-10 text-sm card-theme rounded-lg border focus:ring-1 focus:ring-primary-theme placeholder-opacity-50 transition-shadow" value="<%= locals.querySearch || '' %>" placeholder="<%= t('collection.filter_placeholder') %>">
             </div>
 
-            <div class="w-full md:w-48">
+            <div class="w-full lg:w-44">
                 <input type="text" id="locationInput" list="locations-list" placeholder="<%= t('common.location') %>" value="<%= locals.queryLocation || '' %>" class="filter-input-textbox block w-full p-2.5 text-sm card-theme rounded-lg border focus:ring-1 focus:ring-primary-theme outline-none placeholder-opacity-50">
                 <datalist id="locations-list">
                     <% locations.forEach(loc => { %> <option value="<%= loc %>"></option> <% }) %>
@@ -95,7 +95,7 @@
             </div>
 
             <% if (currentType !== 'all') { %>
-            <div class="w-full md:w-48">
+            <div class="w-full lg:w-44">
                 <input type="text" id="genreInput" list="genres-list" placeholder="Genre / Style" value="<%= locals.queryGenre || '' %>" class="filter-input-textbox block w-full p-2.5 text-sm card-theme rounded-lg border focus:ring-1 focus:ring-primary-theme outline-none placeholder-opacity-50">
                 <datalist id="genres-list">
                     <% genres.forEach(gen => { %> <option value="<%= gen %>"></option> <% }) %>
@@ -104,27 +104,35 @@
             <% } %>
 
             <% if (currentType === 'music'){ %>
-            <div class="w-full md:w-36">
-                <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="block w-full p-2.5 text-sm card-theme rounded-lg border focus:ring-1 focus:ring-primary-theme outline-none placeholder-opacity-50 text-left">
-                    Format <span>▾</span>
+            <div class="w-full lg:w-48 relative">
+                <button onclick="toggleFormatMenu(event)" id="formatSelectorBtn" class="block w-full p-2.5 text-sm card-theme rounded-lg border focus:ring-1 focus:ring-primary-theme outline-none transition-all flex justify-between items-center group">
+                    <span class="truncate opacity-50 group-hover:opacity-100 transition-opacity"><%= t('media.format') %></span>
+                    <i class="fa-solid fa-chevron-down text-[10px] opacity-20 group-hover:opacity-60 transition-all"></i>
                 </button>
-                <div id="format-multi-select" class="w-full hidden absolute z-20 card-theme rounded-lg p-2 mt-1 shadow-lg border md:w-36">
-                    <% 
-                    const currentFormatTermsArr = locals.currentFormatTerms?.split(',') ?? [];
-                    standardFormatTerms.forEach(formatTerm => {%> 
-                        <label class="flex items-center gap-2 p-1 p-2 text-sm rounded hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer">
-                            <input type="checkbox" class="accent-primary-theme" value="<%= formatTerm %>" <%= currentFormatTermsArr.includes(formatTerm) ? 'checked' : '' %>> <%= formatTerm %>
-                        </label>
-                    <% });%>
+                <div id="format-multi-select" class="hidden absolute left-0 right-0 top-full z-50 mt-2 card-theme rounded-xl p-3 shadow-2xl border border-black/5 dark:border-white/10 animate-in fade-in slide-in-from-top-2 duration-200">
+                    <div class="space-y-1 max-h-[60vh] overflow-y-auto custom-scrollbar">
+                        <% 
+                        const currentFormatTermsArr = locals.currentFormatTerms?.split(',') ?? [];
+                        standardFormatTerms.forEach(formatTerm => {%> 
+                            <label class="flex items-center gap-3 p-2 text-sm rounded-lg hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer transition-colors group">
+                                <input type="checkbox" class="accent-primary-theme w-4 h-4 rounded border-gray-300 transition-all cursor-pointer" value="<%= formatTerm %>" <%= currentFormatTermsArr.includes(formatTerm) ? 'checked' : '' %>> 
+                                <span class="group-hover:translate-x-0.5 transition-transform"><%= formatTerm %></span>
+                            </label>
+                        <% });%>
+                    </div>
+                    <div class="mt-3 pt-3 border-t border-black/5 dark:border-white/5">
+                        <button onclick="reloadPage()" class="w-full py-2 bg-primary-theme text-white text-xs font-bold rounded-lg hover:brightness-110 active:scale-95 transition-all">
+                            <%= t('common.apply') %>
+                        </button>
+                    </div>
                 </div>
             </div>
             <% } %>
-            <div class="w-full md:w-12">
+            <div class="w-full lg:w-12">
                 <button onclick="reloadPage()"
-                    class="block w-full p-2.5 text-sm rounded-lg border hover:text-primary-theme hover:border-primary-theme card-theme transition-all">
-                    <i class="fa-solid fa-magnifying-glass"></i>
+                    class="block w-full p-2.5 text-sm rounded-lg border hover:text-primary-theme hover:border-primary-theme card-theme transition-all bg-primary-theme/5">
+                    <i class="fa-solid fa-magnifying-glass opacity-60"></i>
                 </button>
-
             </div>
         </div>
     </div>
@@ -356,6 +364,42 @@
             reloadPage();
         });
     });
+
+    function toggleFormatMenu(e) {
+        e.stopPropagation();
+        const menu = document.getElementById('format-multi-select');
+        const btn = document.getElementById('formatSelectorBtn');
+        const isHidden = menu.classList.contains('hidden');
+        
+        // Close others if any (future proofing)
+        menu.classList.toggle('hidden');
+        
+        if (!isHidden) {
+            btn.classList.remove('ring-1', 'ring-primary-theme', 'border-primary-theme');
+        } else {
+            btn.classList.add('ring-1', 'ring-primary-theme', 'border-primary-theme');
+        }
+    }
+
+    // Click outside to close
+    document.addEventListener('click', (e) => {
+        const menu = document.getElementById('format-multi-select');
+        const btn = document.getElementById('formatSelectorBtn');
+        if (!menu || menu.classList.contains('hidden')) return;
+
+        if (!menu.contains(e.target) && !btn.contains(e.target)) {
+            menu.classList.add('hidden');
+            btn.classList.remove('ring-1', 'ring-primary-theme', 'border-primary-theme');
+        }
+    });
+
+    // Prevent closing when clicking inside menu
+    const formatMenu = document.getElementById('format-multi-select');
+    if(formatMenu) {
+        formatMenu.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+    }
     
 
     <% if (user.isAdmin) { %>

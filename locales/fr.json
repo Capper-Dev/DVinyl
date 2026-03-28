@@ -24,7 +24,8 @@
     "delete": "Supprimer",
     "cancel": "Annuler",
     "confirm_delete": "Êtes-vous sûr ?",
-    "show": "Afficher"
+    "show": "Afficher",
+    "apply": "Appliquer"
   },
   "settings": {
     "page_title": "Paramètres du compte",
@@ -118,7 +119,8 @@
     "graphic_novel": "Roman Graphique",
     "music": "Musique",
     "books": "Livres",
-    "dvd_gen": "Films / Séries"
+    "dvd_gen": "Films / Séries",
+    "format": "Format"
   },
   "index": {
     "welcome": "Salut",
@@ -194,7 +196,7 @@
     "delete_last.count": "Nombre à supprimer",
     "delete_last.btn": "Supprimer",
     "areyousure": "Supprimer les {{count}} derniers éléments de type \"{{kindLabel}}\" ? Cette action est irréversible.",
-    "delete_confirm":"{{count}} élément(s) supprimé(s).",
+    "delete_confirm": "{{count}} élément(s) supprimé(s).",
     "table": {
       "user": "Utilisateur",
       "email": "Email",
@@ -496,61 +498,61 @@
     "url_label": "Lien direct vers l'image"
   },
   "add_dvd": {
-  "title": "Ajouter un DVD / Série",
-  "desc": "Recherchez par titre, réalisateur ou scannez le code-barres.",
-  "search_placeholder": "Titre, Réalisateur ou Code-barres...",
-  "separator_or": "OU",
-  "btn_scan": "Scanner un Code-barres",
-  "results_title": "Résultats",
-  "no_results": "Aucun film ou série trouvé.",
-  "scan_init": "Initialisation...",
-  "scan_stop": "Arrêter le scan",
-  "scan_found": "Code trouvé !",
-  "scan_error": "Erreur de caméra",
-  "movie": "Film",
-  "tv_show": "Série"
-},
-"confirm_dvd": {
-  "title": "Confirmer l'ajout",
-  "desc": "Vérifiez les informations et complétez les détails de votre exemplaire physique.",
-  "config_title": "Vérifier et compléter",
-  "tv_show": "Série",
-  "movie": "Film",
-  "field_title": "Titre",
-  "field_director": "Réalisateur",
-  "field_studio": "Studio",
-  "field_year": "Année",
-  "field_duration": "Durée",
-  "field_format": "Format",
-  "field_barcode": "Code-barres",
-  "field_quantity": "Quantité",
-  "field_comments": "Notes / Commentaires",
-  "field_status": "Statut",
-  "field_rating": "Note (sur 5)",
-  "is_boxset": "C'est un coffret (Boxset)",
-  "watch_tracking": "Suivi de visionnage",
-  "status_to_watch": "À voir",
-  "status_watching": "En cours",
-  "status_watched": "Vu",
-  "replace_cover": "Remplacer la pochette principale",
-  "btn_collection": "Ajouter à la collection",
-  "btn_wishlist": "Ajouter à la Wishlist"
-},
-"edit_dvd": {
-  "title": "Modifier l'exemplaire"
-},
-"dvd_detail": {
-  "tech_specs": "Détails Techniques",
-  "delete_confirm": "Voulez-vous vraiment supprimer cet exemplaire de votre collection ?",
-  "boxset": "Coffret",
-  "movie": "Film",
-  "series": "Série",
-  "duration_label": "Durée",
-  "zone_label": "Zone / Région",
-  "barcode_label": "Code-barres"
-},
-"book": {
-  "source_hardcover": "Voir sur Hardcover",
-  "source_goodreads": "Voir sur GoodReads"
-}
+    "title": "Ajouter un DVD / Série",
+    "desc": "Recherchez par titre, réalisateur ou scannez le code-barres.",
+    "search_placeholder": "Titre, Réalisateur ou Code-barres...",
+    "separator_or": "OU",
+    "btn_scan": "Scanner un Code-barres",
+    "results_title": "Résultats",
+    "no_results": "Aucun film ou série trouvé.",
+    "scan_init": "Initialisation...",
+    "scan_stop": "Arrêter le scan",
+    "scan_found": "Code trouvé !",
+    "scan_error": "Erreur de caméra",
+    "movie": "Film",
+    "tv_show": "Série"
+  },
+  "confirm_dvd": {
+    "title": "Confirmer l'ajout",
+    "desc": "Vérifiez les informations et complétez les détails de votre exemplaire physique.",
+    "config_title": "Vérifier et compléter",
+    "tv_show": "Série",
+    "movie": "Film",
+    "field_title": "Titre",
+    "field_director": "Réalisateur",
+    "field_studio": "Studio",
+    "field_year": "Année",
+    "field_duration": "Durée",
+    "field_format": "Format",
+    "field_barcode": "Code-barres",
+    "field_quantity": "Quantité",
+    "field_comments": "Notes / Commentaires",
+    "field_status": "Statut",
+    "field_rating": "Note (sur 5)",
+    "is_boxset": "C'est un coffret (Boxset)",
+    "watch_tracking": "Suivi de visionnage",
+    "status_to_watch": "À voir",
+    "status_watching": "En cours",
+    "status_watched": "Vu",
+    "replace_cover": "Remplacer la pochette principale",
+    "btn_collection": "Ajouter à la collection",
+    "btn_wishlist": "Ajouter à la Wishlist"
+  },
+  "edit_dvd": {
+    "title": "Modifier l'exemplaire"
+  },
+  "dvd_detail": {
+    "tech_specs": "Détails Techniques",
+    "delete_confirm": "Voulez-vous vraiment supprimer cet exemplaire de votre collection ?",
+    "boxset": "Coffret",
+    "movie": "Film",
+    "series": "Série",
+    "duration_label": "Durée",
+    "zone_label": "Zone / Région",
+    "barcode_label": "Code-barres"
+  },
+  "book": {
+    "source_hardcover": "Voir sur Hardcover",
+    "source_goodreads": "Voir sur GoodReads"
+  }
 }

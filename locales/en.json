@@ -24,7 +24,8 @@
     "delete": "Delete",
     "cancel": "Cancel",
     "confirm_delete": "Are you sure?",
-    "show": "Show"
+    "show": "Show",
+    "apply": "Apply"
   },
   "settings": {
     "page_title": "Account Settings",
@@ -118,7 +119,8 @@
     "graphic_novel": "Graphic Novel",
     "music": "Music",
     "books": "Books",
-    "dvd_gen": "Movies / TV Shows"
+    "dvd_gen": "Movies / TV Shows",
+    "format": "Format"
   },
   "index": {
     "welcome": "Hello",
@@ -194,7 +196,7 @@
     "delete_last.count": "Number to delete",
     "delete_last.btn": "Delete",
     "areyousure": "Delete the last {{count}} items of type \"{{kindLabel}}\"? This action is irreversible.",
-    "delete_confirm":"{{count}} item(s) deleted.",
+    "delete_confirm": "{{count}} item(s) deleted.",
     "table": {
       "user": "User",
       "email": "Email",
@@ -494,63 +496,63 @@
     "hint": "Click to browse files",
     "url_hint": "Image will be previewed automatically.",
     "url_label": "Direct link to the image"
-    },
+  },
   "add_dvd": {
-  "title": "Add a DVD / TV Show",
-  "desc": "Search by title, director or scan the barcode.",
-  "search_placeholder": "Title, Director or Barcode...",
-  "separator_or": "OR",
-  "btn_scan": "Scan a Barcode",
-  "results_title": "RResults",
-  "no_results": "No movies or TV shows found.",
-  "scan_init": "Initializing...",
-  "scan_stop": "Stop scanning",
-  "scan_found": "Barcode found!",
-  "scan_error": "Camera error",
-  "movie": "Movie",
-  "tv_show": "TV Show"
-},
-"confirm_dvd": {
-  "title": "Confirm Addition",
-  "desc": "Verify the information and complete the details of your physical copy.",
-  "config_title": "Verify and complete",
-  "tv_show": "TV Show",
-  "movie": "Movie",
-  "field_title": "Title",
-  "field_director": "Director",
-  "field_studio": "Studio",
-  "field_year": "Year",
-  "field_duration": "Duration",
-  "field_format": "Format",
-  "field_barcode": "Barcode",
-  "field_quantity": "Quantity",
-  "field_comments": "Notes / Comments",
-  "field_status": "Status",
-  "field_rating": "Rating (out of 5)",
-  "is_boxset": "Is a Boxset",
-  "watch_tracking": "Watch Tracking",
-  "status_to_watch": "To Watch",
-  "status_watching": "Watching",
-  "status_watched": "Watched",
-  "replace_cover": "Replace main cover",
-  "btn_collection": "Add to Collection",
-  "btn_wishlist": "Add to Wishlist"
-},
-"edit_dvd": {
-  "title": "Edit DVD / TV Show"
-},
-"dvd_detail": {
-  "tech_specs": "Technical Details",
-  "delete_confirm": "Are you sure you want to delete this item from your collection?",
-  "boxset": "Boxset",
-  "movie": "Movie",
-  "series": "SSeries",
-  "duration_label": "Duration",
-  "zone_label": "Zone / RRegion",
-  "barcode_label": "Barcode"
-},
-"book": {
-  "source_hardcover": "View on Hardcover",
-  "source_goodreads": "View on GoodReads"
-}
+    "title": "Add a DVD / TV Show",
+    "desc": "Search by title, director or scan the barcode.",
+    "search_placeholder": "Title, Director or Barcode...",
+    "separator_or": "OR",
+    "btn_scan": "Scan a Barcode",
+    "results_title": "RResults",
+    "no_results": "No movies or TV shows found.",
+    "scan_init": "Initializing...",
+    "scan_stop": "Stop scanning",
+    "scan_found": "Barcode found!",
+    "scan_error": "Camera error",
+    "movie": "Movie",
+    "tv_show": "TV Show"
+  },
+  "confirm_dvd": {
+    "title": "Confirm Addition",
+    "desc": "Verify the information and complete the details of your physical copy.",
+    "config_title": "Verify and complete",
+    "tv_show": "TV Show",
+    "movie": "Movie",
+    "field_title": "Title",
+    "field_director": "Director",
+    "field_studio": "Studio",
+    "field_year": "Year",
+    "field_duration": "Duration",
+    "field_format": "Format",
+    "field_barcode": "Barcode",
+    "field_quantity": "Quantity",
+    "field_comments": "Notes / Comments",
+    "field_status": "Status",
+    "field_rating": "Rating (out of 5)",
+    "is_boxset": "Is a Boxset",
+    "watch_tracking": "Watch Tracking",
+    "status_to_watch": "To Watch",
+    "status_watching": "Watching",
+    "status_watched": "Watched",
+    "replace_cover": "Replace main cover",
+    "btn_collection": "Add to Collection",
+    "btn_wishlist": "Add to Wishlist"
+  },
+  "edit_dvd": {
+    "title": "Edit DVD / TV Show"
+  },
+  "dvd_detail": {
+    "tech_specs": "Technical Details",
+    "delete_confirm": "Are you sure you want to delete this item from your collection?",
+    "boxset": "Boxset",
+    "movie": "Movie",
+    "series": "SSeries",
+    "duration_label": "Duration",
+    "zone_label": "Zone / RRegion",
+    "barcode_label": "Barcode"
+  },
+  "book": {
+    "source_hardcover": "View on Hardcover",
+    "source_goodreads": "View on GoodReads"
+  }
 }
