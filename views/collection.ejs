@@ -2,12 +2,49 @@
 
 <div class="max-w-screen-xl mx-auto px-4 md:px-0 pb-12">
     
-    <div class="pt-6 mb-6">
+    <div class="pt-6 mb-6 flex items-center justify-between">
         <h1 class="text-3xl font-bold transition-colors">
             <%= t('collection.title') %>
         </h1>
-    </div>
+        <% if (user.isAdmin) { %>
+        <%
+        const addRoutes = { music: '/add-vinyl', books: '/add-book', dvd: '/add-dvd' };
+        const addRoute = addRoutes[currentType];
+        %>
+        <div class="flex gap-2">
 
+            <% if (addRoute) { %>
+                <a href="<%= addRoute %>"
+                    class="flex-shrink-0 w-10 h-10 md:w-auto md:px-4 card-theme hover:text-primary-theme hover:border-primary-theme rounded-lg transition-all shadow-sm flex items-center justify-center gap-2 group"
+                    title="<%= t('collection.add') %>">
+                    <i class="fa-solid fa-plus group-hover:scale-110 transition-transform"></i>
+                    <span class="hidden md:inline text-xs font-bold uppercase tracking-widest"><%= t('collection.add') %></span>
+                </a>
+            <% } %>
+
+            <% if (currentType === 'music') { %>
+                <button onclick="openEstimateModal()" 
+                    class="flex-shrink-0 w-10 h-10 md:w-auto md:px-4 card-theme hover:text-primary-theme hover:border-primary-theme rounded-lg transition-all shadow-sm flex items-center justify-center gap-2 group" 
+                    title="<%= t('index.btn_estimate') %>">
+                    <i class="fa-solid fa-calculator group-hover:scale-110 transition-transform"></i>
+                    <span class="hidden md:inline text-xs font-bold uppercase tracking-widest"><%= t('index.btn_estimate') %></span>
+                </button>
+            <% } %>
+
+            <% if (user.discogsUsername && currentType === 'music') { %>
+                <button onclick="refreshCollection()" id="refreshBtn" 
+                    class="flex-shrink-0 w-10 h-10 md:w-auto md:px-4 card-theme hover:text-primary-theme hover:border-primary-theme rounded-lg transition-all shadow-sm flex items-center justify-center gap-2 group" 
+                    title="<%= t('collection.refresh_tooltip') %>">
+                    <i class="fa-solid fa-sync group-hover:rotate-180 transition-transform duration-500"></i>
+                    <span class="hidden md:inline text-xs font-bold uppercase tracking-widest"><%= t('collection.refresh') %></span>
+                </button>
+            <% } %>
+
+        </div>
+    <% } %>
+
+    </div>
+    
     <div class="space-y-6 mb-8">
                             
         <div class="flex flex-wrap gap-2 mb-8" id="formatFilters">
@@ -22,19 +59,19 @@
 
             <% if (currentType === 'all') { %>
                 <% mainTypes.forEach(type => { %>
-                    <button onclick="updateURLParams('type', '<%= type.id %>')" 
+                    <button onclick="currentType = '<%= type.id %>'; reloadPage();" 
                         class="px-4 py-2 rounded-full text-xs font-bold transition-all active:scale-95 <%= currentType === type.id ? 'bg-primary-theme text-white shadow-lg' : 'bg-black/5 dark:bg-white/10 opacity-60' %>">
                         <%= type.label %>
                     </button>
                 <% }) %>
             <% } else { %>
-                <button onclick="updateURLParams('type', 'all')" 
+                <button onclick="currentType = 'all'; reloadPage();" 
                     class="px-4 py-2 rounded-full text-xs font-bold transition-all active:scale-95 bg-black/5 dark:bg-white/10 opacity-60">
                     <i class="fa-solid fa-arrow-left mr-2"></i> <%= t('common.all') %>
                 </button>
 
                 <% activeFilters.forEach(filter => { %>
-                    <button onclick="updateURLParams('format', '<%= filter.id %>')" 
+                    <button onclick="currentFormat = '<%= filter.id %>'; reloadPage();" 
                         class="px-4 py-2 rounded-full text-xs font-bold transition-all active:scale-95 <%= currentFormat === filter.id ? 'bg-primary-theme text-white shadow-lg' : 'bg-black/5 dark:bg-white/10 opacity-60' %>">
                         <%= filter.label %>
                     </button>
@@ -47,11 +84,11 @@
                 <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                     <i class="fa-solid fa-search opacity-50"></i>
                 </div>
-                <input type="text" id="filterInput" class="block w-full p-2.5 pl-10 text-sm card-theme rounded-lg border focus:ring-1 focus:ring-primary-theme placeholder-opacity-50" value="<%= locals.querySearch || '' %>" placeholder="<%= t('collection.filter_placeholder') %>">
+                <input type="text" id="filterInput" class="filter-input-textbox block w-full p-2.5 pl-10 text-sm card-theme rounded-lg border focus:ring-1 focus:ring-primary-theme placeholder-opacity-50" value="<%= locals.querySearch || '' %>" placeholder="<%= t('collection.filter_placeholder') %>">
             </div>
 
             <div class="w-full md:w-48">
-                <input type="text" id="locationInput" list="locations-list" placeholder="<%= t('common.location') %>" value="<%= locals.queryLocation || '' %>" class="block w-full p-2.5 text-sm card-theme rounded-lg border focus:ring-1 focus:ring-primary-theme outline-none placeholder-opacity-50">
+                <input type="text" id="locationInput" list="locations-list" placeholder="<%= t('common.location') %>" value="<%= locals.queryLocation || '' %>" class="filter-input-textbox block w-full p-2.5 text-sm card-theme rounded-lg border focus:ring-1 focus:ring-primary-theme outline-none placeholder-opacity-50">
                 <datalist id="locations-list">
                     <% locations.forEach(loc => { %> <option value="<%= loc %>"></option> <% }) %>
                 </datalist>
@@ -59,49 +96,36 @@
 
             <% if (currentType !== 'all') { %>
             <div class="w-full md:w-48">
-                <input type="text" id="genreInput" list="genres-list" placeholder="Genre / Style" value="<%= locals.queryGenre || '' %>" class="block w-full p-2.5 text-sm card-theme rounded-lg border focus:ring-1 focus:ring-primary-theme outline-none placeholder-opacity-50">
+                <input type="text" id="genreInput" list="genres-list" placeholder="Genre / Style" value="<%= locals.queryGenre || '' %>" class="filter-input-textbox block w-full p-2.5 text-sm card-theme rounded-lg border focus:ring-1 focus:ring-primary-theme outline-none placeholder-opacity-50">
                 <datalist id="genres-list">
                     <% genres.forEach(gen => { %> <option value="<%= gen %>"></option> <% }) %>
                 </datalist>
             </div>
             <% } %>
 
-            <% if (user.isAdmin) { %>
-                <%
-                const addRoutes = { music: '/add-vinyl', books: '/add-book', dvd: '/add-dvd' };
-                const addRoute = addRoutes[currentType];
-                %>
-                <div class="flex gap-2">
-
-                    <% if (addRoute) { %>
-                        <a href="<%= addRoute %>"
-                            class="flex-shrink-0 w-10 h-10 md:w-auto md:px-4 card-theme hover:text-primary-theme hover:border-primary-theme rounded-lg transition-all shadow-sm flex items-center justify-center gap-2 group"
-                            title="<%= t('collection.add') %>">
-                            <i class="fa-solid fa-plus group-hover:scale-110 transition-transform"></i>
-                            <span class="hidden md:inline text-xs font-bold uppercase tracking-widest"><%= t('collection.add') %></span>
-                        </a>
-                    <% } %>
-
-                    <% if (currentType === 'music') { %>
-                        <button onclick="openEstimateModal()" 
-                            class="flex-shrink-0 w-10 h-10 md:w-auto md:px-4 card-theme hover:text-primary-theme hover:border-primary-theme rounded-lg transition-all shadow-sm flex items-center justify-center gap-2 group" 
-                            title="<%= t('index.btn_estimate') %>">
-                            <i class="fa-solid fa-calculator group-hover:scale-110 transition-transform"></i>
-                            <span class="hidden md:inline text-xs font-bold uppercase tracking-widest"><%= t('index.btn_estimate') %></span>
-                        </button>
-                    <% } %>
-
-                    <% if (user.discogsUsername && currentType === 'music') { %>
-                        <button onclick="refreshCollection()" id="refreshBtn" 
-                            class="flex-shrink-0 w-10 h-10 md:w-auto md:px-4 card-theme hover:text-primary-theme hover:border-primary-theme rounded-lg transition-all shadow-sm flex items-center justify-center gap-2 group" 
-                            title="<%= t('collection.refresh_tooltip') %>">
-                            <i class="fa-solid fa-sync group-hover:rotate-180 transition-transform duration-500"></i>
-                            <span class="hidden md:inline text-xs font-bold uppercase tracking-widest"><%= t('collection.refresh') %></span>
-                        </button>
-                    <% } %>
-
+            <% if (currentType === 'music'){ %>
+            <div class="w-full md:w-36">
+                <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="block w-full p-2.5 text-sm card-theme rounded-lg border focus:ring-1 focus:ring-primary-theme outline-none placeholder-opacity-50 text-left">
+                    Format <span>▾</span>
+                </button>
+                <div id="format-multi-select" class="w-full hidden absolute z-20 card-theme rounded-lg p-2 mt-1 shadow-lg border md:w-36">
+                    <% 
+                    const currentFormatTermsArr = locals.currentFormatTerms?.split(',') ?? [];
+                    standardFormatTerms.forEach(formatTerm => {%> 
+                        <label class="flex items-center gap-2 p-1 p-2 text-sm rounded hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer">
+                            <input type="checkbox" class="accent-primary-theme" value="<%= formatTerm %>" <%= currentFormatTermsArr.includes(formatTerm) ? 'checked' : '' %>> <%= formatTerm %>
+                        </label>
+                    <% });%>
                 </div>
+            </div>
             <% } %>
+            <div class="w-full md:w-12">
+                <button onclick="reloadPage()"
+                    class="block w-full p-2.5 text-sm rounded-lg border hover:text-primary-theme hover:border-primary-theme card-theme transition-all">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+
+            </div>
         </div>
     </div>
 
@@ -187,7 +211,7 @@
             <span class="text-xs font-bold uppercase tracking-widest opacity-40"><%= t('common.show') %></span>
             <div class="flex bg-black/5 dark:bg-white/5 p-1 rounded-xl">
                 <% [25, 50, 100].forEach(num => { %>
-                    <button onclick="changeLimit(<%= num %>)" 
+                    <button onclick="currentLimit = <%= num %>; reloadPage();" 
                         class="px-3 py-1.5 text-xs font-bold rounded-lg transition-all <%= (locals.queryLimit == num) ? 'bg-primary-theme text-white shadow-md' : 'opacity-50 hover:opacity-100' %>">
                         <%= num %>
                     </button>
@@ -273,9 +297,13 @@
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
+    let currentType = '<%= currentType %>';
+    let currentFormat = '<%= currentFormat %>';
     const filterInput = document.getElementById('filterInput');
     const locationInput = document.getElementById('locationInput');
-    let searchTimeout;
+    const genreInput = document.getElementById('genreInput');
+    const formatTermsInput = document.getElementById('format-multi-select');
+    let currentLimit = <%= locals.queryLimit %>;
 
     function updateURLParams(key, value) {
         const url = new URL(window.location.href);
@@ -291,8 +319,29 @@
         window.location.href = url.toString();
     }
 
-    function changeLimit(val) {
-        updateURLParams('limit', val);
+    function reloadPage(){
+        const url = new URL(window.location.origin + window.location.pathname);
+
+        validateAndSetUrlSearchParamString('type', currentType);
+        validateAndSetUrlSearchParamString('format', currentFormat);
+        validateAndSetUrlSearchParamString('search', filterInput?.value);
+        validateAndSetUrlSearchParamString('location', locationInput?.value);
+
+        if(currentType !== 'all') validateAndSetUrlSearchParamString('genre', genreInput?.value);
+        if(formatTermsInput && currentType && currentType == 'music'){
+            const checkedOptions = [...formatTermsInput.querySelectorAll('input[type="checkbox"]:checked')].map(cb => cb.value)
+            if(checkedOptions.length) url.searchParams.set('formatTerms', checkedOptions);
+        }
+        
+        validateAndSetUrlSearchParamString('limit', currentLimit);
+        url.searchParams.set('page', 1);
+        window.location.href = url.toString();
+
+        function validateAndSetUrlSearchParamString(key, value){
+            if (value === null || value === undefined || (typeof value === "string" && value.trim() === "")) return;
+            if((typeof value === "string")) value = value.trim();
+            url.searchParams.set(key, value);
+        }
     }
 
     function changePage(page) {
@@ -301,27 +350,13 @@
         window.location.href = url.toString();
     }
 
-    if (filterInput) {
-        filterInput.addEventListener('input', (e) => {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                updateURLParams('search', e.target.value);
-            }, 500);
+    document.querySelectorAll('.filter-input-textbox').forEach(element => {
+        element.addEventListener('keydown', (e) => {
+            if(e.key !== 'Enter') return;
+            reloadPage();
         });
-    }
-
-    if (locationInput) {
-        locationInput.addEventListener('change', (e) => {
-            updateURLParams('location', e.target.value);
-        });
-    }
-
-    const genreInput = document.getElementById('genreInput');
-    if (genreInput) {
-        genreInput.addEventListener('change', (e) => {
-            updateURLParams('genre', e.target.value);
-        });
-    }
+    });
+    
 
     <% if (user.isAdmin) { %>
         const socket = io();
