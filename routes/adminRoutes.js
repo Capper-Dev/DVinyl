@@ -348,20 +348,30 @@ router.post('/refresh-all-music-metadata', requireAuth, requireAdmin, async (req
     if (!token) return res.status(500).json({ error: 'Discogs token not configured' });
 
     try {
-        let query = { discogs_id: { $exists: true, $ne: null } };
+        let query = { 
+            discogs_id: { $exists: true, $ne: null } 
+        };
+
+        let conditions = [
+            { $or: [{ kind: 'Music' }, { kind: { $exists: false } }] }
+        ];
 
         if (mode === 'missing') {
-            query.$or = [
-                { genres: { $exists: false } },
-                { genres: { $size: 0 } },
-                { styles: { $exists: false } },
-                { styles: { $size: 0 } },
-                { tracklist: { $exists: false } },
-                { tracklist: { $size: 0 } }
-            ];
+            conditions.push({
+                $or: [
+                    { genres: { $exists: false } },
+                    { genres: { $size: 0 } },
+                    { styles: { $exists: false } },
+                    { styles: { $size: 0 } },
+                    { tracklist: { $exists: false } },
+                    { tracklist: { $size: 0 } }
+                ]
+            });
         }
 
-        const albums = await Vinyl.find(query).select('_id discogs_id title artist');
+        query.$and = conditions;
+
+        const albums = await Item.find(query).select('_id discogs_id title artist');
         if (albums.length === 0) return res.json({ success: true, count: 0 });
 
         res.status(202).json({ success: true, total: albums.length });
@@ -386,7 +396,7 @@ router.post('/refresh-all-music-metadata', requireAuth, requireAdmin, async (req
 
                     const { genres = [], styles = [], tracklist = [] } = response.data;
 
-                    await Vinyl.updateOne(
+                    await Item.updateOne(
                         { _id: album._id },
                         {
                             $set: {
