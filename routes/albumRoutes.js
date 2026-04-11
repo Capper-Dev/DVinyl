@@ -271,8 +271,15 @@ router.get('/album/edit/:id', requireAuth, async (req, res) => {
 });
 
 router.post('/search-discogs', requireAuth, requireAdmin, async (req, res) => {
-  const query = req.body.query;
+  const query = req.body.query || '';
   const type = req.body.type || 'vinyl';
+  
+  // Advanced filters
+  const year = req.body.year;
+  const country = req.body.country;
+  const genre_filter = req.body.genre_filter;
+  const label_filter = req.body.label_filter;
+
   const token = process.env.DISCOGS_TOKEN;
 
   try {
@@ -281,25 +288,61 @@ router.post('/search-discogs', requireAuth, requireAdmin, async (req, res) => {
     const enableAdvancedCD = settings && settings.modules && settings.modules.advancedCD;
 
     let searchUrls = [];
-    if (type === 'cd' && enableAdvancedCD) {
-        searchUrls.push(`https://api.discogs.com/database/search?q=${encodeURIComponent(query)}&type=release&format=CD&token=${token}`);
-        searchUrls.push(`https://api.discogs.com/database/search?q=${encodeURIComponent(query)}&type=release&format=SACD&token=${token}`);
-        searchUrls.push(`https://api.discogs.com/database/search?q=${encodeURIComponent(query)}&type=release&format=CDr&token=${token}`);
+    let isDirectRelease = false;
+
+    const urlMatch = query.match(/discogs\.com\/(?:[a-zA-Z]{2}\/)?(release|master)\/(\d+)/);
+
+    if (urlMatch) {
+        const itemType = urlMatch[1];
+        const itemId = urlMatch[2];
+
+        if (itemType === 'master') {
+            searchUrls.push(`https://api.discogs.com/database/search?master_id=${itemId}&type=release&token=${token}`);
+        } else if (itemType === 'release') {
+            searchUrls.push(`https://api.discogs.com/releases/${itemId}?token=${token}`);
+            isDirectRelease = true;
+        }
     } else {
-        searchUrls.push(`https://api.discogs.com/database/search?q=${encodeURIComponent(query)}&type=release&format=${type}&token=${token}`);
+        let advancedParams = '';
+        if (year) advancedParams += `&year=${encodeURIComponent(year)}`;
+        if (country) advancedParams += `&country=${encodeURIComponent(country)}`;
+        if (genre_filter) advancedParams += `&genre=${encodeURIComponent(genre_filter)}`;
+        if (label_filter) advancedParams += `&label=${encodeURIComponent(label_filter)}`;
+
+        if (type === 'cd' && enableAdvancedCD) {
+            searchUrls.push(`https://api.discogs.com/database/search?q=${encodeURIComponent(query)}&type=release&format=CD${advancedParams}&token=${token}`);
+            searchUrls.push(`https://api.discogs.com/database/search?q=${encodeURIComponent(query)}&type=release&format=SACD${advancedParams}&token=${token}`);
+            searchUrls.push(`https://api.discogs.com/database/search?q=${encodeURIComponent(query)}&type=release&format=CDr${advancedParams}&token=${token}`);
+        } else {
+            searchUrls.push(`https://api.discogs.com/database/search?q=${encodeURIComponent(query)}&type=release&format=${type}${advancedParams}&token=${token}`);
+        }
     }
 
     const responses = await Promise.all(searchUrls.map(url => axios.get(url, { headers: { 'User-Agent': 'DVinylApp/1.0' } })));
     
     let allResults = [];
-    responses.forEach((response, index) => {
-        let results = response.data.results || [];
-        if (type === 'cd' && enableAdvancedCD) {
-            if (index === 1) results = results.map(item => ({...item, is_advanced_cd: 'sacd'}));
-            else if (index === 2) results = results.map(item => ({...item, is_advanced_cd: 'cdr'}));
-        }
-        allResults = allResults.concat(results);
-    });
+    if (isDirectRelease) {
+        const r = responses[0].data;
+        const mappedResult = {
+            id: r.id,
+            title: r.artists ? r.artists.map(a => a.name).join(', ') + ' - ' + r.title : r.title,
+            year: r.year,
+            country: r.country,
+            cover_image: (r.images && r.images.length > 0) ? r.images[0].resource_url : r.thumb,
+            formats: r.formats,
+            format: r.formats && r.formats[0] ? [r.formats[0].name, ...(r.formats[0].descriptions || [])] : []
+        };
+        allResults.push(mappedResult);
+    } else {
+        responses.forEach((response, index) => {
+            let results = response.data.results || [];
+            if (!urlMatch && type === 'cd' && enableAdvancedCD) {
+                if (index === 1) results = results.map(item => ({...item, is_advanced_cd: 'sacd'}));
+                else if (index === 2) results = results.map(item => ({...item, is_advanced_cd: 'cdr'}));
+            }
+            allResults = allResults.concat(results);
+        });
+    }
 
     const technicalBlacklist = [
         'Vinyl', 'LP', 'Album', 'Reissue', 'Repress', 'Stereo', 'Gatefold', 

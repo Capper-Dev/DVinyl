@@ -169,7 +169,16 @@
     "scan_found": "Trouvé !",
     "scan_error": "Erreur caméra (Permissions ?)",
     "results_title": "Résultats",
-    "no_results": "Aucun résultat trouvé."
+    "no_results": "Aucun résultat trouvé.",
+    "advanced_filters": "Filtres avancés",
+    "filter_year": "Année",
+    "filter_country": "Pays",
+    "filter_genre": "Genre",
+    "filter_label": "Label",
+    "filter_ex_year": "Ex: 1994",
+    "filter_ex_country": "Ex: France",
+    "filter_ex_genre": "Ex: Electronic",
+    "filter_ex_label": "Ex: EMI"
   },
   "admin": {
     "title": "Administration",
