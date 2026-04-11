@@ -1,346 +1,452 @@
 <%- include('partials/header') %>
 
-<div class="max-w-screen-xl mx-auto pb-12 px-4 md:px-0 pt-8">
-    
-    <div class="mb-8">
-        <h1 class="text-3xl font-bold flex items-center gap-3 transition-colors">
-            <i class="fas fa-cog text-primary-theme animate-spin-slow"></i>
-            <%= t('settings.page_title') %>
-        </h1>
-        <p class="opacity-60 mt-2 transition-colors"><%= t('settings.page_desc') %></p>
-    </div>
+    <div class="max-w-screen-xl mx-auto pb-12 px-4 md:px-0 pt-8">
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        <div class="space-y-6">
-            <div class="card-theme rounded-2xl p-6 relative overflow-hidden transition-colors shadow-sm">
-                <div class="hidden dark:block absolute top-0 right-0 w-32 h-32 bg-primary-theme/10 rounded-full blur-2xl -mr-10 -mt-10 pointer-events-none"></div>
-                
-                <div class="flex flex-col items-center text-center relative z-10">
-                    <div class="relative group cursor-pointer" onclick="openModal('avatar-modal')">
-                        <img src="<%= user.img %>" id="current-avatar" class="w-32 h-32 rounded-full object-cover border-4 border-black/10 dark:border-white/10 group-hover:border-primary-theme transition-colors shadow-xl">
-                        <div class="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                            <i class="fas fa-camera text-white text-2xl"></i>
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold flex items-center gap-3 transition-colors">
+                <i class="fas fa-cog text-primary-theme animate-spin-slow"></i>
+                <%= t('settings.page_title') %>
+            </h1>
+            <p class="opacity-60 mt-2 transition-colors">
+                <%= t('settings.page_desc') %>
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            <div class="space-y-6">
+                <div class="card-theme rounded-2xl p-6 relative overflow-hidden transition-colors shadow-sm">
+                    <div
+                        class="hidden dark:block absolute top-0 right-0 w-32 h-32 bg-primary-theme/10 rounded-full blur-2xl -mr-10 -mt-10 pointer-events-none">
+                    </div>
+
+                    <div class="flex flex-col items-center text-center relative z-10">
+                        <div class="relative group cursor-pointer" onclick="openModal('avatar-modal')">
+                            <img src="<%= user.img %>" id="current-avatar"
+                                class="w-32 h-32 rounded-full object-cover border-4 border-black/10 dark:border-white/10 group-hover:border-primary-theme transition-colors shadow-xl">
+                            <div
+                                class="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <i class="fas fa-camera text-white text-2xl"></i>
+                            </div>
+                        </div>
+                        <h2 class="mt-4 text-xl font-bold transition-colors">
+                            <%= user.username %>
+                        </h2>
+                        <p class="opacity-60 text-sm transition-colors">
+                            <%= user.email %>
+                        </p>
+
+                        <button onclick="openModal('avatar-modal')"
+                            class="mt-4 text-sm text-primary-theme font-medium hover:underline transition-colors">
+                            <%= t('settings.edit_photo') %>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-2 space-y-6">
+
+                <div class="card-theme rounded-2xl p-6 transition-colors shadow-sm">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-lg font-bold flex items-center gap-2 transition-colors">
+                            <i class="fas fa-user-circle opacity-50"></i>
+                            <%= t('settings.identity_title') %>
+                        </h2>
+                        <button onclick="openModal('username-modal')"
+                            class="text-sm bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 px-3 py-1.5 rounded-lg transition-colors border border-transparent">
+                            <i class="fas fa-pen mr-1"></i>
+                            <%= t('common.edit') %>
+                        </button>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div
+                            class="flex flex-col sm:flex-row sm:justify-between p-4 bg-black/5 dark:bg-white/5 rounded-xl border border-transparent transition-colors">
+                            <span class="opacity-60 text-sm">
+                                <%= t('settings.username_label') %>
+                            </span>
+                            <span class="font-medium transition-colors">
+                                <%= user.username %>
+                            </span>
+                        </div>
+                        <div
+                            class="flex flex-col sm:flex-row sm:justify-between p-4 bg-black/5 dark:bg-white/5 rounded-xl border border-transparent transition-colors">
+                            <span class="opacity-60 text-sm">
+                                <%= t('settings.email_label') %>
+                            </span>
+                            <span class="font-medium transition-colors">
+                                <%= user.email %>
+                            </span>
                         </div>
                     </div>
-                    <h2 class="mt-4 text-xl font-bold transition-colors"><%= user.username %></h2>
-                    <p class="opacity-60 text-sm transition-colors"><%= user.email %></p>
-                    
-                    <button onclick="openModal('avatar-modal')" class="mt-4 text-sm text-primary-theme font-medium hover:underline transition-colors">
-                        <%= t('settings.edit_photo') %>
-                    </button>
                 </div>
-            </div>
-        </div>
 
-        <div class="lg:col-span-2 space-y-6">
-
-            <div class="card-theme rounded-2xl p-6 transition-colors shadow-sm">
-                <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-lg font-bold flex items-center gap-2 transition-colors">
-                        <i class="fas fa-user-circle opacity-50"></i> <%= t('settings.identity_title') %>
+                <div class="card-theme rounded-2xl p-6 transition-colors shadow-sm">
+                    <h2 class="text-lg font-bold flex items-center gap-2 mb-6 transition-colors">
+                        <i class="fas fa-globe opacity-50"></i>
+                        <%= t('settings.preferences_title') %>
                     </h2>
-                    <button onclick="openModal('username-modal')" class="text-sm bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 px-3 py-1.5 rounded-lg transition-colors border border-transparent">
-                        <i class="fas fa-pen mr-1"></i> <%= t('common.edit') %>
-                    </button>
-                </div>
-                
-                <div class="space-y-4">
-                    <div class="flex flex-col sm:flex-row sm:justify-between p-4 bg-black/5 dark:bg-white/5 rounded-xl border border-transparent transition-colors">
-                        <span class="opacity-60 text-sm"><%= t('settings.username_label') %></span>
-                        <span class="font-medium transition-colors"><%= user.username %></span>
+                    <div
+                        class="flex items-center justify-between p-4 bg-black/5 dark:bg-white/5 rounded-xl border border-transparent transition-colors">
+                        <span class="opacity-60 text-sm">
+                            <%= t('settings.language_label') %>
+                        </span>
+                        <form action="/settings/update-language" method="POST" class="flex items-center">
+                            <select name="language" onchange="this.form.submit()"
+                                class="bg-black/5 dark:bg-white/5 border border-transparent text-gray-900 dark:text-white text-sm rounded-lg focus:ring-primary-theme focus:border-primary-theme block w-full p-3 transition-colors outline-none cursor-pointer">
+                                <option value="fr" class="bg-white dark:bg-[#1a1a1a]" <%=currentLng==='fr' ? 'selected'
+                                    : '' %>>
+                                    Français
+                                </option>
+                                <option value="en" class="bg-white dark:bg-[#1a1a1a]" <%=currentLng==='en' ? 'selected'
+                                    : '' %>>
+                                    English
+                                </option>
+                                <option value="de" class="bg-white dark:bg-[#1a1a1a]" <%=currentLng==='de' ? 'selected'
+                                    : '' %>>
+                                    Deutsch
+                                </option>
+                                <option value="es" class="bg-white dark:bg-[#1a1a1a]" <%=currentLng==='es' ? 'selected'
+                                    : '' %>>
+                                    Español
+                                </option>
+                                <option value="it" class="bg-white dark:bg-[#1a1a1a]" <%=currentLng==='it' ? 'selected'
+                                    : '' %>>
+                                    Italiano
+                                </option>
+                            </select>
+                        </form>
                     </div>
-                    <div class="flex flex-col sm:flex-row sm:justify-between p-4 bg-black/5 dark:bg-white/5 rounded-xl border border-transparent transition-colors">
-                        <span class="opacity-60 text-sm"><%= t('settings.email_label') %></span>
-                        <span class="font-medium transition-colors"><%= user.email %></span>
-                    </div>
                 </div>
-            </div>
 
-            <div class="card-theme rounded-2xl p-6 transition-colors shadow-sm">
-                <h2 class="text-lg font-bold flex items-center gap-2 mb-6 transition-colors">
-                    <i class="fas fa-globe opacity-50"></i> <%= t('settings.preferences_title') %>
-                </h2>
-                <div class="flex items-center justify-between p-4 bg-black/5 dark:bg-white/5 rounded-xl border border-transparent transition-colors">
-                    <span class="opacity-60 text-sm"><%= t('settings.language_label') %></span>
-                    <form action="/settings/update-language" method="POST" class="flex items-center">
-                        <select name="language" onchange="this.form.submit()" class="bg-black/5 dark:bg-white/5 border border-transparent text-gray-900 dark:text-white text-sm rounded-lg focus:ring-primary-theme focus:border-primary-theme block w-full p-3 transition-colors outline-none cursor-pointer">
-                            <option value="fr" class="bg-white dark:bg-[#1a1a1a]" <%= currentLng === 'fr' ? 'selected' : '' %>>
-                                Français
-                            </option>
-                            <option value="en" class="bg-white dark:bg-[#1a1a1a]" <%= currentLng === 'en' ? 'selected' : '' %>>
-                                English
-                            </option>
-                        </select>
-                    </form>
-                </div>
-            </div>
-
-            <div class="card-theme rounded-2xl p-6 transition-colors shadow-sm mt-6">
-                <h2 class="text-lg font-bold flex items-center gap-2 mb-6 transition-colors">
-                    <i class="fas fa-coins opacity-50"></i> <%= t('settings.currency_title') %>
-                </h2>
-
-                <div class="flex items-center justify-between p-4 bg-black/5 dark:bg-white/5 rounded-xl border border-transparent transition-colors">
-                    <span class="opacity-60 text-sm"><%= t('settings.currency_label') %></span>
-
-                    <form action="/settings/update-currency" method="POST" class="flex items-center">
-                        <select name="currency" onchange="this.form.submit()" class="bg-black/5 dark:bg-white/5 border border-transparent text-gray-900 dark:text-white text-sm rounded-lg focus:ring-primary-theme focus:border-primary-theme block w-full p-3 transition-colors outline-none cursor-pointer">
-                            <option value="EUR" class="bg-white dark:bg-[#1a1a1a]" <%= user.currency === 'EUR' ? 'selected' : '' %>>
-                                <%= t('settings.currency_eur') %>
-                            </option>
-
-                            <option value="USD" class="bg-white dark:bg-[#1a1a1a]" <%= user.currency === 'USD' ? 'selected' : '' %>>
-                                <%= t('settings.currency_usd') %>
-                            </option>
-
-                            <option value="GBP" class="bg-white dark:bg-[#1a1a1a]" <%= user.currency === 'GBP' ? 'selected' : '' %>>
-                                <%= t('settings.currency_gbp') %>
-                            </option>
-                        </select>
-                    </form>
-                </div>
-            </div>
-
-            <div class="card-theme rounded-2xl p-6 transition-colors shadow-sm">
-                <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-lg font-bold flex items-center gap-2 transition-colors">
-                        <i class="fas fa-shield-alt opacity-50"></i> <%= t('settings.security_title') %>
+                <div class="card-theme rounded-2xl p-6 transition-colors shadow-sm mt-6">
+                    <h2 class="text-lg font-bold flex items-center gap-2 mb-6 transition-colors">
+                        <i class="fas fa-coins opacity-50"></i>
+                        <%= t('settings.currency_title') %>
                     </h2>
+
+                    <div
+                        class="flex items-center justify-between p-4 bg-black/5 dark:bg-white/5 rounded-xl border border-transparent transition-colors">
+                        <span class="opacity-60 text-sm">
+                            <%= t('settings.currency_label') %>
+                        </span>
+
+                        <form action="/settings/update-currency" method="POST" class="flex items-center">
+                            <select name="currency" onchange="this.form.submit()"
+                                class="bg-black/5 dark:bg-white/5 border border-transparent text-gray-900 dark:text-white text-sm rounded-lg focus:ring-primary-theme focus:border-primary-theme block w-full p-3 transition-colors outline-none cursor-pointer">
+                                <option value="EUR" class="bg-white dark:bg-[#1a1a1a]" <%=user.currency==='EUR'
+                                    ? 'selected' : '' %>>
+                                    <%= t('settings.currency_eur') %>
+                                </option>
+
+                                <option value="USD" class="bg-white dark:bg-[#1a1a1a]" <%=user.currency==='USD'
+                                    ? 'selected' : '' %>>
+                                    <%= t('settings.currency_usd') %>
+                                </option>
+
+                                <option value="GBP" class="bg-white dark:bg-[#1a1a1a]" <%=user.currency==='GBP'
+                                    ? 'selected' : '' %>>
+                                    <%= t('settings.currency_gbp') %>
+                                </option>
+                            </select>
+                        </form>
+                    </div>
                 </div>
 
-                <div class="flex items-center justify-between p-4 bg-black/5 dark:bg-white/5 rounded-xl border border-transparent transition-colors">
-                    <div>
-                        <p class="font-medium transition-colors"><%= t('settings.password_label') %></p>
-                        <p class="opacity-50 text-xs mt-1 transition-colors">
-                            <%= t('settings.last_change') %> : <%= new Date(user.lastChange).toLocaleDateString(currentLng === 'fr' ? 'fr-FR' : 'en-US') %>
-                        </p>
+                <div class="card-theme rounded-2xl p-6 transition-colors shadow-sm">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-lg font-bold flex items-center gap-2 transition-colors">
+                            <i class="fas fa-shield-alt opacity-50"></i>
+                            <%= t('settings.security_title') %>
+                        </h2>
                     </div>
-                    <button onclick="openModal('password-modal')" class="text-sm bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 px-3 py-1.5 rounded-lg transition-colors border border-transparent">
-                        <%= t('common.edit') %>
+
+                    <div
+                        class="flex items-center justify-between p-4 bg-black/5 dark:bg-white/5 rounded-xl border border-transparent transition-colors">
+                        <div>
+                            <p class="font-medium transition-colors">
+                                <%= t('settings.password_label') %>
+                            </p>
+                            <p class="opacity-50 text-xs mt-1 transition-colors">
+                                <%= t('settings.last_change') %> : <%= new
+                                        Date(user.lastChange).toLocaleDateString(currentLng==='fr' ? 'fr-FR' : 'en-US' )
+                                        %>
+                            </p>
+                        </div>
+                        <button onclick="openModal('password-modal')"
+                            class="text-sm bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 px-3 py-1.5 rounded-lg transition-colors border border-transparent">
+                            <%= t('common.edit') %>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="username-modal"
+        class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="card-theme rounded-2xl w-full max-w-md p-6 relative shadow-2xl transition-colors">
+            <button onclick="closeModal('username-modal')"
+                class="absolute top-4 right-4 opacity-50 hover:opacity-100 transition-colors"><i
+                    class="fas fa-times"></i></button>
+            <h3 class="text-xl font-bold mb-4 transition-colors">
+                <%= t('settings.modal_username_title') %>
+            </h3>
+
+            <form action="/settings/update-username" method="POST">
+                <div class="mb-4">
+                    <label class="block text-sm opacity-60 mb-2 transition-colors">
+                        <%= t('settings.new_username_label') %>
+                    </label>
+                    <input type="text" name="username" id="username-input"
+                        class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg p-3 focus:border-primary-theme focus:ring-1 focus:ring-primary-theme focus:outline-none transition-colors"
+                        placeholder="<%= user.username %>">
+                    <p id="username-feedback" class="mt-2 text-xs h-4"></p>
+                </div>
+                <button type="submit" id="save-username-btn" disabled
+                    class="w-full bg-primary-theme hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3 rounded-xl transition-colors shadow-lg shadow-primary-theme/20">
+                    <%= t('common.save') %>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="avatar-modal"
+        class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="card-theme rounded-2xl w-full max-w-md p-6 relative shadow-2xl transition-colors">
+            <button onclick="closeModal('avatar-modal')"
+                class="absolute top-4 right-4 opacity-50 hover:opacity-100 transition-colors"><i
+                    class="fas fa-times"></i></button>
+            <h3 class="text-xl font-bold mb-6 transition-colors">
+                <%= t('settings.modal_avatar_title') %>
+            </h3>
+
+            <form id="avatar-form">
+                <div class="flex justify-center mb-6">
+                    <img src="<%= user.img %>" id="avatar-preview"
+                        class="w-32 h-32 rounded-full object-cover border-4 border-black/10 dark:border-white/10">
+                </div>
+
+                <input type="file" name="avatar" id="avatar-upload" accept="image/*" class="hidden">
+
+                <div class="grid grid-cols-2 gap-3">
+                    <button type="button" onclick="document.getElementById('avatar-upload').click()"
+                        class="bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 font-medium py-3 rounded-xl transition-colors border border-transparent">
+                        <%= t('common.choose') %>
+                    </button>
+                    <button type="submit"
+                        class="bg-primary-theme hover:brightness-110 text-white font-bold py-3 rounded-xl transition-colors shadow-lg shadow-primary-theme/20">
+                        <%= t('common.validate') %>
                     </button>
                 </div>
-            </div>
-
+                <p class="text-center opacity-50 text-xs mt-4">
+                    <%= t('settings.avatar_hint') %>
+                </p>
+            </form>
         </div>
     </div>
-</div>
 
-<div id="username-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="card-theme rounded-2xl w-full max-w-md p-6 relative shadow-2xl transition-colors">
-        <button onclick="closeModal('username-modal')" class="absolute top-4 right-4 opacity-50 hover:opacity-100 transition-colors"><i class="fas fa-times"></i></button>
-        <h3 class="text-xl font-bold mb-4 transition-colors"><%= t('settings.modal_username_title') %></h3>
-        
-        <form action="/settings/update-username" method="POST">
-            <div class="mb-4">
-                <label class="block text-sm opacity-60 mb-2 transition-colors"><%= t('settings.new_username_label') %></label>
-                <input type="text" name="username" id="username-input" class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg p-3 focus:border-primary-theme focus:ring-1 focus:ring-primary-theme focus:outline-none transition-colors" placeholder="<%= user.username %>">
-                <p id="username-feedback" class="mt-2 text-xs h-4"></p>
-            </div>
-            <button type="submit" id="save-username-btn" disabled class="w-full bg-primary-theme hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3 rounded-xl transition-colors shadow-lg shadow-primary-theme/20">
-                <%= t('common.save') %>
-            </button>
-        </form>
-    </div>
-</div>
+    <div id="password-modal"
+        class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="card-theme rounded-2xl w-full max-w-md p-6 relative shadow-2xl transition-colors">
+            <button onclick="closeModal('password-modal')"
+                class="absolute top-4 right-4 opacity-50 hover:opacity-100 transition-colors"><i
+                    class="fas fa-times"></i></button>
+            <h3 class="text-xl font-bold mb-4 transition-colors">
+                <%= t('settings.modal_password_title') %>
+            </h3>
 
-<div id="avatar-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="card-theme rounded-2xl w-full max-w-md p-6 relative shadow-2xl transition-colors">
-        <button onclick="closeModal('avatar-modal')" class="absolute top-4 right-4 opacity-50 hover:opacity-100 transition-colors"><i class="fas fa-times"></i></button>
-        <h3 class="text-xl font-bold mb-6 transition-colors"><%= t('settings.modal_avatar_title') %></h3>
-        
-        <form id="avatar-form">
-            <div class="flex justify-center mb-6">
-                <img src="<%= user.img %>" id="avatar-preview" class="w-32 h-32 rounded-full object-cover border-4 border-black/10 dark:border-white/10">
+            <div
+                class="bg-orange-50 dark:bg-orange-500/10 border border-orange-200 dark:border-orange-500/20 text-orange-600 dark:text-orange-400 p-3 rounded-lg text-xs mb-4 transition-colors">
+                <i class="fas fa-triangle-exclamation mr-1"></i>
+                <%= t('settings.password_warning') %>
             </div>
-            
-            <input type="file" name="avatar" id="avatar-upload" accept="image/*" class="hidden">
-            
-            <div class="grid grid-cols-2 gap-3">
-                <button type="button" onclick="document.getElementById('avatar-upload').click()" class="bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 font-medium py-3 rounded-xl transition-colors border border-transparent">
-                    <%= t('common.choose') %>
+
+            <form id="password-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm opacity-60 mb-1 transition-colors">
+                        <%= t('settings.current_password_label') %>
+                    </label>
+                    <input type="password" name="currentPassword"
+                        class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg p-3 focus:border-primary-theme focus:ring-1 focus:ring-primary-theme focus:outline-none transition-colors">
+                </div>
+                <div>
+                    <label class="block text-sm opacity-60 mb-1 transition-colors">
+                        <%= t('settings.new_password_label') %>
+                    </label>
+                    <input type="password" name="newPassword" id="new-password"
+                        class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg p-3 focus:border-primary-theme focus:ring-1 focus:ring-primary-theme focus:outline-none transition-colors">
+                </div>
+                <div>
+                    <label class="block text-sm opacity-60 mb-1 transition-colors">
+                        <%= t('settings.confirm_password_label') %>
+                    </label>
+                    <input type="password" name="confirmPassword" id="confirm-password"
+                        class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg p-3 focus:border-primary-theme focus:ring-1 focus:ring-primary-theme focus:outline-none transition-colors">
+                    <p id="password-match-feedback" class="text-xs mt-1 h-4"></p>
+                </div>
+
+                <button type="submit" id="save-password-btn"
+                    class="w-full bg-primary-theme hover:brightness-110 text-white font-bold py-3 rounded-xl transition-colors mt-2 shadow-lg shadow-primary-theme/20">
+                    <%= t('common.update') %>
                 </button>
-                <button type="submit" class="bg-primary-theme hover:brightness-110 text-white font-bold py-3 rounded-xl transition-colors shadow-lg shadow-primary-theme/20">
-                    <%= t('common.validate') %>
-                </button>
-            </div>
-            <p class="text-center opacity-50 text-xs mt-4"><%= t('settings.avatar_hint') %></p>
-        </form>
-    </div>
-</div>
-
-<div id="password-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="card-theme rounded-2xl w-full max-w-md p-6 relative shadow-2xl transition-colors">
-        <button onclick="closeModal('password-modal')" class="absolute top-4 right-4 opacity-50 hover:opacity-100 transition-colors"><i class="fas fa-times"></i></button>
-        <h3 class="text-xl font-bold mb-4 transition-colors"><%= t('settings.modal_password_title') %></h3>
-        
-        <div class="bg-orange-50 dark:bg-orange-500/10 border border-orange-200 dark:border-orange-500/20 text-orange-600 dark:text-orange-400 p-3 rounded-lg text-xs mb-4 transition-colors">
-            <i class="fas fa-triangle-exclamation mr-1"></i> <%= t('settings.password_warning') %>
+            </form>
         </div>
-
-        <form id="password-form" class="space-y-4">
-            <div>
-                <label class="block text-sm opacity-60 mb-1 transition-colors"><%= t('settings.current_password_label') %></label>
-                <input type="password" name="currentPassword" class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg p-3 focus:border-primary-theme focus:ring-1 focus:ring-primary-theme focus:outline-none transition-colors">
-            </div>
-            <div>
-                <label class="block text-sm opacity-60 mb-1 transition-colors"><%= t('settings.new_password_label') %></label>
-                <input type="password" name="newPassword" id="new-password" class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg p-3 focus:border-primary-theme focus:ring-1 focus:ring-primary-theme focus:outline-none transition-colors">
-            </div>
-            <div>
-                <label class="block text-sm opacity-60 mb-1 transition-colors"><%= t('settings.confirm_password_label') %></label>
-                <input type="password" name="confirmPassword" id="confirm-password" class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg p-3 focus:border-primary-theme focus:ring-1 focus:ring-primary-theme focus:outline-none transition-colors">
-                <p id="password-match-feedback" class="text-xs mt-1 h-4"></p>
-            </div>
-            
-            <button type="submit" id="save-password-btn" class="w-full bg-primary-theme hover:brightness-110 text-white font-bold py-3 rounded-xl transition-colors mt-2 shadow-lg shadow-primary-theme/20">
-                <%= t('common.update') %>
-            </button>
-        </form>
     </div>
-</div>
 
-<script>
-    function openModal(id) {
-        document.getElementById(id).classList.remove('hidden');
-    }
-    function closeModal(id) {
-        document.getElementById(id).classList.add('hidden');
-    }
+    <script>
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
 
-    const usernameInput = document.getElementById('username-input');
-    const usernameFeedback = document.getElementById('username-feedback');
-    const saveUsernameBtn = document.getElementById('save-username-btn');
+        const usernameInput = document.getElementById('username-input');
+        const usernameFeedback = document.getElementById('username-feedback');
+        const saveUsernameBtn = document.getElementById('save-username-btn');
 
-    const translations = {
-        avatarSuccess: "<%= t('messages.avatar_success') %>",
-        avatarError: "<%= t('messages.avatar_error') %>",
-        passwordSuccess: "<%= t('messages.password_success') %>",
-        passwordMismatch: "<%= t('messages.password_mismatch') %>",
-        usernameAvailable: "<%= t('messages.username_available') %>",
-        genericError: "<%= t('messages.generic_error') %>"
-    };
+        const translations = {
+            avatarSuccess: "<%= t('messages.avatar_success') %>",
+            avatarError: "<%= t('messages.avatar_error') %>",
+            passwordSuccess: "<%= t('messages.password_success') %>",
+            passwordMismatch: "<%= t('messages.password_mismatch') %>",
+            usernameAvailable: "<%= t('messages.username_available') %>",
+            genericError: "<%= t('messages.generic_error') %>"
+        };
 
 
-    if(usernameInput) {
-        usernameInput.addEventListener('input', async function() {
-            const val = this.value.trim();
-            if(val.length < 3) {
-                usernameFeedback.textContent = '';
-                saveUsernameBtn.disabled = true;
-                return;
-            }
-
-            try {
-                const res = await fetch('/settings/check-username', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({username: val})
-                });
-                const data = await res.json();
-                
-                if(data.success) {
-                    usernameFeedback.textContent = '✅ ' + translations.usernameAvailable;
-                    usernameFeedback.className = 'mt-2 text-xs text-green-500';
-                    saveUsernameBtn.disabled = false;
-                } else {
-                    usernameFeedback.textContent = '❌ ' + data.message;
-                    usernameFeedback.className = 'mt-2 text-xs text-red-500';
+        if (usernameInput) {
+            usernameInput.addEventListener('input', async function () {
+                const val = this.value.trim();
+                if (val.length < 3) {
+                    usernameFeedback.textContent = '';
                     saveUsernameBtn.disabled = true;
+                    return;
                 }
-            } catch(e) { console.error(e); }
-        });
-    }
 
-    const avatarInput = document.getElementById('avatar-upload');
-    if(avatarInput) {
-        avatarInput.addEventListener('change', function(e) {
-            if(e.target.files && e.target.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('avatar-preview').src = e.target.result;
+                try {
+                    const res = await fetch('/settings/check-username', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username: val })
+                    });
+                    const data = await res.json();
+
+                    if (data.success) {
+                        usernameFeedback.textContent = '✅ ' + translations.usernameAvailable;
+                        usernameFeedback.className = 'mt-2 text-xs text-green-500';
+                        saveUsernameBtn.disabled = false;
+                    } else {
+                        usernameFeedback.textContent = '❌ ' + data.message;
+                        usernameFeedback.className = 'mt-2 text-xs text-red-500';
+                        saveUsernameBtn.disabled = true;
+                    }
+                } catch (e) { console.error(e); }
+            });
+        }
+
+        const avatarInput = document.getElementById('avatar-upload');
+        if (avatarInput) {
+            avatarInput.addEventListener('change', function (e) {
+                if (e.target.files && e.target.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        document.getElementById('avatar-preview').src = e.target.result;
+                    }
+                    reader.readAsDataURL(e.target.files[0]);
                 }
-                reader.readAsDataURL(e.target.files[0]);
-            }
-        });
-    }
+            });
+        }
 
-    const avatarForm = document.getElementById('avatar-form');
-    if(avatarForm) {
-        avatarForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const formData = new FormData(this);
+        const avatarForm = document.getElementById('avatar-form');
+        if (avatarForm) {
+            avatarForm.addEventListener('submit', async function (e) {
+                e.preventDefault();
+                const formData = new FormData(this);
 
-            try {
-                const res = await fetch('/settings/upload-avatar', {
-                    method: 'POST',
-                    body: formData
-                });
-                const data = await res.json();
-                
-                if(data.success) {
-                    document.getElementById('current-avatar').src = data.avatarPath;
-                    closeModal('avatar-modal');
-                    alert(translations.avatarSuccess);
-                    window.location.reload(); 
+                try {
+                    const res = await fetch('/settings/upload-avatar', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const data = await res.json();
+
+                    if (data.success) {
+                        document.getElementById('current-avatar').src = data.avatarPath;
+                        closeModal('avatar-modal');
+                        alert(translations.avatarSuccess);
+                        window.location.reload();
+                    } else {
+                        alert(translations.avatarError + ': ' + data.message);
+                    }
+                } catch (e) {
+                    alert(translations.genericError);
+                }
+            });
+        }
+
+        const passForm = document.getElementById('password-form');
+        const newPass = document.getElementById('new-password');
+        const confPass = document.getElementById('confirm-password');
+        const passFeed = document.getElementById('password-match-feedback');
+
+        if (confPass) {
+            confPass.addEventListener('input', function () {
+                if (this.value !== newPass.value) {
+                    passFeed.textContent = "Ne correspond pas";
+                    passFeed.className = "text-xs mt-1 text-red-500";
                 } else {
-                    alert(translations.avatarError + ': ' + data.message);
+                    passFeed.textContent = "Correspond";
+                    passFeed.className = "text-xs mt-1 text-green-500";
                 }
-            } catch(e) {
-                alert(translations.genericError);
+            });
+        }
+
+        if (passForm) {
+            passForm.addEventListener('submit', async function (e) {
+                e.preventDefault();
+                const current = this.currentPassword.value;
+                const newP = this.newPassword.value;
+                const confP = this.confirmPassword.value;
+
+                if (newP !== confP) return alert(translations.passwordMismatch);
+
+                try {
+                    const res = await fetch('/settings/update-password', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ currentPassword: current, newPassword: newP })
+                    });
+                    const data = await res.json();
+
+                    if (data.success) {
+                        alert(translations.passwordSuccess);
+                        window.location.href = '/logout';
+                    } else {
+                        alert(translations.passwordError + ': ' + data.message);
+                    }
+                } catch (e) { alert(translations.genericError); }
+            });
+        }
+
+    </script>
+
+    <style>
+        .animate-spin-slow {
+            animation: spin 4s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
             }
-        });
-    }
 
-    const passForm = document.getElementById('password-form');
-    const newPass = document.getElementById('new-password');
-    const confPass = document.getElementById('confirm-password');
-    const passFeed = document.getElementById('password-match-feedback');
-
-    if(confPass) {
-        confPass.addEventListener('input', function() {
-            if(this.value !== newPass.value) {
-                passFeed.textContent = "Ne correspond pas";
-                passFeed.className = "text-xs mt-1 text-red-500";
-            } else {
-                passFeed.textContent = "Correspond";
-                passFeed.className = "text-xs mt-1 text-green-500";
+            to {
+                transform: rotate(360deg);
             }
-        });
-    }
+        }
+    </style>
 
-    if(passForm) {
-        passForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const current = this.currentPassword.value;
-            const newP = this.newPassword.value;
-            const confP = this.confirmPassword.value;
-
-            if(newP !== confP) return alert(translations.passwordMismatch);
-
-            try {
-                const res = await fetch('/settings/update-password', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({currentPassword: current, newPassword: newP})
-                });
-                const data = await res.json();
-                
-                if(data.success) {
-                    alert(translations.passwordSuccess);
-                    window.location.href = '/logout';
-                } else {
-                    alert(translations.passwordError + ': ' + data.message);
-                }
-            } catch(e) { alert(translations.genericError); }
-        });
-    }
-
-</script>
-
-<style>
-    .animate-spin-slow { animation: spin 4s linear infinite; }
-    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-</style>
-
-<%- include('partials/footer') %>
+    <%- include('partials/footer') %>

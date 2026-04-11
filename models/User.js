@@ -36,18 +36,18 @@ const userSchema = new mongoose.Schema({
     },
     theme: {
         type: String,
-        default: 'dark', 
+        default: 'dark',
         enum: ['light', 'dark']
     },
-    language: { 
-        type: String, 
-        enum: ['fr', 'en'], 
-        default: 'fr' 
+    language: {
+        type: String,
+        enum: ['fr', 'en', 'de', 'es', 'it'],
+        default: 'fr'
     },
-    currency: { 
-        type: String, 
-        enum: ['EUR', 'USD', 'GBP'], 
-        default: 'USD' 
+    currency: {
+        type: String,
+        enum: ['EUR', 'USD', 'GBP'],
+        default: 'USD'
     },
     discogsUsername: { type: String, default: '' },
     lastChange: {
@@ -66,16 +66,16 @@ const userSchema = new mongoose.Schema({
  * @param {string} password
  * @returns {Promise<mongoose.Document>} Resolves with the user document on success
  */
-userSchema.statics.login = async function(email, password) {
-  const user = await this.findOne({ email });
-  if (user) {
-    const auth = await bcrypt.compare(password, user.password);
-    if (auth) {
-      return user;
+userSchema.statics.login = async function (email, password) {
+    const user = await this.findOne({ email });
+    if (user) {
+        const auth = await bcrypt.compare(password, user.password);
+        if (auth) {
+            return user;
+        }
+        throw Error('incorrect password');
     }
-    throw Error('incorrect password');
-  }
-  throw Error('incorrect email');
+    throw Error('incorrect email');
 };
 
 const User = mongoose.model('user', userSchema);

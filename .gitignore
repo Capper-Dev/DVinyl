@@ -3,3 +3,4 @@
 /public/uploads/avatars/*
 /mongo_data
 docker-compose.override.yml
+.vscode/
