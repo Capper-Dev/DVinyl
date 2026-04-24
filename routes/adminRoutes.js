@@ -359,6 +359,9 @@ router.post('/refresh-all-music-metadata', requireAuth, requireAdmin, async (req
         if (mode === 'missing') {
             conditions.push({
                 $or: [
+                    { genre: { $exists: false } },
+                    { genre: '' },
+                    { genre: null },
                     { genres: { $exists: false } },
                     { genres: { $size: 0 } },
                     { styles: { $exists: false } },
@@ -371,7 +374,7 @@ router.post('/refresh-all-music-metadata', requireAuth, requireAdmin, async (req
 
         query.$and = conditions;
 
-        const albums = await Item.find(query).select('_id discogs_id title artist');
+        const albums = await Item.find(query).select('_id discogs_id title artist genre genres styles tracklist');
         if (albums.length === 0) return res.json({ success: true, count: 0 });
 
         res.status(202).json({ success: true, total: albums.length });
@@ -381,41 +384,56 @@ router.post('/refresh-all-music-metadata', requireAuth, requireAdmin, async (req
             let current = 0;
             for (const album of albums) {
                 current++;
-                try {
-                    if (io) {
-                        io.emit('refresh_all_progress', {
-                            current,
-                            total: albums.length,
-                            title: `${album.artist} - ${album.title}`
+                let success = false;
+                let retries = 0;
+                while (!success && retries < 3) {
+                    try {
+                        if (io && retries === 0) {
+                            io.emit('refresh_all_progress', {
+                                current,
+                                total: albums.length,
+                                title: `${album.artist} - ${album.title}`
+                            });
+                        }
+
+                        const response = await axios.get(`https://api.discogs.com/releases/${album.discogs_id}`, {
+                            headers: { 'User-Agent': 'DVinylApp/2.0', 'Authorization': `Discogs token=${token}` }
                         });
-                    }
 
-                    const response = await axios.get(`https://api.discogs.com/releases/${album.discogs_id}`, {
-                        headers: { 'User-Agent': 'DVinylApp/2.0', 'Authorization': `Discogs token=${token}` }
-                    });
+                        const { genres = [], styles = [], tracklist = [] } = response.data;
 
-                    const { genres = [], styles = [], tracklist = [] } = response.data;
+                        const updateObj = {};
+                        if (mode === 'all' || !album.genres || album.genres.length === 0) updateObj.genres = genres;
+                        if (mode === 'all' || !album.styles || album.styles.length === 0) updateObj.styles = styles;
+                        if (mode === 'all' || !album.tracklist || album.tracklist.length === 0) updateObj.tracklist = tracklist;
+                        if (!album.genre || album.genre.trim() === '') {
+                            updateObj.genre = genres[0] || '';
+                        }
 
-                    await Item.updateOne(
-                        { _id: album._id },
-                        {
-                            $set: {
-                                genres,
-                                styles,
-                                tracklist,
-                                genre: genres[0] || ''
+                        await Item.updateOne(
+                            { _id: album._id },
+                            { $set: updateObj }
+                        );
+
+                        success = true;
+                        // Respect Discogs API limit (60 req/min)
+                        await new Promise(r => setTimeout(r, 1500));
+                    } catch (err) {
+                        retries++;
+                        console.error(`[ERR] Refresh bulk ID ${album.discogs_id} (Attempt ${retries}):`, err.message);
+                        if (err.response && err.response.status === 429) {
+                            // Wait longer if rate limited
+                            await new Promise(r => setTimeout(r, 10000));
+                        } else {
+                            if (retries >= 3) {
+                                await new Promise(r => setTimeout(r, 1000));
+                            } else {
+                                await new Promise(r => setTimeout(r, 2000));
                             }
                         }
-                    );
-
-                    // Respect Discogs API limit (60 req/min)
-                    await new Promise(r => setTimeout(r, 1500));
-                } catch (err) {
-                    console.error(`[ERR] Refresh bulk ID ${album.discogs_id}:`, err.message);
-                    if (err.response && err.response.status === 429) {
-                        await new Promise(r => setTimeout(r, 10000));
-                    } else {
-                        await new Promise(r => setTimeout(r, 1000));
+                        if (retries >= 3 && err.response && err.response.status === 404) {
+                            success = true; // Break out if 404
+                        }
                     }
                 }
             }
@@ -436,6 +454,9 @@ router.post('/refresh-all-books-metadata', requireAuth, requireAdmin, async (req
         let query = { hardcover_slug: { $exists: true, $ne: null } };
         if (mode === 'missing') {
             query.$or = [
+                { genre: { $exists: false } },
+                { genre: '' },
+                { genre: null },
                 { genres: { $exists: false } },
                 { genres: { $size: 0 } },
                 { styles: { $exists: false } },
@@ -443,7 +464,7 @@ router.post('/refresh-all-books-metadata', requireAuth, requireAdmin, async (req
             ];
         }
 
-        const books = await Book.find(query).select('_id hardcover_slug title author');
+        const books = await Book.find(query).select('_id hardcover_slug title author genre genres');
         if (books.length === 0) return res.json({ success: true, count: 0 });
 
         res.status(202).json({ success: true, total: books.length });
@@ -509,14 +530,15 @@ router.post('/refresh-all-books-metadata', requireAuth, requireAdmin, async (req
 
                         const genres = [...new Set(filteredGenres)];
                         
+                        const updateObj = {};
+                        if (mode === 'all' || !book.genres || book.genres.length === 0) updateObj.genres = genres;
+                        if (!book.genre || book.genre.trim() === '') {
+                            updateObj.genre = genres[0] || '';
+                        }
+
                         await Book.updateOne(
                             { _id: book._id }, 
-                            { 
-                                $set: { 
-                                    genres, 
-                                    genre: genres[0] || '' 
-                                } 
-                            }
+                            { $set: updateObj }
                         );
                     }
 
@@ -543,6 +565,9 @@ router.post('/refresh-all-dvds-metadata', requireAuth, requireAdmin, async (req,
         let query = { tmdb_id: { $exists: true, $ne: null } };
         if (mode === 'missing') {
             query.$or = [
+                { genre: { $exists: false } },
+                { genre: '' },
+                { genre: null },
                 { genres: { $exists: false } },
                 { genres: { $size: 0 } },
                 { styles: { $exists: false } },
@@ -550,7 +575,7 @@ router.post('/refresh-all-dvds-metadata', requireAuth, requireAdmin, async (req,
             ];
         }
 
-        const dvds = await Dvd.find(query).select('_id tmdb_id title director media_type');
+        const dvds = await Dvd.find(query).select('_id tmdb_id title director media_type genre genres');
         if (dvds.length === 0) return res.json({ success: true, count: 0 });
 
         res.status(202).json({ success: true, total: dvds.length });
@@ -575,14 +600,15 @@ router.post('/refresh-all-dvds-metadata', requireAuth, requireAdmin, async (req,
                     if (response.data) {
                         const genres = (response.data.genres || []).map(g => g.name);
                         
+                        const updateObj = {};
+                        if (mode === 'all' || !dvd.genres || dvd.genres.length === 0) updateObj.genres = genres;
+                        if (!dvd.genre || dvd.genre.trim() === '') {
+                            updateObj.genre = genres[0] || '';
+                        }
+
                         await Dvd.updateOne(
                             { _id: dvd._id }, 
-                            { 
-                                $set: { 
-                                    genres, 
-                                    genre: genres[0] || '' 
-                                } 
-                            }
+                            { $set: updateObj }
                         );
                     }
 

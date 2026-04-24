@@ -495,7 +495,6 @@ router.post('/save-vinyl', requireAuth, requireAdmin, async (req, res) => {
             genres, styles
         } = req.body;
         
-        const tracklist = tracklist_json ? JSON.parse(tracklist_json) : [];
         const parsedGenres = Array.isArray(genres) ? genres : (genres ? genres.split(',').map(g => g.trim()).filter(Boolean) : []);
         const parsedStyles = Array.isArray(styles) ? styles : (styles ? styles.split(',').map(s => s.trim()).filter(Boolean) : []);
 
@@ -510,6 +509,13 @@ router.post('/save-vinyl', requireAuth, requireAdmin, async (req, res) => {
         
         if (!album && discogs_id) {
             album = await Item.findOne({ discogs_id: discogs_id, owner: adminId });
+        }
+
+        let tracklist = [];
+        if (tracklist_json) {
+            tracklist = JSON.parse(tracklist_json);
+        } else if (album && album.tracklist) {
+            tracklist = album.tracklist;
         }
 
         if (album) {
