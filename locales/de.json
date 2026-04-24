@@ -575,7 +575,11 @@
     "top_artist_label": "Lieblingskünstler",
     "top_author_label": "Lieblingsautor",
     "top_director_label": "Lieblingsregisseur",
-    "total_label": "Gesamtsammlung"
+    "total_label": "Gesamtsammlung",
+    "top_genre_label": "Liebling-Genre",
+    "top_label_label": "Liebling-Label",
+    "top_publisher_label": "Lieblingsverlag",
+    "top_studio_label": "Lieblingsstudio"
   },
   "status": {
     "read": "Lesen",

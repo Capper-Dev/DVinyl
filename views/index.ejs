@@ -225,8 +225,12 @@
 
             const topConfigs = {
                 'artist': { label: t('stats.top_artist_label'), data: stats.artist, icon: 'fa-crown', color: 'bg-purple-100 dark:bg-purple-500/20' },
+                'music_genre': { label: t('stats.top_genre_label'), data: stats.music_genre, icon: 'fa-music', color: 'bg-pink-100 dark:bg-pink-500/20' },
+                'label': { label: t('stats.top_label_label'), data: stats.label, icon: 'fa-building', color: 'bg-emerald-100 dark:bg-emerald-500/20' },
                 'author': { label: t('stats.top_author_label'), data: stats.author, icon: 'fa-pen-nib', color: 'bg-amber-100 dark:bg-amber-500/20' },
-                'director': { label: t('stats.top_director_label'), data: stats.director, icon: 'fa-clapperboard', color: 'bg-red-100 dark:bg-red-500/20' }
+                'publisher': { label: t('stats.top_publisher_label'), data: stats.publisher, icon: 'fa-book-open', color: 'bg-orange-100 dark:bg-orange-500/20' },
+                'director': { label: t('stats.top_director_label'), data: stats.director, icon: 'fa-clapperboard', color: 'bg-red-100 dark:bg-red-500/20' },
+                'studio': { label: t('stats.top_studio_label'), data: stats.studio, icon: 'fa-video', color: 'bg-rose-100 dark:bg-rose-500/20' }
             };
             
             const activeWidgets = (settings && settings.statsWidgets) ? settings.statsWidgets : ['total', 'vinyl', 'cd', 'cassette', 'artist'];

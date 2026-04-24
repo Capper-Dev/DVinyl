@@ -575,7 +575,11 @@
     "top_artist_label": "Artista favorito",
     "top_author_label": "Autor favorito",
     "top_director_label": "Director favorito",
-    "total_label": "Colección total"
+    "total_label": "Colección total",
+    "top_genre_label": "Género Favorito",
+    "top_label_label": "Discográfica Fav.",
+    "top_publisher_label": "Editorial Fav.",
+    "top_studio_label": "Estudio Favorito"
   },
   "status": {
     "read": "Leer",

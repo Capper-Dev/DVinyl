@@ -92,8 +92,14 @@ router.get('/', requireAuth, async (req, res) => {
         };
 
         stats.artist = getTop(allItems.filter(i => i.kind === 'Music' || (!i.kind && i.artist)), 'artist');
+        stats.music_genre = getTop(allItems.filter(i => i.kind === 'Music' || !i.kind), 'genre');
+        stats.label = getTop(allItems.filter(i => i.kind === 'Music' || !i.kind), 'label');
+
         stats.author = getTop(allItems.filter(i => i.kind === 'Book'), 'author');
+        stats.publisher = getTop(allItems.filter(i => i.kind === 'Book'), 'publisher');
+
         stats.director = getTop(allItems.filter(i => i.kind === 'Dvd'), 'director');
+        stats.studio = getTop(allItems.filter(i => i.kind === 'Dvd'), 'studio');
 
         res.render('index', { 
             latestCollection: (await Item.find({ owner: adminId, in_wishlist: false }).sort({ added_at: -1 }).limit(4)).map(formatForView),

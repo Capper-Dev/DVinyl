@@ -1,294 +1,356 @@
 <%- include('partials/header') %>
 
-<div class="max-w-5xl mx-auto px-4 py-10">
-    
-    <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-        <div>
-            <h1 class="text-3xl font-black transition-colors">
-                <%= t('perso.title') %>
-            </h1>
-            <p class="opacity-60 mt-1 transition-colors">
-                <%= t('perso.subtitle', { siteName: settings.siteName }) %>
-            </p>
-        </div>
-        <a href="/" class="w-fit px-4 py-2 bg-black/5 dark:bg-white/10 rounded-lg text-sm font-bold hover:bg-black/10 dark:hover:bg-white/20 transition-all flex items-center">
-            <i class="fa-solid fa-arrow-left mr-2"></i>
-            <%= t('perso.backHome') %>
-        </a>
-    </div>
+    <div class="max-w-5xl mx-auto px-4 py-10">
 
-    <form action="/admin/personnalisation/save" method="POST" class="space-y-8">
-
-        <div class="card-theme rounded-3xl p-6 shadow-xl transition-colors mt-8">
-            <h2 class="text-xl font-bold mb-2 flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-primary-theme/10 text-primary-theme flex items-center justify-center">
-                    <i class="fa-solid fa-list-check"></i>
-                </div>
-                <%= t('perso.nav_title') %>
-            </h2>
-            <p class="text-sm opacity-60 mb-6"><%= t('perso.nav_desc') %></p>
-
-            <div class="space-y-6">
-                <% 
-                    const shortcutGroups = [
-                        { 
-                            label: t('perso.modules.global'), 
-                            active: true,
-                            options: [
-                                { id: 'global_home', label: t('nav.home') },
-                                { id: 'global_collection', label: t('nav.collection') },
-                                { id: 'global_wishlist', label: t('nav.wishlist') }
-                            ]
-                        },
-                        { 
-                            label: t('perso.modules.music'),
-                            active: settings.modules.music,
-                            options: [
-                                { id: 'music', label: t('media.music') },
-                                { id: 'music_vinyl', label: t('media.vinyls') },
-                                { id: 'music_cd', label: t('media.cds') },
-                                { id: 'music_cassette', label: t('media.cassettes') }
-                            ]
-                        },
-                        { 
-                            label: t('perso.modules.books'),
-                            active: settings.modules.books,
-                            options: [
-                                { id: 'books', label: t('media.books') },
-                                { id: 'book_hardcover', label: t('media.hardcover') },
-                                { id: 'book_paperback', label: t('media.paperback') },
-                                { id: 'book_manga', label: t('media.manga') },
-                                { id: 'book_comic', label: t('media.comic') },
-                                { id: 'book_graphic_novel', label: t('media.graphic_novel') }
-                            ]
-                        },
-                        { 
-                            label: t('perso.modules.dvd'),
-                            active: settings.modules.dvd,
-                            options: [
-                                { id: 'dvd', label: t('media.dvd_gen') },
-                                { id: 'dvd_dvd', label: t('media.dvd') },
-                                { id: 'dvd_bluray', label: t('media.bluray') },
-                                { id: 'dvd_4k', label: t('media.4k') },
-                                { id: 'dvd_vhs', label: t('media.vhs') },
-                                { id: 'dvd_laserdisc', label: t('media.laserdisc') }
-                            ]
-                        }
-                    ]
-                %>
-
-                <% shortcutGroups.forEach(group => { %>
-                    <% if (group.active) { %>
-                        <div>
-                            <h3 class="text-xs font-black uppercase tracking-widest opacity-40 mb-3"><%= group.label %></h3>
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                                <% group.options.forEach(opt => { %>
-                                    <label class="shortcut-option flex items-center gap-3 p-3 rounded-xl border border-black/5 dark:border-white/5 bg-black/5 dark:bg-white/5 cursor-pointer hover:bg-black/10 dark:hover:bg-white/10 transition-all">
-                                        <input type="checkbox" name="navbarShortcuts" value="<%= opt.id %>" 
-                                            <%= (settings.navbarShortcuts && settings.navbarShortcuts.includes(opt.id)) ? 'checked' : '' %>
-                                            class="w-4 h-4 rounded text-primary-theme focus:ring-primary-theme">
-                                        <span class="text-sm font-medium"><%= opt.label %></span>
-                                    </label>
-                                <% }) %>
-                            </div>
-                        </div>
-                    <% } %>
-                <% }) %>
+        <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+            <div>
+                <h1 class="text-3xl font-black transition-colors">
+                    <%= t('perso.title') %>
+                </h1>
+                <p class="opacity-60 mt-1 transition-colors">
+                    <%= t('perso.subtitle', { siteName: settings.siteName }) %>
+                </p>
             </div>
+            <a href="/"
+                class="w-fit px-4 py-2 bg-black/5 dark:bg-white/10 rounded-lg text-sm font-bold hover:bg-black/10 dark:hover:bg-white/20 transition-all flex items-center">
+                <i class="fa-solid fa-arrow-left mr-2"></i>
+                <%= t('perso.backHome') %>
+            </a>
         </div>
 
+        <form action="/admin/personnalisation/save" method="POST" class="space-y-8">
 
-        <div class="card-theme rounded-3xl p-6 shadow-xl transition-colors mt-8">
-            <h2 class="text-xl font-bold mb-2 flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-primary-theme/10 text-primary-theme flex items-center justify-center">
-                    <i class="fa-solid fa-bolt"></i>
-                </div>
-                <%= t('perso.fastAdd_title') %>
-            </h2>
-            <p class="text-sm opacity-60 mb-6"><%= t('perso.fastAdd_desc') %></p>
+            <div class="card-theme rounded-3xl p-6 shadow-xl transition-colors">
+                <h2 class="text-xl font-bold mb-6 flex items-center gap-3">
+                    <div
+                        class="w-10 h-10 rounded-full bg-primary-theme/10 text-primary-theme flex items-center justify-center">
+                        <i class="fa-solid fa-palette"></i>
+                    </div>
+                    <%= t('perso.themes.title') %>
+                </h2>
 
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-                <% 
-                const fastAddOptions = [
-                    { value: '', label: t('perso.fastAdd_disabled'), icon: 'fa-xmark', color: 'peer-checked:bg-gray-500' },
-                ];
-                if (settings.modules.music) {
-                    fastAddOptions.push(
-                        { value: 'vinyl', label: t('media.vinyls'), icon: 'fa-record-vinyl', color: 'peer-checked:bg-green-600' },
-                        { value: 'cd', label: t('media.cds'), icon: 'fa-compact-disc', color: 'peer-checked:bg-blue-600'  },
-                        { value: 'cassette', label: t('media.cassettes'), icon: 'fa-tape', color: 'peer-checked:bg-orange-600'}
-                    );
-                }
-                if (settings.modules.books) {
-                    fastAddOptions.push(
-                        { value: 'book', label: t('media.books'), icon: 'fa-book', color: 'peer-checked:bg-amber-600' }
-                    );
-                }
-                if (settings.modules.dvd) {
-                    fastAddOptions.push(
-                        { value: 'dvd', label: t('media.dvd_gen'), icon: 'fa-film', color: 'peer-checked:bg-red-600'   }
-                    );
-                }
-                %>
-                <% fastAddOptions.forEach(opt => { %>
-                    <label class="cursor-pointer relative group">
-                        <input type="radio" name="fastAdd" value="<%= opt.value %>" class="peer sr-only"
-                            <%= (settings.fastAdd === opt.value || (!settings.fastAdd && opt.value === '')) ? 'checked' : '' %>>
-                        <div class="flex items-center gap-3 p-3 rounded-xl border border-black/5 dark:border-white/5 bg-black/5 dark:bg-white/5 transition-all peer-checked:text-white opacity-60 peer-checked:opacity-100 peer-checked:shadow-md <%= opt.color %>">
-                            <i class="fa-solid <%= opt.icon %> text-base w-4 text-center"></i>
-                            <span class="text-sm font-medium"><%= opt.label %></span>
-                        </div>
-                    </label>
-                <% }) %>
-            </div>
-        </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-
-        <div class="card-theme rounded-3xl p-6 shadow-xl transition-colors mt-8">
-            <h2 class="text-xl font-bold mb-2 flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-primary-theme/10 text-primary-theme flex items-center justify-center">
-                    <i class="fa-solid fa-chart-simple"></i>
-                </div>
-                <%= t('perso.widgets_title') %>
-            </h2>
-            <p class="text-sm opacity-60 mb-6"><%= t('perso.widgets_desc') %></p>
-
-            <div class="space-y-6">
-                <% 
-                const statOptions = [
-                    { 
-                        group: t('perso.modules.global'), 
-                        active: true, 
-                        options: [
-                            { id: 'total', label: t('stats.total_label') }
-                        ]
-                    },
-                    { 
-                        group: t('perso.modules.music'), 
-                        active: settings.modules.music, 
-                        options: [
-                            { id: 'vinyl', label: t('media.vinyls') },
-                            { id: 'cd', label: t('media.cds') },
-                            { id: 'cassette', label: t('media.cassettes') },
-                            { id: 'artist', label: t('stats.top_artist_label') }
-                        ]
-                    },
-                    { 
-                        group: t('perso.modules.books'), 
-                        active: settings.modules.books, 
-                        options: [
-                            { id: 'book_total', label: t('stats.books_total_label') },
-                            { id: 'book_hardcover', label: t('media.hardcover_pl') },
-                            { id: 'book_paperback', label: t('media.paperback_pl') },
-                            { id: 'book_manga', label: t('media.mangas') },
-                            { id: 'book_comic', label: t('media.comics') },
-                            { id: 'author', label: t('stats.top_author_label') }
-                        ]
-                    },
-                    { 
-                        group: t('perso.modules.dvd'), 
-                        active: settings.modules.dvd, 
-                        options: [
-                            { id: 'dvd_total', label: t('stats.dvd_total_label') },
-                            { id: 'dvd_bluray', label: t('media.blurays') },
-                            { id: 'dvd_4k', label: t('media.4k_pl') },
-                            { id: 'dvd_vhs', label: t('media.vhss') },
-                            { id: 'dvd_laserdisc', label: t('media.laserdiscs') },
-                            { id: 'director', label: t('stats.top_director_label') }
-                        ]
-                    }
-                ] 
-                %>
-
-                <% statOptions.forEach(group => { %>
-                    <% if (group.active) { %>
-                        <div>
-                            <h3 class="text-xs font-black uppercase tracking-widest opacity-40 mb-3"><%= group.group %></h3>
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                                <% group.options.forEach(opt => { %>
-                                    <label class="flex items-center gap-3 p-3 rounded-xl border border-black/5 dark:border-white/5 bg-black/5 dark:bg-white/5 cursor-pointer hover:bg-black/10 transition-all">
-                                        <input type="checkbox" name="statsWidgets" value="<%= opt.id %>" 
-                                            <%= (settings.statsWidgets && settings.statsWidgets.includes(opt.id)) ? 'checked' : '' %>
-                                            class="w-4 h-4 rounded text-primary-theme">
-                                        <span class="text-sm font-medium"><%= opt.label %></span>
-                                    </label>
-                                <% }) %>
-                            </div>
-                        </div>
-                    <% } %>
-                <% }) %>
-            </div>
-        </div>
-
-        <div class="card-theme rounded-3xl p-6 shadow-xl transition-colors">
-            <h2 class="text-xl font-bold mb-6 flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-primary-theme/10 text-primary-theme flex items-center justify-center">
-                    <i class="fa-solid fa-palette"></i>
-                </div>
-                <%= t('perso.themes.title') %>
-            </h2>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                
-                <div class="space-y-2">
-                    <label class="block text-xs font-bold uppercase tracking-widest opacity-60">
-                        <i class="fa-solid fa-house mr-1"></i> <%= t('perso.themes.home') %>
-                    </label>
-                    <select name="homePreset" class="w-full bg-black/5 dark:bg-black/20 border border-transparent focus:border-primary-theme rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary-theme/20 outline-none transition-all">
-                        <% for (const [key, val] of Object.entries(presets)) { %>
-                            <option value="<%= key %>" <%= (settings.theme.home.preset === key) ? 'selected' : '' %> class="dark:bg-neutral-900">
-                                <%= val.label %>
-                            </option>
-                        <% } %>
-                    </select>
-                </div>
-
-                <% const themeCats = [
-                    {key: 'music', label: t('perso.themes.music'), icon: 'fa-music'},
-                    {key: 'books', label: t('perso.themes.books'), icon: 'fa-book'},
-                    {key: 'dvd', label: t('perso.themes.dvd'), icon: 'fa-film'}
-                ] %>
-
-                <% themeCats.forEach((tTheme) => { %>
                     <div class="space-y-2">
                         <label class="block text-xs font-bold uppercase tracking-widest opacity-60">
-                            <i class="fa-solid <%= tTheme.icon %> mr-1"></i> <%= tTheme.label %>
+                            <i class="fa-solid fa-house mr-1"></i>
+                            <%= t('perso.themes.home') %>
                         </label>
-                        <select name="<%= tTheme.key %>Preset" class="w-full bg-black/5 dark:bg-black/20 border border-transparent focus:border-primary-theme rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary-theme/20 outline-none transition-all">
+                        <select name="homePreset"
+                            class="w-full bg-black/5 dark:bg-black/20 border border-transparent focus:border-primary-theme rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary-theme/20 outline-none transition-all">
                             <% for (const [key, val] of Object.entries(presets)) { %>
-                                <option value="<%= key %>" <%= (settings.theme[tTheme.key] && settings.theme[tTheme.key].preset === key) ? 'selected' : '' %> class="dark:bg-neutral-900">
+                                <option value="<%= key %>" <%=(settings.theme.home.preset===key) ? 'selected' : '' %>
+                                    class="dark:bg-neutral-900">
                                     <%= val.label %>
                                 </option>
-                            <% } %>
+                                <% } %>
                         </select>
                     </div>
-                <% }) %>
 
+                    <% const themeCats=[ {key: 'music' , label: t('perso.themes.music'), icon: 'fa-music' },
+                        {key: 'books' , label: t('perso.themes.books'), icon: 'fa-book' }, {key: 'dvd' , label:
+                        t('perso.themes.dvd'), icon: 'fa-film' } ] %>
+
+                        <% themeCats.forEach((tTheme)=> { %>
+                            <div class="space-y-2">
+                                <label class="block text-xs font-bold uppercase tracking-widest opacity-60">
+                                    <i class="fa-solid <%= tTheme.icon %> mr-1"></i>
+                                    <%= tTheme.label %>
+                                </label>
+                                <select name="<%= tTheme.key %>Preset"
+                                    class="w-full bg-black/5 dark:bg-black/20 border border-transparent focus:border-primary-theme rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary-theme/20 outline-none transition-all">
+                                    <% for (const [key, val] of Object.entries(presets)) { %>
+                                        <option value="<%= key %>" <%=(settings.theme[tTheme.key] &&
+                                            settings.theme[tTheme.key].preset===key) ? 'selected' : '' %>
+                                            class="dark:bg-neutral-900">
+                                            <%= val.label %>
+                                        </option>
+                                        <% } %>
+                                </select>
+                            </div>
+                            <% }) %>
+
+                </div>
             </div>
-        </div>
 
-        <div class="flex justify-end pt-4">
-            <button type="submit" class="w-full md:w-auto px-10 py-4 bg-primary-theme text-white font-black rounded-2xl hover:brightness-110 active:scale-95 transition-all shadow-lg shadow-primary-theme/20 flex items-center justify-center gap-3">
-                <i class="fa-solid fa-save"></i>
-                <%= t('perso.save') %>
-            </button>
-        </div>
-    </form>
-</div>
+            <div class="card-theme rounded-3xl p-6 shadow-xl transition-colors mt-8">
+                <h2 class="text-xl font-bold mb-2 flex items-center gap-3">
+                    <div
+                        class="w-10 h-10 rounded-full bg-primary-theme/10 text-primary-theme flex items-center justify-center">
+                        <i class="fa-solid fa-list-check"></i>
+                    </div>
+                    <%= t('perso.nav_title') %>
+                </h2>
+                <p class="text-sm opacity-60 mb-6">
+                    <%= t('perso.nav_desc') %>
+                </p>
 
-<script>
-    const checkboxes = document.querySelectorAll('input[name="navbarShortcuts"]');
-    const maxAllowed = 6;
+                <div class="space-y-6">
+                    <% const shortcutGroups=[ { label: t('perso.modules.global'), active: true, options: [ {
+                        id: 'global_home' , label: t('nav.home') }, { id: 'global_collection' , label:
+                        t('nav.collection') }, { id: 'global_wishlist' , label: t('nav.wishlist') } ] }, { label:
+                        t('perso.modules.music'), active: settings.modules.music, options: [ { id: 'music' , label:
+                        t('media.music') }, { id: 'music_vinyl' , label: t('media.vinyls') }, { id: 'music_cd' , label:
+                        t('media.cds') }, { id: 'music_cassette' , label: t('media.cassettes') } ] }, { label:
+                        t('perso.modules.books'), active: settings.modules.books, options: [ { id: 'books' , label:
+                        t('media.books') }, { id: 'book_hardcover' , label: t('media.hardcover') }, {
+                        id: 'book_paperback' , label: t('media.paperback') }, { id: 'book_manga' , label:
+                        t('media.manga') }, { id: 'book_comic' , label: t('media.comic') }, { id: 'book_graphic_novel' ,
+                        label: t('media.graphic_novel') } ] }, { label: t('perso.modules.dvd'), active:
+                        settings.modules.dvd, options: [ { id: 'dvd' , label: t('media.dvd_gen') }, { id: 'dvd_dvd' ,
+                        label: t('media.dvd') }, { id: 'dvd_bluray' , label: t('media.bluray') }, { id: 'dvd_4k' ,
+                        label: t('media.4k') }, { id: 'dvd_vhs' , label: t('media.vhs') }, { id: 'dvd_laserdisc' ,
+                        label: t('media.laserdisc') } ] } ] %>
 
-    checkboxes.forEach(cb => {
-        cb.addEventListener('change', () => {
-            const checkedCount = document.querySelectorAll('input[name="navbarShortcuts"]:checked').length;
-            if (checkedCount > maxAllowed) {
-                cb.checked = false;
-                alert("<%= t('perso.nav_max') %>");
+                        <div class="flex gap-2 overflow-x-auto pb-2 scrollbar-hide flex-nowrap">
+                            <% shortcutGroups.forEach((group, idx)=> { %>
+                                <% if (group.active) { %>
+                                    <button type="button" onclick="switchTab('shortcuts', <%= idx %>)"
+                                        id="tab-shortcuts-<%= idx %>"
+                                        class="tab-btn-shortcuts shrink-0 px-5 py-2.5 rounded-xl font-bold text-sm whitespace-nowrap transition-all border-2 border-transparent text-black/50 dark:text-white/50 bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10">
+                                        <%= group.label %>
+                                    </button>
+                                    <% } %>
+                                        <% }) %>
+                        </div>
+
+                        <div class="mt-4">
+                            <% shortcutGroups.forEach((group, idx)=> { %>
+                                <% if (group.active) { %>
+                                    <div id="content-shortcuts-<%= idx %>"
+                                        class="tab-content-shortcuts hidden bg-black/5 dark:bg-white/5 rounded-2xl p-4 md:p-5">
+                                        <div class="flex flex-wrap gap-2 md:gap-3">
+                                            <% group.options.forEach(opt=> { %>
+                                                <label class="shortcut-option cursor-pointer group relative">
+                                                    <input type="checkbox" name="navbarShortcuts" value="<%= opt.id %>"
+                                                        <%=(settings.navbarShortcuts &&
+                                                        settings.navbarShortcuts.includes(opt.id)) ? 'checked' : '' %>
+                                                    class="sr-only">
+                                                    <div
+                                                        class="flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-transparent bg-black/5 dark:bg-white/5 text-black/50 dark:text-white/50 opacity-80 transition-all duration-300 font-bold group-hover:bg-black/10 dark:group-hover:bg-white/10 group-has-[:checked]:bg-primary-theme group-has-[:checked]:border-primary-theme group-has-[:checked]:text-white group-has-[:checked]:opacity-100 group-has-[:checked]:shadow-lg group-has-[:checked]:-translate-y-0.5">
+                                                        <i
+                                                            class="fa-solid fa-plus text-[10px] opacity-40 block group-has-[:checked]:hidden transition-transform"></i>
+                                                        <i
+                                                            class="fa-solid fa-check text-[10px] hidden group-has-[:checked]:block transition-transform"></i>
+                                                        <span class="text-sm">
+                                                            <%= opt.label %>
+                                                        </span>
+                                                    </div>
+                                                </label>
+                                                <% }) %>
+                                        </div>
+                                    </div>
+                                    <% } %>
+                                        <% }) %>
+                        </div>
+                </div>
+            </div>
+
+
+            <div class="card-theme rounded-3xl p-6 shadow-xl transition-colors mt-8">
+                <h2 class="text-xl font-bold mb-2 flex items-center gap-3">
+                    <div
+                        class="w-10 h-10 rounded-full bg-primary-theme/10 text-primary-theme flex items-center justify-center">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <%= t('perso.fastAdd_title') %>
+                </h2>
+                <p class="text-sm opacity-60 mb-6">
+                    <%= t('perso.fastAdd_desc') %>
+                </p>
+
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    <% const fastAddOptions=[ { value: '' , label: t('perso.fastAdd_disabled'), icon: 'fa-xmark' ,
+                        color: 'peer-checked:bg-gray-500' }, ]; if (settings.modules.music) { fastAddOptions.push( {
+                        value: 'vinyl' , label: t('media.vinyls'), icon: 'fa-record-vinyl' ,
+                        color: 'peer-checked:bg-green-600' }, { value: 'cd' , label: t('media.cds'),
+                        icon: 'fa-compact-disc' , color: 'peer-checked:bg-blue-600' }, { value: 'cassette' , label:
+                        t('media.cassettes'), icon: 'fa-tape' , color: 'peer-checked:bg-orange-600' } ); } if
+                        (settings.modules.books) { fastAddOptions.push( { value: 'book' , label: t('media.books'),
+                        icon: 'fa-book' , color: 'peer-checked:bg-amber-600' } ); } if (settings.modules.dvd) {
+                        fastAddOptions.push( { value: 'dvd' , label: t('media.dvd_gen'), icon: 'fa-film' ,
+                        color: 'peer-checked:bg-red-600' } ); } %>
+                        <% fastAddOptions.forEach(opt=> { %>
+                            <label class="cursor-pointer relative group">
+                                <input type="radio" name="fastAdd" value="<%= opt.value %>" class="peer sr-only"
+                                    <%=(settings.fastAdd===opt.value || (!settings.fastAdd && opt.value==='' ))
+                                    ? 'checked' : '' %>>
+                                <div
+                                    class="flex items-center gap-3 p-3 rounded-xl border border-black/5 dark:border-white/5 bg-black/5 dark:bg-white/5 transition-all peer-checked:text-white opacity-60 peer-checked:opacity-100 peer-checked:shadow-md <%= opt.color %>">
+                                    <i class="fa-solid <%= opt.icon %> text-base w-4 text-center"></i>
+                                    <span class="text-sm font-medium">
+                                        <%= opt.label %>
+                                    </span>
+                                </div>
+                            </label>
+                            <% }) %>
+                </div>
+            </div>
+
+
+            <div class="card-theme rounded-3xl p-6 shadow-xl transition-colors mt-8">
+                <h2 class="text-xl font-bold mb-2 flex items-center gap-3">
+                    <div
+                        class="w-10 h-10 rounded-full bg-primary-theme/10 text-primary-theme flex items-center justify-center">
+                        <i class="fa-solid fa-chart-simple"></i>
+                    </div>
+                    <%= t('perso.widgets_title') %>
+                </h2>
+                <p class="text-sm opacity-60 mb-6">
+                    <%= t('perso.widgets_desc') %>
+                </p>
+
+                <div class="space-y-6">
+                    <% const statOptions=[ 
+                        { 
+                            group: t('perso.modules.global'), 
+                            active: true, 
+                            options: [ 
+                                { id: 'total' , label: t('stats.total_label') } 
+                            ] 
+                        }, 
+                        { 
+                            group: t('perso.modules.music'), 
+                            active: settings.modules.music, 
+                            options: [ 
+                                { id: 'vinyl' , label: t('media.vinyls') }, 
+                                { id: 'cd' , label: t('media.cds') }, 
+                                { id: 'cassette' , label: t('media.cassettes') }, 
+                                { id: 'artist' , label: t('stats.top_artist_label') },
+                                { id: 'music_genre', label: t('stats.top_genre_label') },
+                                { id: 'label', label: t('stats.top_label_label') }
+                            ] 
+                        }, 
+                        { 
+                            group: t('perso.modules.books'), 
+                            active: settings.modules.books, 
+                            options: [ 
+                                { id: 'book_total' , label: t('stats.books_total_label') }, 
+                                { id: 'book_hardcover' , label: t('media.hardcover_pl') }, 
+                                { id: 'book_paperback' , label: t('media.paperback_pl') }, 
+                                { id: 'book_manga' , label: t('media.mangas') }, 
+                                { id: 'book_comic' , label: t('media.comics') }, 
+                                { id: 'author' , label: t('stats.top_author_label') },
+                                { id: 'publisher', label: t('stats.top_publisher_label') }
+                            ] 
+                        }, 
+                        { 
+                            group: t('perso.modules.dvd'), 
+                            active: settings.modules.dvd, 
+                            options: [ 
+                                { id: 'dvd_total' , label: t('stats.dvd_total_label') }, 
+                                { id: 'dvd_bluray' , label: t('media.blurays') }, 
+                                { id: 'dvd_4k' , label: t('media.4k_pl') }, 
+                                { id: 'dvd_vhs' , label: t('media.vhss') }, 
+                                { id: 'dvd_laserdisc' , label: t('media.laserdiscs') }, 
+                                { id: 'director' , label: t('stats.top_director_label') },
+                                { id: 'studio', label: t('stats.top_studio_label') }
+                            ] 
+                        } 
+                    ] %>
+
+                        <div class="flex gap-2 overflow-x-auto pb-2 scrollbar-hide flex-nowrap">
+                            <% statOptions.forEach((group, idx)=> { %>
+                                <% if (group.active) { %>
+                                    <button type="button" onclick="switchTab('stats', <%= idx %>)"
+                                        id="tab-stats-<%= idx %>"
+                                        class="tab-btn-stats shrink-0 px-5 py-2.5 rounded-xl font-bold text-sm whitespace-nowrap transition-all border-2 border-transparent text-black/50 dark:text-white/50 bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10">
+                                        <%= group.group %>
+                                    </button>
+                                    <% } %>
+                                        <% }) %>
+                        </div>
+
+                        <div class="mt-4">
+                            <% statOptions.forEach((group, idx)=> { %>
+                                <% if (group.active) { %>
+                                    <div id="content-stats-<%= idx %>"
+                                        class="tab-content-stats hidden bg-black/5 dark:bg-white/5 rounded-2xl p-4 md:p-5">
+                                        <div class="flex flex-wrap gap-2 md:gap-3">
+                                            <% group.options.forEach(opt=> { %>
+                                                <label class="cursor-pointer group relative">
+                                                    <input type="checkbox" name="statsWidgets" value="<%= opt.id %>"
+                                                        <%=(settings.statsWidgets &&
+                                                        settings.statsWidgets.includes(opt.id)) ? 'checked' : '' %>
+                                                    class="sr-only">
+                                                    <div
+                                                        class="flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-transparent bg-black/5 dark:bg-white/5 text-black/50 dark:text-white/50 opacity-80 transition-all duration-300 font-bold group-hover:bg-black/10 dark:group-hover:bg-white/10 group-has-[:checked]:bg-primary-theme group-has-[:checked]:border-primary-theme group-has-[:checked]:text-white group-has-[:checked]:opacity-100 group-has-[:checked]:shadow-lg group-has-[:checked]:-translate-y-0.5">
+                                                        <i
+                                                            class="fa-solid fa-plus text-[10px] opacity-40 block group-has-[:checked]:hidden transition-transform"></i>
+                                                        <i
+                                                            class="fa-solid fa-check text-[10px] hidden group-has-[:checked]:block transition-transform"></i>
+                                                        <span class="text-sm">
+                                                            <%= opt.label %>
+                                                        </span>
+                                                    </div>
+                                                </label>
+                                                <% }) %>
+                                        </div>
+                                    </div>
+                                    <% } %>
+                                        <% }) %>
+                        </div>
+                </div>
+            </div>
+
+
+            <div class="flex justify-end pt-4">
+                <button type="submit"
+                    class="w-full md:w-auto px-10 py-4 bg-primary-theme text-white font-black rounded-2xl hover:brightness-110 active:scale-95 transition-all shadow-lg shadow-primary-theme/20 flex items-center justify-center gap-3">
+                    <i class="fa-solid fa-save"></i>
+                    <%= t('perso.save') %>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function switchTab(groupName, index) {
+            const allContents = document.querySelectorAll('.tab-content-' + groupName);
+            allContents.forEach(el => el.classList.add('hidden'));
+
+            const allBtns = document.querySelectorAll('.tab-btn-' + groupName);
+            allBtns.forEach(btn => {
+                btn.classList.remove('bg-primary-theme', 'text-white', 'border-primary-theme', 'opacity-100', 'shadow-md');
+                btn.classList.add('bg-black/5', 'dark:bg-white/5', 'text-black/50', 'dark:text-white/50');
+            });
+
+            const targetContent = document.getElementById('content-' + groupName + '-' + index);
+            if (targetContent) targetContent.classList.remove('hidden');
+
+            const targetBtn = document.getElementById('tab-' + groupName + '-' + index);
+            if (targetBtn) {
+                targetBtn.classList.remove('bg-black/5', 'dark:bg-white/5', 'text-black/50', 'dark:text-white/50');
+                targetBtn.classList.add('bg-primary-theme', 'text-white', 'border-primary-theme', 'opacity-100', 'shadow-md');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const firstShortcutTab = document.querySelector('.tab-btn-shortcuts');
+            if (firstShortcutTab) {
+                const idx = firstShortcutTab.id.split('-').pop();
+                switchTab('shortcuts', idx);
+            }
+
+            const firstStatsTab = document.querySelector('.tab-btn-stats');
+            if (firstStatsTab) {
+                const idx = firstStatsTab.id.split('-').pop();
+                switchTab('stats', idx);
             }
         });
-    });
-</script>
 
-<%- include('partials/footer') %>
+        const checkboxes = document.querySelectorAll('input[name="navbarShortcuts"]');
+        const maxAllowed = 6;
+
+        checkboxes.forEach(cb => {
+            cb.addEventListener('change', () => {
+                const checkedCount = document.querySelectorAll('input[name="navbarShortcuts"]:checked').length;
+                if (checkedCount > maxAllowed) {
+                    cb.checked = false;
+                    alert("<%= t('perso.nav_max') %>");
+                }
+            });
+        });
+    </script>
+
+    <%- include('partials/footer') %>

@@ -145,7 +145,11 @@
     "top_author_label": "Favorite Author",
     "top_director_label": "Favorite Director",
     "albums_unit": "albums",
-    "owned_times": "Owned {{count}} times in your collection"
+    "owned_times": "Owned {{count}} times in your collection",
+    "top_genre_label": "Top Genre",
+    "top_label_label": "Top Label",
+    "top_publisher_label": "Top Publisher",
+    "top_studio_label": "Top Studio"
   },
   "modal": {
     "estimate_title": "Estimating...",

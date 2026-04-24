@@ -144,6 +144,10 @@
     "top_artist_label": "Artiste Favori",
     "top_author_label": "Auteur Favori",
     "top_director_label": "Réalisateur Favori",
+    "top_genre_label": "Genre Favori",
+    "top_label_label": "Label Favori",
+    "top_publisher_label": "Éditeur Favori",
+    "top_studio_label": "Studio Favori",
     "albums_unit": "albums",
     "owned_times": "Possédé {{count}} fois dans la collection"
   },
