@@ -89,6 +89,8 @@ if (process.env.PROD === 'true') {
   app.set('trust proxy', 1); // Trust first proxy
 }
 
+const pkg = require('./package.json');
+
 app.use(async (req, res, next) => {
   // If the user is authenticated and has a language preference, enforce it
   if (req.user && req.user.language) {
@@ -98,6 +100,7 @@ app.use(async (req, res, next) => {
   // Make translation helper and current language available to all EJS views
   res.locals.t = req.t;
   res.locals.currentLng = req.language;
+  res.locals.appVersion = pkg.version;
   req.io = io;
   next();
 });
