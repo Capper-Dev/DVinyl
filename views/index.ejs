@@ -33,7 +33,8 @@
                             cd: '/add-vinyl?type=cd',
                             cassette: '/add-vinyl?type=cassette',
                             book: '/add-book',
-                            dvd: '/add-dvd'
+                            dvd: '/add-dvd',
+                            game: '/add-game'
                         };
                         const fastAddUrl = settings.fastAdd ? fastAddRoutes[settings.fastAdd] : null;
                     %>
@@ -74,10 +75,12 @@
                     <% 
                         const isBook = album.kind === 'Book';
                         const isDvd = album.kind === 'Dvd' || (album.tmdb_id !== undefined && album.tmdb_id !== null);
+                        const isGame = album.kind === 'Game';
                         
                         let detailUrl = `/album/${album._id}`;
                         if (isBook) detailUrl = `/book/${album._id}`;
                         if (isDvd) detailUrl = `/dvd/${album._id}`;
+                        if (isGame) detailUrl = `/game/${album._id}`;
                         
                         const aspectClass = 'aspect-square';
                         
@@ -95,7 +98,11 @@
                             'bluray': 'bg-indigo-700/90',
                             '4k': 'bg-red-600/90',
                             'vhs': 'bg-amber-600/90',
-                            'laserdisc': 'bg-purple-600/90'
+                            'laserdisc': 'bg-purple-600/90',
+                            'physical': 'bg-emerald-600/90',
+                            'collector': 'bg-amber-600/90',
+                            'limited': 'bg-purple-600/90',
+                            'steelbook': 'bg-sky-600/90'
                         };
                         let badgeColor = (badgeColors[formatKey] || 'bg-gray-600/90') + ' text-white';
                     %>
@@ -103,22 +110,22 @@
                         
                         <div class="<%= aspectClass %> relative overflow-hidden bg-black/5 dark:bg-white/5 flex items-center justify-center">
                             
-                            <% if (isBook || isDvd) { %>
+                            <% if (isBook || isDvd || isGame) { %>
                                 <img src="<%= album.cover_image %>" class="absolute inset-0 w-full h-full object-cover blur-xl opacity-30 scale-110 pointer-events-none">
                             <% } %>
 
                             <img src="<%= album.cover_image %>" 
-                                class="relative z-10 w-full h-full <%= (isBook || isDvd) ? 'object-contain p-3' : 'object-cover' %> transition-transform duration-700 group-hover:scale-105">
+                                class="relative z-10 w-full h-full <%= (isBook || isDvd || isGame) ? 'object-contain p-3' : 'object-cover' %> transition-transform duration-700 group-hover:scale-105">
                             
                             <span class="absolute top-2 right-2 z-20 text-[10px] font-bold px-2 py-1 rounded backdrop-blur-md border border-white/10 shadow-sm <%= badgeColor %>">
-                                <%= t('media.' + formatKey) %>
+                                <%= isGame ? (album.platform || 'Game') : t('media.' + formatKey) %>
                             </span>                         
                         </div>
 
                         <div class="p-3 md:p-4">
                             <h3 class="font-bold truncate text-sm md:text-base leading-tight"><%= album.title %></h3>
                             <p class="text-xs opacity-60 truncate">
-                                <%= isBook ? album.author : (isDvd ? (album.director) : (album.artist)) %>
+                                <%= isBook ? album.author : (isDvd ? (album.director) : (isGame ? (album.developer || album.publisher || '') : (album.artist))) %>
                             </p>
                         </div>
                     </a>
@@ -145,10 +152,12 @@
                     <% 
                         const isBook = album.kind === 'Book';
                         const isDvd = album.kind === 'Dvd' || (album.tmdb_id !== undefined && album.tmdb_id !== null);
+                        const isGame = album.kind === 'Game';
                         
                         let detailUrl = `/album/${album._id}`;
                         if (isBook) detailUrl = `/book/${album._id}`;
                         if (isDvd) detailUrl = `/dvd/${album._id}`;
+                        if (isGame) detailUrl = `/game/${album._id}`;
 
                         const formatKey = isDvd ? album.format : (album.media_type || album.format);
                         const badgeColors = {
@@ -156,7 +165,9 @@
                             'manga': 'bg-pink-600/90', 'comic': 'bg-indigo-600/90', 'hardcover': 'bg-purple-600/90',
                             'paperback': 'bg-amber-600/90', 'book': 'bg-amber-700/90',
                             'dvd': 'bg-sky-600/90', 'bluray': 'bg-indigo-700/90', '4k': 'bg-red-600/90',
-                            'vhs': 'bg-amber-600/90', 'laserdisc': 'bg-purple-600/90'
+                            'vhs': 'bg-amber-600/90', 'laserdisc': 'bg-purple-600/90',
+                            'physical': 'bg-emerald-600/90', 'collector': 'bg-amber-600/90',
+                            'limited': 'bg-purple-600/90', 'steelbook': 'bg-sky-600/90'
                         };
                         let badgeColor = (badgeColors[formatKey] || 'bg-gray-600/90') + ' text-white';
                     %>
@@ -164,22 +175,22 @@
                         
                         <div class="aspect-square relative overflow-hidden bg-black/5 dark:bg-white/5 flex items-center justify-center">
                             
-                            <% if (isBook || isDvd) { %>
+                            <% if (isBook || isDvd || isGame) { %>
                                 <img src="<%= album.cover_image %>" class="absolute inset-0 w-full h-full object-cover blur-xl opacity-30 scale-110 pointer-events-none">
                             <% } %>
 
                             <img src="<%= album.cover_image %>" 
-                                class="relative z-10 w-full h-full <%= (isBook || isDvd) ? 'object-contain p-3' : 'object-cover' %> transition-transform duration-700 group-hover:scale-105">
+                                class="relative z-10 w-full h-full <%= (isBook || isDvd || isGame) ? 'object-contain p-3' : 'object-cover' %> transition-transform duration-700 group-hover:scale-105">
                             
                             <span class="absolute top-2 right-2 z-20 text-[10px] font-bold px-2 py-1 rounded backdrop-blur-md border border-white/10 shadow-sm <%= badgeColor %>">
-                                <%= t('media.' + formatKey) %>
+                                <%= isGame ? (album.platform || 'Game') : t('media.' + formatKey) %>
                             </span>                         
                         </div>
 
                         <div class="p-3 md:p-4">
                             <h3 class="font-bold truncate text-sm md:text-base leading-tight"><%= album.title %></h3>
                             <p class="text-xs opacity-60 truncate mb-1">
-                                <%= isBook ? album.author : (isDvd ? (album.director || 'Inconnu') : (album.artist || 'Inconnu')) %>
+                                <%= isBook ? album.author : (isDvd ? (album.director || 'Inconnu') : (isGame ? (album.developer || album.publisher || 'Inconnu') : (album.artist || 'Inconnu'))) %>
                             </p>
                             
                             <div class="flex items-center gap-1 h-4"> 
@@ -220,7 +231,13 @@
                 'dvd_bluray': { label: t('media.blurays'), val: stats.dvd_bluray, icon: 'fa-circle-dot', color: 'bg-indigo-100 dark:bg-indigo-900/30', text: 'text-indigo-600' },
                 'dvd_4k': { label: t('media.4k_pl'), val: stats.dvd_4k, icon: 'fa-wand-magic-sparkles', color: 'bg-red-100 dark:bg-red-900/30', text: 'text-red-600' },
                 'dvd_vhs': { label: t('media.vhss'), val: stats.dvd_vhs, icon: 'fa-tape', color: 'bg-stone-100 dark:bg-stone-900/30', text: 'text-stone-600' },
-                'dvd_laserdisc': { label: t('media.laserdiscs'), val: stats.dvd_laserdisc, icon: 'fa-compact-disc', color: 'bg-teal-100 dark:bg-teal-900/30', text: 'text-teal-600' }
+                'dvd_laserdisc': { label: t('media.laserdiscs'), val: stats.dvd_laserdisc, icon: 'fa-compact-disc', color: 'bg-teal-100 dark:bg-teal-900/30', text: 'text-teal-600' },
+                
+                'game_total': { label: t('stats.games_total_label'), val: stats.game_total, icon: 'fa-gamepad', color: 'bg-emerald-100 dark:bg-emerald-900/30', text: 'text-emerald-600' },
+                'game_physical': { label: t('media.physical'), val: stats.game_physical, icon: 'fa-box', color: 'bg-green-100 dark:bg-green-900/30', text: 'text-green-600' },
+                'game_collector': { label: t('media.collector'), val: stats.game_collector, icon: 'fa-gem', color: 'bg-amber-100 dark:bg-amber-900/30', text: 'text-amber-600' },
+                'game_limited': { label: t('media.limited'), val: stats.game_limited, icon: 'fa-star', color: 'bg-purple-100 dark:bg-purple-900/30', text: 'text-purple-600' },
+                'game_steelbook': { label: t('media.steelbook'), val: stats.game_steelbook, icon: 'fa-shield', color: 'bg-sky-100 dark:bg-sky-900/30', text: 'text-sky-600' }
             };
 
             const topConfigs = {
@@ -230,7 +247,9 @@
                 'author': { label: t('stats.top_author_label'), data: stats.author, icon: 'fa-pen-nib', color: 'bg-amber-100 dark:bg-amber-500/20' },
                 'publisher': { label: t('stats.top_publisher_label'), data: stats.publisher, icon: 'fa-book-open', color: 'bg-orange-100 dark:bg-orange-500/20' },
                 'director': { label: t('stats.top_director_label'), data: stats.director, icon: 'fa-clapperboard', color: 'bg-red-100 dark:bg-red-500/20' },
-                'studio': { label: t('stats.top_studio_label'), data: stats.studio, icon: 'fa-video', color: 'bg-rose-100 dark:bg-rose-500/20' }
+                'studio': { label: t('stats.top_studio_label'), data: stats.studio, icon: 'fa-video', color: 'bg-rose-100 dark:bg-rose-500/20' },
+                'game_developer': { label: t('stats.top_developer_label'), data: stats.game_developer, icon: 'fa-code', color: 'bg-emerald-100 dark:bg-emerald-500/20' },
+                'game_publisher': { label: t('stats.top_game_publisher_label'), data: stats.game_publisher, icon: 'fa-building-columns', color: 'bg-teal-100 dark:bg-teal-500/20' }
             };
             
             const activeWidgets = (settings && settings.statsWidgets) ? settings.statsWidgets : ['total', 'vinyl', 'cd', 'cassette', 'artist'];
@@ -268,58 +287,79 @@
     </section>
 </div>
 
-<div id="addHubModal" class="fixed inset-0 z-[100] hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+<div id="addHubModal" class="fixed inset-0 z-[100] hidden bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center sm:p-4">
     <% 
         let activeCount = 0;
         if (settings.modules.music) activeCount++;
         if (settings.modules.books) activeCount++;
         if (settings.modules.dvd) activeCount++;
+        if (settings.modules.games) activeCount++;
 
-        let gridCols = (activeCount === 3) ? 'sm:grid-cols-3' : (activeCount === 2) ? 'sm:grid-cols-2' : 'sm:grid-cols-1';
-        let maxWidth = (activeCount === 1) ? 'max-w-md' : (activeCount === 2) ? 'max-w-xl' : 'max-w-3xl';
+        let gridCols = 'grid-cols-2'; // Default to 2 columns on mobile
+        if (activeCount === 1) gridCols = 'grid-cols-1';
+        
+        let desktopGridCols = (activeCount >= 3) ? 'sm:grid-cols-3' : (activeCount === 2) ? 'sm:grid-cols-2' : 'sm:grid-cols-1';
+        if (activeCount === 4) desktopGridCols = 'sm:grid-cols-2 lg:grid-cols-4';
+        
+        let maxWidth = (activeCount === 1) ? 'max-w-md' : (activeCount === 2) ? 'max-w-xl' : (activeCount === 4) ? 'max-w-4xl' : 'max-w-3xl';
     %>
 
-    <div class="card-theme w-full <%= maxWidth %> rounded-[2.5rem] p-8 shadow-2xl relative animate-in fade-in zoom-in duration-300">
+    <div class="card-theme w-full <%= maxWidth %> rounded-t-[2.5rem] sm:rounded-[2.5rem] p-6 sm:p-10 shadow-2xl relative animate-in slide-in-from-bottom sm:zoom-in duration-300">
         
-        <button onclick="toggleAddModal()" class="absolute top-6 right-6 opacity-40 hover:opacity-100 transition-opacity">
+        <div class="w-12 h-1.5 bg-black/10 dark:bg-white/10 rounded-full mx-auto mb-6 sm:hidden"></div>
+
+        <button onclick="toggleAddModal()" class="absolute top-6 right-6 opacity-40 hover:opacity-100 transition-opacity hidden sm:block">
             <i class="fa-solid fa-xmark text-2xl"></i>
         </button>
 
-        <div class="text-center mb-10">
-            <h2 class="text-2xl font-black tracking-tight"><%= t('modal.add_hub_title') %></h2>
-            <p class="opacity-50 text-sm"><%= t('modal.add_hub_subtitle') %></p>
+        <div class="text-center mb-8 sm:mb-12">
+            <h2 class="text-2xl sm:text-3xl font-black tracking-tight"><%= t('modal.add_hub_title') %></h2>
+            <p class="opacity-50 text-xs sm:text-sm mt-1"><%= t('modal.add_hub_subtitle') %></p>
         </div>
 
-        <div class="grid grid-cols-1 <%= gridCols %> gap-4">
+        <div class="grid <%= gridCols %> <%= desktopGridCols %> gap-3 sm:gap-6">
             
             <% if (settings.modules.music) { %>
-                <a href="/add-vinyl" class="group flex flex-col items-center justify-center p-8 rounded-[2rem] bg-black/5 dark:bg-white/5 hover:bg-primary-theme hover:text-white transition-all duration-300">
-                    <div class="w-16 h-16 rounded-full bg-primary-theme/10 group-hover:bg-white/20 flex items-center justify-center mb-4">
-                        <i class="fa-solid fa-compact-disc text-3xl"></i>
+                <a href="/add-vinyl" class="group flex flex-col items-center justify-center p-5 sm:p-8 rounded-[1.5rem] sm:rounded-[2rem] bg-black/5 dark:bg-white/5 hover:bg-primary-theme hover:text-white transition-all duration-300">
+                    <div class="w-12 h-12 sm:w-20 sm:h-20 rounded-full bg-primary-theme/10 group-hover:bg-white/20 flex items-center justify-center mb-3 sm:mb-4">
+                        <i class="fa-solid fa-compact-disc text-xl sm:text-4xl"></i>
                     </div>
-                    <span class="font-black text-sm uppercase tracking-widest"><%= t('perso.modules.music') %></span>
+                    <span class="font-black text-[10px] sm:text-xs uppercase tracking-widest text-center"><%= t('perso.modules.music') %></span>
                 </a>
             <% } %>
 
             <% if (settings.modules.books) { %>
-                <a href="/add-book" class="group flex flex-col items-center justify-center p-8 rounded-[2rem] bg-black/5 dark:bg-white/5 hover:bg-amber-500 hover:text-white transition-all duration-300">
-                    <div class="w-16 h-16 rounded-full bg-amber-500/10 group-hover:bg-white/20 flex items-center justify-center mb-4">
-                        <i class="fa-solid fa-book text-3xl"></i>
+                <a href="/add-book" class="group flex flex-col items-center justify-center p-5 sm:p-8 rounded-[1.5rem] sm:rounded-[2rem] bg-black/5 dark:bg-white/5 hover:bg-amber-500 hover:text-white transition-all duration-300">
+                    <div class="w-12 h-12 sm:w-20 sm:h-20 rounded-full bg-amber-500/10 group-hover:bg-white/20 flex items-center justify-center mb-3 sm:mb-4">
+                        <i class="fa-solid fa-book text-xl sm:text-4xl"></i>
                     </div>
-                    <span class="font-black text-sm uppercase tracking-widest"><%= t('perso.modules.books') %></span>
+                    <span class="font-black text-[10px] sm:text-xs uppercase tracking-widest text-center"><%= t('perso.modules.books') %></span>
                 </a>
             <% } %>
 
             <% if (settings.modules.dvd) { %>
-                <a href="/add-dvd" class="group flex flex-col items-center justify-center p-8 rounded-[2rem] bg-black/5 dark:bg-white/5 hover:bg-red-500 hover:text-white transition-all duration-300">
-                    <div class="w-16 h-16 rounded-full bg-red-500/10 group-hover:bg-white/20 flex items-center justify-center mb-4">
-                        <i class="fa-solid fa-film text-3xl"></i>
+                <a href="/add-dvd" class="group flex flex-col items-center justify-center p-5 sm:p-8 rounded-[1.5rem] sm:rounded-[2rem] bg-black/5 dark:bg-white/5 hover:bg-red-500 hover:text-white transition-all duration-300">
+                    <div class="w-12 h-12 sm:w-20 sm:h-20 rounded-full bg-red-500/10 group-hover:bg-white/20 flex items-center justify-center mb-3 sm:mb-4">
+                        <i class="fa-solid fa-film text-xl sm:text-4xl"></i>
                     </div>
-                    <span class="font-black text-sm uppercase tracking-widest"><%= t('perso.modules.dvd') %></span>
+                    <span class="font-black text-[10px] sm:text-xs uppercase tracking-widest text-center"><%= t('perso.modules.dvd') %></span>
+                </a>
+            <% } %>
+
+            <% if (settings.modules.games) { %>
+                <a href="/add-game" class="group flex flex-col items-center justify-center p-5 sm:p-8 rounded-[1.5rem] sm:rounded-[2rem] bg-black/5 dark:bg-white/5 hover:bg-emerald-500 hover:text-white transition-all duration-300">
+                    <div class="w-12 h-12 sm:w-20 sm:h-20 rounded-full bg-emerald-500/10 group-hover:bg-white/20 flex items-center justify-center mb-3 sm:mb-4">
+                        <i class="fa-solid fa-gamepad text-xl sm:text-4xl"></i>
+                    </div>
+                    <span class="font-black text-[10px] sm:text-xs uppercase tracking-widest text-center"><%= t('perso.modules.games') %></span>
                 </a>
             <% } %>
             
         </div>
+
+        <button onclick="toggleAddModal()" class="w-full mt-8 py-4 bg-black/5 dark:bg-white/5 rounded-2xl font-bold text-sm sm:hidden opacity-60">
+            <%= t('common.cancel') %>
+        </button>
     </div>
 </div>
 

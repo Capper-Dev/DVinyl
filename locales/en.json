@@ -120,7 +120,13 @@
     "music": "Music",
     "books": "Books",
     "dvd_gen": "Movies / TV Shows",
-    "format": "Format"
+    "format": "Format",
+    "games": "Video Games",
+    "game": "Video Game",
+    "physical": "Physical",
+    "collector": "Collector",
+    "limited": "Limited Edition",
+    "steelbook": "Steelbook"
   },
   "index": {
     "welcome": "Hello",
@@ -149,7 +155,10 @@
     "top_genre_label": "Top Genre",
     "top_label_label": "Top Label",
     "top_publisher_label": "Top Publisher",
-    "top_studio_label": "Top Studio"
+    "top_studio_label": "Top Studio",
+    "games_total_label": "Total Video Games",
+    "top_developer_label": "Top Developer",
+    "top_game_publisher_label": "Top Publisher (Games)"
   },
   "modal": {
     "estimate_title": "Estimating...",
@@ -279,7 +288,9 @@
       "refresh_books_title": "Refresh All Metadata (Books)",
       "refresh_books_subtitle": "Relaunch data retrieval (Hardcover/OpenLibrary) for books.",
       "refresh_dvds_title": "Refresh All Metadata (DVDs)",
-      "refresh_dvds_subtitle": "Relaunch data retrieval (TMDB) for DVDs and Blu-Rays."
+      "refresh_dvds_subtitle": "Relaunch data retrieval (TMDB) for DVDs and Blu-Rays.",
+      "refresh_games_title": "Refresh All Metadata (Video Games)",
+      "refresh_games_subtitle": "Relaunch data retrieval (IGDB) for video games."
     },
     "errors": {
       "at_least_one_module": "At least one module must be active.",
@@ -465,14 +476,16 @@
       "music": "Music",
       "books": "Books",
       "dvd": "DVDs",
-      "global": "General"
+      "global": "General",
+      "games": "Video Games"
     },
     "themes": {
       "title": "Themes & Colors",
       "home": "Home Page",
       "music": "Music",
       "books": "Books",
-      "dvd": "Movies / DVD"
+      "dvd": "Movies / DVD",
+      "games": "Video Games"
     }
   },
   "add_book": {
@@ -525,7 +538,10 @@
   "status": {
     "to_read": "To read",
     "reading": "Reading",
-    "read": "Read"
+    "read": "Read",
+    "to_play": "To play",
+    "playing": "Playing",
+    "played": "Completed"
   },
   "image_source": {
     "local": "Local file",
@@ -533,7 +549,8 @@
     "search": "Search",
     "hint": "Click to browse files",
     "url_hint": "Image will be previewed automatically.",
-    "url_label": "Direct link to the image"
+    "url_label": "Direct link to the image",
+    "compress_alert": "The image is too large (max 5 MB). It will be compressed."
   },
   "add_dvd": {
     "title": "Add a DVD / TV Show",
@@ -592,5 +609,56 @@
   "book": {
     "source_hardcover": "View on Hardcover",
     "source_goodreads": "View on GoodReads"
+  },
+  "add_game": {
+    "title": "Add a Video Game",
+    "desc": "Search by title or scan the barcode.",
+    "search_placeholder": "Game title...",
+    "btn_scan": "Scan a barcode",
+    "results_title": "Results",
+    "no_results": "No games found.",
+    "scan_init": "Initializing...",
+    "scan_stop": "Stop scanning",
+    "scan_found": "Barcode found!",
+    "scan_error": "Camera error"
+  },
+  "confirm_game": {
+    "config_title": "Verify and complete",
+    "field_title": "Title",
+    "field_developer": "Developer",
+    "field_publisher": "Publisher",
+    "field_platform": "Platform",
+    "field_year": "Year",
+    "field_region": "Region / Version",
+    "region_placeholder": "Ex: JAP, PAL, NTSC-U...",
+    "field_format": "Edition",
+    "field_barcode": "Barcode",
+    "field_quantity": "Quantity",
+    "field_comments": "Notes / Comments",
+    "field_status": "Status",
+    "field_rating": "Rating (out of 5)",
+    "play_tracking": "Play tracking",
+    "status_to_play": "To play",
+    "status_playing": "Playing",
+    "status_played": "Completed",
+    "replace_cover": "Replace main cover",
+    "btn_collection": "Add to Collection",
+    "btn_wishlist": "Add to Wishlist",
+    "cover_preview": "Cover Preview"
+  },
+  "edit_game": {
+    "title": "Edit game"
+  },
+  "game_detail": {
+    "tech_specs": "Technical Details",
+    "delete_confirm": "Are you sure you want to delete this game from your collection?",
+    "platform_label": "Platform",
+    "region_label": "Region",
+    "developer_label": "Developer",
+    "publisher_label": "Publisher",
+    "barcode_label": "Barcode",
+    "view_igdb": "View on IGDB",
+    "refresh_info_success": "Metadata refreshed successfully!",
+    "refresh_info_error": "Error refreshing metadata."
   }
 }

@@ -45,6 +45,8 @@ module.exports = async (req, res, next) => {
             detectedType = 'music';
         } else if (path.includes('book') || path.includes('books')) {
             detectedType = 'books';
+        } else if (path.includes('game') || path.includes('games')) {
+            detectedType = 'games';
         } else if (path.includes('dvd')) {
             detectedType = 'dvd';
         }
@@ -55,13 +57,16 @@ module.exports = async (req, res, next) => {
         res.locals.currentType = activeType;
 
         const isAllowedAction = req.method === 'DELETE' || path.startsWith('/api/') ||
-            path.includes('/book/') || path.includes('/dvd/') || path.includes('/album/') ||
+            path.includes('/book/') || path.includes('/dvd/') || path.includes('/game/') || path.includes('/album/') ||
             path.includes('/save-');
 
         if (activeType === 'books' && !settings.modules.books && path !== '/' && !isAllowedAction) {
             return res.status(404).render('404');
         }
         if (activeType === 'dvd' && !settings.modules.dvd && path !== '/' && !isAllowedAction) {
+            return res.status(404).render('404');
+        }
+        if (activeType === 'games' && !settings.modules.games && path !== '/' && !isAllowedAction) {
             return res.status(404).render('404');
         }
 

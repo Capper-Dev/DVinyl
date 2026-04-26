@@ -129,7 +129,9 @@
       "status_processing": "Actualizando: {{current}} / {{total}}",
       "status_starting": "A partir de...",
       "subtitle": "Gestión global de los metadatos de tus colecciones.",
-      "title": "Mantenimiento"
+      "title": "Mantenimiento",
+      "refresh_games_title": "Actualizar todos los metadatos (Videojuegos)",
+      "refresh_games_subtitle": "Relanzar la recuperación de datos (IGDB) para videojuegos."
     },
     "modal": {
       "discogs_url": "URL de colección",
@@ -392,7 +394,8 @@
     "search": "Buscar",
     "url": "URL",
     "url_hint": "La imagen se previsualizará automáticamente.",
-    "url_label": "Enlace directo a la imagen."
+    "url_label": "Enlace directo a la imagen.",
+    "compress_alert": "La imagen es demasiado grande (máx. 5 MB). Se comprimirá."
   },
   "index": {
     "btn_estimate": "Estimar",
@@ -449,7 +452,13 @@
     "vhs": "VHS",
     "vhss": "cintas vhs",
     "vinyl": "Vinilo",
-    "vinyls": "Vinilos"
+    "vinyls": "Vinilos",
+    "games": "Videojuegos",
+    "game": "Videojuego",
+    "physical": "Físico",
+    "collector": "Coleccionista",
+    "limited": "Edición Limitada",
+    "steelbook": "Steelbook"
   },
   "messages": {
     "avatar_success": "¡Foto de perfil actualizada!",
@@ -502,7 +511,8 @@
       "dvd": "DVD",
       "global": "General",
       "music": "Música",
-      "title": "Módulos activos"
+      "title": "Módulos activos",
+      "games": "Videojuegos"
     },
     "nav_desc": "Elija hasta 6 accesos directos para mostrar en su barra de navegación.",
     "nav_max": "No puedes seleccionar más de 6 atajos.",
@@ -514,7 +524,8 @@
       "dvd": "Películas/DVD",
       "home": "Página de inicio",
       "music": "Música",
-      "title": "Temas"
+      "title": "Temas",
+      "games": "Videojuegos"
     },
     "title": "Personalización",
     "widgets_desc": "Seleccione las estadísticas que desea ver en su panel de control",
@@ -579,12 +590,18 @@
     "top_genre_label": "Género Favorito",
     "top_label_label": "Discográfica Fav.",
     "top_publisher_label": "Editorial Fav.",
-    "top_studio_label": "Estudio Favorito"
+    "top_studio_label": "Estudio Favorito",
+    "games_total_label": "Total Videojuegos",
+    "top_developer_label": "Desarrollador Favorito",
+    "top_game_publisher_label": "Editor Favorito (Juegos)"
   },
   "status": {
     "read": "Leer",
     "reading": "Lectura",
-    "to_read": "leer"
+    "to_read": "leer",
+    "to_play": "Por jugar",
+    "playing": "Jugando",
+    "played": "Completado"
   },
   "wishlist": {
     "btn_received": "¡Lo recibí!",
@@ -592,5 +609,56 @@
     "empty_msg": "Tu lista de deseos está vacía.",
     "search_link": "Buscar un álbum",
     "title": "Mi lista de deseos"
+  },
+  "add_game": {
+    "title": "Añadir un Videojuego",
+    "desc": "Busca por título o escanea el código de barras.",
+    "search_placeholder": "Título del juego...",
+    "btn_scan": "Escanear código de barras",
+    "results_title": "Resultados",
+    "no_results": "No se encontraron juegos.",
+    "scan_init": "Inicializando...",
+    "scan_stop": "Detener escaneo",
+    "scan_found": "¡Código encontrado!",
+    "scan_error": "Error de cámara"
+  },
+  "confirm_game": {
+    "config_title": "Verificar y completar",
+    "field_title": "Título",
+    "field_developer": "Desarrollador",
+    "field_publisher": "Editor",
+    "field_platform": "Plataforma",
+    "field_year": "Año",
+    "field_region": "Región / Versión",
+    "region_placeholder": "Ej: JAP, PAL, NTSC-U...",
+    "field_format": "Edición",
+    "field_barcode": "Código de barras",
+    "field_quantity": "Cantidad",
+    "field_comments": "Notas / Comentarios",
+    "field_status": "Estado",
+    "field_rating": "Nota (sobre 5)",
+    "play_tracking": "Seguimiento de juego",
+    "status_to_play": "Por jugar",
+    "status_playing": "Jugando",
+    "status_played": "Completado",
+    "replace_cover": "Reemplazar portada principal",
+    "btn_collection": "Añadir a la colección",
+    "btn_wishlist": "Añadir a la Wishlist",
+    "cover_preview": "Vista previa de portada"
+  },
+  "edit_game": {
+    "title": "Editar juego"
+  },
+  "game_detail": {
+    "tech_specs": "Detalles Técnicos",
+    "delete_confirm": "¿Está seguro de que desea eliminar este juego de su colección?",
+    "platform_label": "Plataforma",
+    "region_label": "Región",
+    "developer_label": "Desarrollador",
+    "publisher_label": "Editor",
+    "barcode_label": "Código de barras",
+    "view_igdb": "Ver en IGDB",
+    "refresh_info_success": "¡Metadatos actualizados con éxito!",
+    "refresh_info_error": "Error al actualizar los metadatos."
   }
 }

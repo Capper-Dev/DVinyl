@@ -13,7 +13,9 @@ const Item = require('../models/Item');
 const Vinyl = require('../models/Vinyl');
 const Book = require('../models/Book');
 const Dvd = require('../models/Dvd');
+const Game = require('../models/Game');
 const { BOOK_GENRES_WHITELIST } = require('../config/constants');
+const { igdbRequest } = require('../utils/igdbHelper');
 
 /**
  * routes/adminRoutes.js
@@ -60,7 +62,8 @@ router.get('/', requireAuth, requireAdmin, async (req, res) => {
             successMessage: msgKey ? req.t(`messages.${msgKey}`) : null,
             newPassword: null,
             hasHardcoverKey: !!process.env.HARDCOVER_API_KEY,
-            hasTmdbKey: !!process.env.TMDB_API_KEY
+            hasTmdbKey: !!process.env.TMDB_API_KEY,
+            hasIgdbKey: !!(process.env.TWITCH_CLIENT_ID && process.env.TWITCH_CLIENT_SECRET)
         });
     } catch (err) {
         console.error(err);
@@ -179,14 +182,14 @@ router.get('/personnalisation', requireAuth, requireAdmin, async (req, res) => {
 router.post('/personnalisation/save', requireAuth, requireAdmin, async (req, res) => {
     try {
         const {
-            homePreset, musicPreset, booksPreset, dvdPreset,
+            homePreset, musicPreset, booksPreset, dvdPreset, gamesPreset,
             navbarShortcuts, statsWidgets
         } = req.body;
 
         const shortcuts = Array.isArray(navbarShortcuts) ? navbarShortcuts : (navbarShortcuts ? [navbarShortcuts] : []);
         const stats = Array.isArray(statsWidgets) ? statsWidgets : (statsWidgets ? [statsWidgets] : []);
 
-        const validFastAdd = ['', 'vinyl', 'cd', 'cassette', 'book', 'dvd'];
+        const validFastAdd = ['', 'vinyl', 'cd', 'cassette', 'book', 'dvd', 'game'];
         const fastAdd = validFastAdd.includes(req.body.fastAdd) ? req.body.fastAdd : '';
 
         const update = {
@@ -194,6 +197,7 @@ router.post('/personnalisation/save', requireAuth, requireAdmin, async (req, res
             'theme.music.preset': musicPreset,
             'theme.books.preset': booksPreset,
             'theme.dvd.preset': dvdPreset,
+            'theme.games.preset': gamesPreset,
             'navbarShortcuts': shortcuts,
             'statsWidgets': stats,
             'fastAdd': fastAdd
@@ -211,9 +215,9 @@ router.post('/personnalisation/save', requireAuth, requireAdmin, async (req, res
 
 router.post('/modules/save', requireAuth, requireAdmin, async (req, res) => {
     try {
-        const { musicActive, booksActive, dvdActive, advancedCDActive } = req.body;
+        const { musicActive, booksActive, dvdActive, gamesActive, advancedCDActive } = req.body;
 
-        if (!musicActive && !booksActive && !dvdActive) {
+        if (!musicActive && !booksActive && !dvdActive && !gamesActive) {
             return res.redirect('/admin?msg=error_no_module');
         }
 
@@ -221,6 +225,7 @@ router.post('/modules/save', requireAuth, requireAdmin, async (req, res) => {
             'modules.music': musicActive === 'on',
             'modules.books': booksActive === 'on',
             'modules.dvd': dvdActive === 'on',
+            'modules.games': gamesActive === 'on',
             'modules.advancedCD': advancedCDActive === 'on'
         };
 
@@ -251,6 +256,54 @@ router.get('/api/search-image-universal', requireAuth, requireAdmin, async (req,
                 .map(doc => `https://covers.openlibrary.org/b/id/${doc.cover_i}-L.jpg`);
 
             return res.json(results);
+        }
+
+        if (type === 'game') {
+            try {
+                // 1. Get IGDB assets (Covers + Artworks + Screenshots)
+                const igdbResults = await igdbRequest('games',
+                    `search "${q.replace(/"/g, '\\"')}";
+                    fields cover.url, artworks.url, screenshots.url;
+                    limit 5;`
+                );
+
+                let urls = [];
+                igdbResults.forEach(g => {
+                    if (g.cover && g.cover.url) urls.push(g.cover.url);
+                    if (g.artworks) g.artworks.forEach(a => urls.push(a.url));
+                    if (g.screenshots) g.screenshots.forEach(s => urls.push(s.url));
+                });
+
+                urls = urls.map(u => {
+                    let res = u.replace('t_thumb', 't_cover_big');
+                    if (res.startsWith('//')) res = 'https:' + res;
+                    return res;
+                });
+
+                // TMDB fallback
+                const tmdbApiKey = process.env.TMDB_API_KEY;
+                if (tmdbApiKey) {
+                    const tmdbUrl = `https://api.themoviedb.org/3/search/multi?api_key=${tmdbApiKey}&query=${encodeURIComponent(q)}&language=fr-FR`;
+                    const tmdbRes = await axios.get(tmdbUrl, axiosConfig);
+                    const tmdbUrls = (tmdbRes.data.results || [])
+                        .filter(item => item.poster_path)
+                        .map(item => `https://image.tmdb.org/t/p/w500${item.poster_path}`);
+                    urls = [...urls, ...tmdbUrls];
+                }
+
+                // iTunes software fallback
+                const itunesUrl = `https://itunes.apple.com/search?term=${encodeURIComponent(q)}&entity=software&limit=5`;
+                const itunesRes = await axios.get(itunesUrl, axiosConfig);
+                const itunesUrls = (itunesRes.data.results || [])
+                    .filter(item => item.artworkUrl100)
+                    .map(item => item.artworkUrl100.replace('100x100bb', '512x512bb'));
+                urls = [...urls, ...itunesUrls];
+
+                return res.json([...new Set(urls)]);
+            } catch (err) {
+                console.error("[ERR] Game image search failed:", err.message);
+                return res.json([]);
+            }
         }
 
         if (type === 'movie') {
@@ -324,7 +377,7 @@ router.post('/delete-last-items', requireAuth, requireAdmin, async (req, res) =>
     const n = parseInt(count);
 
     if (!n || n < 1) return res.status(400).json({ error: 'Invalid count' });
-    if (!['Book', 'Music', 'Dvd'].includes(kind)) return res.status(400).json({ error: 'Invalid kind' });
+    if (!['Book', 'Music', 'Dvd', 'Game'].includes(kind)) return res.status(400).json({ error: 'Invalid kind' });
 
     try {
         const items = await Item.find({ owner: req.user._id, kind })
@@ -348,8 +401,8 @@ router.post('/refresh-all-music-metadata', requireAuth, requireAdmin, async (req
     if (!token) return res.status(500).json({ error: 'Discogs token not configured' });
 
     try {
-        let query = { 
-            discogs_id: { $exists: true, $ne: null } 
+        let query = {
+            discogs_id: { $exists: true, $ne: null }
         };
 
         let conditions = [
@@ -476,10 +529,10 @@ router.post('/refresh-all-books-metadata', requireAuth, requireAdmin, async (req
                 current++;
                 try {
                     if (io) {
-                        io.emit('refresh_all_progress', { 
-                            current, 
-                            total: books.length, 
-                            title: `${book.author} - ${book.title}` 
+                        io.emit('refresh_all_progress', {
+                            current,
+                            total: books.length,
+                            title: `${book.author} - ${book.title}`
                         });
                     }
 
@@ -496,9 +549,9 @@ router.post('/refresh-all-books-metadata', requireAuth, requireAdmin, async (req
 
                     const authHeader = hardcoverKey.startsWith('Bearer ') ? hardcoverKey : `Bearer ${hardcoverKey}`;
                     const response = await axios.post('https://api.hardcover.app/v1/graphql', graphqlQuery, {
-                        headers: { 
+                        headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': authHeader 
+                            'Authorization': authHeader
                         }
                     });
 
@@ -515,10 +568,10 @@ router.post('/refresh-all-books-metadata', requireAuth, requireAdmin, async (req
                         } else if (Array.isArray(bookData.cached_tags)) {
                             parsedTags = bookData.cached_tags;
                         } else if (typeof bookData.cached_tags === 'string') {
-                            try { parsedTags = JSON.parse(bookData.cached_tags); } 
-                            catch(e) { parsedTags = bookData.cached_tags.split(',').map(s=>s.trim()); }
+                            try { parsedTags = JSON.parse(bookData.cached_tags); }
+                            catch (e) { parsedTags = bookData.cached_tags.split(',').map(s => s.trim()); }
                         }
-                        
+
                         const whitelistLower = BOOK_GENRES_WHITELIST.map(g => g.toLowerCase());
                         const filteredGenres = parsedTags
                             .filter(Boolean)
@@ -529,7 +582,7 @@ router.post('/refresh-all-books-metadata', requireAuth, requireAdmin, async (req
                             });
 
                         const genres = [...new Set(filteredGenres)];
-                        
+
                         const updateObj = {};
                         if (mode === 'all' || !book.genres || book.genres.length === 0) updateObj.genres = genres;
                         if (!book.genre || book.genre.trim() === '') {
@@ -537,7 +590,7 @@ router.post('/refresh-all-books-metadata', requireAuth, requireAdmin, async (req
                         }
 
                         await Book.updateOne(
-                            { _id: book._id }, 
+                            { _id: book._id },
                             { $set: updateObj }
                         );
                     }
@@ -587,10 +640,10 @@ router.post('/refresh-all-dvds-metadata', requireAuth, requireAdmin, async (req,
                 current++;
                 try {
                     if (io) {
-                        io.emit('refresh_all_progress', { 
-                            current, 
-                            total: dvds.length, 
-                            title: dvd.title 
+                        io.emit('refresh_all_progress', {
+                            current,
+                            total: dvds.length,
+                            title: dvd.title
                         });
                     }
 
@@ -599,7 +652,7 @@ router.post('/refresh-all-dvds-metadata', requireAuth, requireAdmin, async (req,
 
                     if (response.data) {
                         const genres = (response.data.genres || []).map(g => g.name);
-                        
+
                         const updateObj = {};
                         if (mode === 'all' || !dvd.genres || dvd.genres.length === 0) updateObj.genres = genres;
                         if (!dvd.genre || dvd.genre.trim() === '') {
@@ -607,7 +660,7 @@ router.post('/refresh-all-dvds-metadata', requireAuth, requireAdmin, async (req,
                         }
 
                         await Dvd.updateOne(
-                            { _id: dvd._id }, 
+                            { _id: dvd._id },
                             { $set: updateObj }
                         );
                     }
@@ -622,6 +675,87 @@ router.post('/refresh-all-dvds-metadata', requireAuth, requireAdmin, async (req,
         })();
     } catch (err) {
         console.error("[ERR] Bulk refresh dvds:", err.message);
+        if (!res.headersSent) res.status(500).json({ error: err.message });
+    }
+});
+
+router.post('/refresh-all-games-metadata', requireAuth, requireAdmin, async (req, res) => {
+    const { mode = 'all' } = req.body;
+    const clientId = process.env.TWITCH_CLIENT_ID;
+    const clientSecret = process.env.TWITCH_CLIENT_SECRET;
+    if (!clientId || !clientSecret) return res.status(500).json({ error: 'IGDB/Twitch credentials not configured' });
+
+    try {
+        let query = { igdb_id: { $exists: true, $ne: null } };
+        if (mode === 'missing') {
+            query.$or = [
+                { genre: { $exists: false } },
+                { genre: '' },
+                { genre: null },
+                { genres: { $exists: false } },
+                { genres: { $size: 0 } }
+            ];
+        }
+
+        const games = await Game.find(query).select('_id igdb_id title developer genre genres');
+        if (games.length === 0) return res.json({ success: true, count: 0 });
+
+        res.status(202).json({ success: true, total: games.length });
+
+        (async () => {
+            const io = req.app.get('io');
+            let current = 0;
+            for (const game of games) {
+                current++;
+                try {
+                    if (io) {
+                        io.emit('refresh_all_progress', {
+                            current,
+                            total: games.length,
+                            title: game.title
+                        });
+                    }
+
+                    const results = await igdbRequest('games',
+                        `where id = ${game.igdb_id};
+                        fields genres.name, cover.url, first_release_date;
+                        limit 1;`
+                    );
+
+                    if (results && results.length > 0) {
+                        const data = results[0];
+                        const genres = (data.genres || []).map(g => g.name);
+
+                        const updateObj = {};
+                        if (mode === 'all' || !game.genres || game.genres.length === 0) updateObj.genres = genres;
+                        if (!game.genre || game.genre.trim() === '') {
+                            updateObj.genre = genres[0] || '';
+                        }
+
+                        let cover = '';
+                        if (data.cover && data.cover.url) {
+                            cover = data.cover.url.replace('t_thumb', 't_cover_big');
+                            if (cover.startsWith('//')) cover = 'https:' + cover;
+                            updateObj.cover_image = cover;
+                        }
+
+                        await Game.updateOne(
+                            { _id: game._id },
+                            { $set: updateObj }
+                        );
+                    }
+
+                    // IGDB rate limit: 4 requests/second
+                    await new Promise(r => setTimeout(r, 300));
+                } catch (err) {
+                    console.error(`[ERR] Refresh bulk game ${game.igdb_id}:`, err.message);
+                    await new Promise(r => setTimeout(r, 1000));
+                }
+            }
+            if (io) io.emit('refresh_all_finished', { count: current });
+        })();
+    } catch (err) {
+        console.error("[ERR] Bulk refresh games:", err.message);
         if (!res.headersSent) res.status(500).json({ error: err.message });
     }
 });

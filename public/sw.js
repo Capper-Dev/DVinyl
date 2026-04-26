@@ -1,4 +1,4 @@
-const CACHE_NAME = 'dvinyl-v2.3';
+const CACHE_NAME = 'dvinyl-v2.5';
 
 const STATIC_ASSETS = [
   '/',
@@ -47,15 +47,15 @@ self.addEventListener('fetch', event => {
     '/login', '/logout', '/setup',
     // Collections
     '/collection', '/wishlist',
-    '/album/', '/book/', '/dvd/',
+    '/album/', '/book/', '/dvd/', '/game/',
     // Add / confirmation
-    '/add-vinyl', '/add-book', '/add-dvd',
-    '/confirm-vinyl/', '/confirm-dvd/', '/confirm-book/',
-    '/save-vinyl', '/save-book', '/save-dvd',
+    '/add-vinyl', '/add-book', '/add-dvd', '/add-game',
+    '/confirm-vinyl/', '/confirm-dvd/', '/confirm-book/', '/confirm-game/',
+    '/save-vinyl', '/save-book', '/save-dvd', '/save-game',
     // Edition
-    '/album/edit/', '/book/edit/', '/dvd/edit/',
+    '/album/edit/', '/book/edit/', '/dvd/edit/', '/game/edit/',
     // search
-    '/search-discogs', '/search-books', '/search-dvds',
+    '/search-discogs', '/search-books', '/search-dvds', '/search-games',
     // internals API
     '/api/',
     // Import

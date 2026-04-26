@@ -12,7 +12,7 @@
                     </span>
             </h1>
             <% if (user.isAdmin) { %>
-                <% const addRoutes={ music: '/add-vinyl' , books: '/add-book' , dvd: '/add-dvd' }; const
+                <% const addRoutes={ music: '/add-vinyl' , books: '/add-book' , dvd: '/add-dvd' , games: '/add-game' }; const
                     addRoute=addRoutes[currentType]; %>
                     <div class="flex gap-2">
 
@@ -62,7 +62,8 @@
             <div class="flex flex-wrap gap-2 mb-8" id="formatFilters">
                 <% const mainTypes=[ { id: 'all' , label: t('common.all') }, { id: 'music' , label: t('media.music') },
                     ...(settings.modules.books ? [{ id: 'books' , label: t('media.books') }] : []),
-                    ...(settings.modules.dvd ? [{ id: 'dvd' , label: t('media.dvds') }] : []), ]; %>
+                    ...(settings.modules.dvd ? [{ id: 'dvd' , label: t('media.dvds') }] : []),
+                    ...(settings.modules.games ? [{ id: 'games' , label: t('media.games') }] : []), ]; %>
 
                     <% if (currentType==='all' ) { %>
                         <% mainTypes.forEach(type=> { %>
@@ -192,9 +193,9 @@
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6" id="albumGrid">
             <% albums.forEach(album=> { %>
                 <% const isBook=album.kind==='Book' ; const isDvd=album.kind==='Dvd' || (album.tmdb_id !==undefined &&
-                    album.tmdb_id !==null); const aspectClass='aspect-square' ; let detailUrl=`/album/${album._id}`; if
-                    (isBook) detailUrl=`/book/${album._id}`; if (isDvd) detailUrl=`/dvd/${album._id}`; const
-                    formatKey=(isDvd) ? album.format : (album.media_type || album.format); let isAdvancedCD=false; let
+                    album.tmdb_id !==null); const isGame=album.kind==='Game' ; const aspectClass='aspect-square' ; let detailUrl=`/album/${album._id}`; if
+                    (isBook) detailUrl=`/book/${album._id}`; if (isDvd) detailUrl=`/dvd/${album._id}`; if (isGame) detailUrl=`/game/${album._id}`; const
+                    formatKey=isGame ? (album.format || 'physical') : ((isDvd) ? album.format : (album.media_type || album.format)); let isAdvancedCD=false; let
                     advancedCDType='' ; if (settings && settings.modules && settings.modules.advancedCD &&
                     formatKey==='cd' && album.format_type) { if (album.format_type.toLowerCase().includes('sacd')) {
                     isAdvancedCD=true; advancedCDType='sacd' ; } else if
@@ -203,10 +204,10 @@
                     : 'bg-orange-600/90' , 'manga' : 'bg-pink-600/90' , 'comic' : 'bg-indigo-600/90' , 'hardcover'
                     : 'bg-purple-600/90' , 'paperback' : 'bg-amber-600/90' , 'book' : 'bg-amber-700/90' , 'dvd'
                     : 'bg-sky-600/90' , 'bluray' : 'bg-indigo-700/90' , '4k' : 'bg-red-600/90' , 'vhs'
-                    : 'bg-amber-600/90' , 'laserdisc' : 'bg-purple-600/90' }; let badgeClass=isAdvancedCD ?
+                    : 'bg-amber-600/90' , 'laserdisc' : 'bg-purple-600/90' , 'physical' : 'bg-emerald-600/90' , 'collector' : 'bg-amber-600/90' , 'limited' : 'bg-purple-600/90' , 'steelbook' : 'bg-sky-600/90' }; let badgeClass=isAdvancedCD ?
                     (advancedCDType==='sacd' ? 'bg-red-600/90' : 'bg-blue-600/90' ) : (badgeMap[formatKey]
-                    || 'bg-gray-600/90' ); let displayFormat=isAdvancedCD ? t('media.' + advancedCDType) : t('media.' +
-                    formatKey); %>
+                    || 'bg-gray-600/90' ); let displayFormat=isAdvancedCD ? t('media.' + advancedCDType) : (isGame ? (album.platform || 'Game') : t('media.' +
+                    formatKey)); %>
 
                     <div class="album-card group relative card-theme rounded-xl overflow-hidden hover:border-primary-theme transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
                         data-location="<%= album.location || '' %>"
@@ -215,13 +216,13 @@
                             <div
                                 class="<%= aspectClass %> w-full relative overflow-hidden bg-black/5 flex items-center justify-center">
 
-                                <% if (isBook || isDvd) { %>
+                                <% if (isBook || isDvd || isGame) { %>
                                     <img src="<%= album.cover_image %>"
                                         class="absolute inset-0 w-full h-full object-cover blur-xl opacity-30 scale-110 pointer-events-none">
                                     <% } %>
 
                                         <img src="<%= album.cover_image %>"
-                                            class="relative z-10 w-full h-full <%= (isBook || isDvd) ? 'object-contain p-2' : 'object-cover' %> transition-transform duration-500 group-hover:scale-105"
+                                            class="relative z-10 w-full h-full <%= (isBook || isDvd || isGame) ? 'object-contain p-2' : 'object-cover' %> transition-transform duration-500 group-hover:scale-105"
                                             loading="lazy">
 
                                         <span
@@ -235,7 +236,7 @@
                                     <%= album.title %>
                                 </h3>
                                 <p class="text-xs opacity-60 truncate mb-2">
-                                    <%= isBook ? album.author : (album.artist || album.director || 'Inconnu' ) %>
+                                    <%= isBook ? album.author : (isGame ? (album.developer || album.publisher || '') : (album.artist || album.director || 'Inconnu' )) %>
                                 </p>
 
                                 <% if(album.variant_color) { %>
