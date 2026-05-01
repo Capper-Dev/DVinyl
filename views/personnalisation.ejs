@@ -11,7 +11,7 @@
                     <%= t('perso.subtitle', { siteName: settings.siteName }) %>
                 </p>
             </div>
-            <a href="/"
+            <a href="<%= baseUrl || '/' %>"
                 class="w-fit px-4 py-2 bg-black/5 dark:bg-white/10 rounded-lg text-sm font-bold hover:bg-black/10 dark:hover:bg-white/20 transition-all flex items-center">
                 <i class="fa-solid fa-arrow-left mr-2"></i>
                 <%= t('perso.backHome') %>
