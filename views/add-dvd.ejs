@@ -5,7 +5,7 @@
 <div class="max-w-screen-lg mx-auto pb-20 px-4">
     
     <div class="text-center mb-8 md:mb-12 pt-4 md:pt-8">
-        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-red-500/10 text-red-500 mb-4">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary-theme/10 text-primary-theme mb-4">
             <i class="fa-solid fa-film text-3xl"></i>
         </div>
         <h1 class="text-3xl md:text-4xl font-black"><%= t('add_dvd.title') %></h1>
@@ -16,14 +16,14 @@
         <div class="flex flex-col sm:flex-row gap-3">
             <div class="flex-grow relative group">
                 <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none z-10">
-                    <i class="fa-solid fa-search opacity-50 group-focus-within:text-red-500 transition-colors"></i>
+                    <i class="fa-solid fa-search opacity-50 group-focus-within:text-primary-theme transition-colors"></i>
                 </div>
                 <input type="text" name="query" value="<%= locals.scanned_barcode || '' %>"
-                    class="block w-full p-4 pl-12 text-base bg-black/5 dark:bg-white/5 border border-transparent focus:border-red-500 rounded-2xl focus:ring-2 focus:ring-red-500/50 placeholder-opacity-50 transition-all outline-none"
+                    class="block w-full p-4 pl-12 text-base bg-black/5 dark:bg-white/5 border border-transparent focus:border-primary-theme rounded-2xl focus:ring-2 focus:ring-primary-theme/50 placeholder-opacity-50 transition-all outline-none"
                     placeholder="<%= t('add_dvd.search_placeholder') || 'Titre, Réalisateur ou Code-barres...' %>" autofocus required>
             </div>
             <button type="submit"
-                class="bg-red-600 hover:brightness-110 text-white font-bold px-8 py-4 rounded-2xl shadow-lg shadow-red-600/20 transition-all active:scale-95 flex items-center justify-center gap-2 whitespace-nowrap">
+                class="bg-primary-theme hover:brightness-110 text-white font-bold px-8 py-4 rounded-2xl shadow-lg shadow-primary-theme/20 transition-all active:scale-95 flex items-center justify-center gap-2 whitespace-nowrap">
                 <i class="fa-solid fa-search"></i>
                 <%= t('common.search') %>
             </button>
@@ -35,7 +35,7 @@
 
         <div class="flex justify-center mt-3">
             <button type="button" id="start-scan"
-                class="bg-black/5 dark:bg-white/5 hover:bg-red-600 hover:text-white px-6 py-3 rounded-xl font-bold text-sm transition-all flex items-center gap-2 active:scale-95">
+                class="bg-black/5 dark:bg-white/5 hover:bg-primary-theme hover:text-white px-6 py-3 rounded-xl font-bold text-sm transition-all flex items-center gap-2 active:scale-95">
                 <i class="fa-solid fa-barcode"></i>
                 <%= t('add_dvd.btn_scan') %>
             </button>
