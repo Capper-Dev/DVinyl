@@ -18,7 +18,7 @@
                     <input type="radio" name="type" value="vinyl" class="peer sr-only"
                         <%=(locals.searchType==='vinyl' || !locals.searchType) ? 'checked' : '' %>>
                     <div
-                        class="h-full flex flex-col items-center justify-center p-3 md:p-4 rounded-2xl border border-transparent bg-black/5 dark:bg-white/5 text-center transition-all peer-checked:bg-primary-theme peer-checked:text-white hover:bg-black/10 dark:hover:bg-white/10 opacity-70 peer-checked:opacity-100 peer-checked:shadow-md">
+                        class="h-full flex flex-col items-center justify-center p-3 md:p-4 rounded-2xl border border-transparent bg-black/5 dark:bg-white/5 text-center transition-all peer-checked:bg-green-600 peer-checked:text-white hover:bg-black/10 dark:hover:bg-white/10 opacity-70 peer-checked:opacity-100 peer-checked:shadow-md">
                         <i class="fa-solid fa-record-vinyl text-xl md:text-2xl mb-1 block"></i>
                         <span class="text-xs font-bold">
                             <%= t('media.vinyl') %>
@@ -30,7 +30,7 @@
                     <input type="radio" name="type" value="cd" class="peer sr-only" <%=(locals.searchType==='cd' )
                         ? 'checked' : '' %>>
                     <div
-                        class="h-full flex flex-col items-center justify-center p-3 md:p-4 rounded-2xl border border-transparent bg-black/5 dark:bg-white/5 text-center transition-all peer-checked:bg-primary-theme peer-checked:text-white hover:bg-black/10 dark:hover:bg-white/10 opacity-70 peer-checked:opacity-100 peer-checked:shadow-md">
+                        class="h-full flex flex-col items-center justify-center p-3 md:p-4 rounded-2xl border border-transparent bg-black/5 dark:bg-white/5 text-center transition-all peer-checked:bg-blue-600 peer-checked:text-white hover:bg-black/10 dark:hover:bg-white/10 opacity-70 peer-checked:opacity-100 peer-checked:shadow-md">
                         <i class="fa-solid fa-compact-disc text-xl md:text-2xl mb-1 block"></i>
                         <span class="text-xs font-bold">
                             <%= t('media.cd') %>
@@ -42,7 +42,7 @@
                     <input type="radio" name="type" value="cassette" class="peer sr-only" <%=(typeof searchType
                         !=='undefined' && searchType==='cassette' ) ? 'checked' : '' %>>
                     <div
-                        class="h-full flex flex-col items-center justify-center p-3 md:p-4 rounded-2xl border border-transparent bg-black/5 dark:bg-white/5 text-center transition-all peer-checked:bg-primary-theme peer-checked:text-white hover:bg-black/10 dark:hover:bg-white/10 opacity-70 peer-checked:opacity-100 peer-checked:shadow-md">
+                        class="h-full flex flex-col items-center justify-center p-3 md:p-4 rounded-2xl border border-transparent bg-black/5 dark:bg-white/5 text-center transition-all peer-checked:bg-orange-600 peer-checked:text-white hover:bg-black/10 dark:hover:bg-white/10 opacity-70 peer-checked:opacity-100 peer-checked:shadow-md">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                             stroke-linejoin="round" class="mx-auto mb-1">

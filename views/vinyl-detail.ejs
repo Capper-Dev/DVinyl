@@ -41,7 +41,7 @@
 
                 <div class="flex gap-4 mt-6 overflow-x-auto pb-2 w-full max-w-lg justify-center">
                     <% if (album.user_image) { %>
-                        <button onclick="switchImage('<%= album.user_image %>', '<%= t('detail.additional_image') %>')"
+                        <button onclick="switchImage('<%= album.user_image %>', translations.additional_image)"
                             class="thumb-btn w-20 h-20 rounded-lg border-2 border-primary-theme overflow-hidden relative transition-all hover:opacity-100 focus:outline-none shadow-md">
                             <img src="<%= album.user_image %>" class="w-full h-full object-cover">
                             <div class="absolute inset-0 bg-black/10 dark:bg-black/20"></div>
@@ -49,7 +49,7 @@
                         <% } %>
 
                             <button
-                                onclick="switchImage('<%= album.cover_image %>', '<%= t('detail.official_cover') %>')"
+                                onclick="switchImage('<%= album.cover_image %>', translations.official_cover)"
                                 class="thumb-btn w-20 h-20 rounded-lg border-2 border-transparent hover:border-black/20 dark:hover:border-white/20 overflow-hidden relative transition-all opacity-70 hover:opacity-100 focus:outline-none shadow-sm">
                                 <img src="<%= album.cover_image %>" class="w-full h-full object-cover">
                             </button>
@@ -66,12 +66,13 @@
                     </h2>
 
                     <div class="flex flex-wrap gap-2">
-                        <% let badgeColor='bg-green-600 text-white' ; let badgeText=t('media.vinyl'); if
-                            (album.media_type==='cd' ) { badgeColor='bg-blue-600 text-white' ; badgeText=t('media.cd');
-                            } else if (album.media_type==='cassette' ) { badgeColor='bg-orange-600 text-white' ;
-                            badgeText=t('media.cassette'); } %>
+                        <% 
+                            let badgeText = t('media.vinyl');
+                            if (album.media_type === 'cd') { badgeText = t('media.cd'); } 
+                            else if (album.media_type === 'cassette') { badgeText = t('media.cassette'); } 
+                        %>
                             <span
-                                class="px-3 py-1 rounded-full text-xs font-bold tracking-wider <%= badgeColor %> shadow-sm">
+                                class="px-3 py-1 rounded-full text-xs font-bold tracking-wider bg-primary-theme text-white shadow-sm">
                                 <%= badgeText %>
                             </span>
 
