@@ -521,7 +521,7 @@
 
             try {
                 const isWishlist = window.location.pathname.includes('wishlist');
-                await fetch('/import/discogs', {
+                await fetch('<%= baseUrl %>/import/discogs', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
