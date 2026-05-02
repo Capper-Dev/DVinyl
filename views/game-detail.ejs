@@ -1,6 +1,7 @@
 <%- include('partials/header') %>
 
-    <div class="fixed inset-0 -z-10 opacity-10 dark:opacity-20 blur-3xl pointer-events-none transition-opacity duration-1000">
+    <div
+        class="fixed inset-0 -z-10 opacity-10 dark:opacity-20 blur-3xl pointer-events-none transition-opacity duration-1000">
         <img src="<%= game.cover_image %>" class="w-full h-full object-cover">
     </div>
 
@@ -8,37 +9,44 @@
 
         <nav class="flex py-6 text-sm opacity-60 transition-colors">
             <% if (game.in_wishlist) { %>
-                <a href="<%= baseUrl %>/wishlist" class="hover:opacity-100 hover:text-primary-theme transition-colors flex items-center gap-2">
+                <a href="<%= baseUrl %>/wishlist"
+                    class="hover:opacity-100 hover:text-primary-theme transition-colors flex items-center gap-2">
                     <i class="fa-solid fa-arrow-left"></i>
                     <%= t('detail.back_to_wishlist') %>
                 </a>
-            <% } else { %>
-                <a href="<%= baseUrl %>/collection?type=games" class="hover:opacity-100 hover:text-primary-theme transition-colors flex items-center gap-2">
-                    <i class="fa-solid fa-arrow-left"></i>
-                    <%= t('detail.back_to_collection') %>
-                </a>
-            <% } %>
+                <% } else { %>
+                    <a href="<%= baseUrl %>/collection?type=games"
+                        class="hover:opacity-100 hover:text-primary-theme transition-colors flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <%= t('detail.back_to_collection') %>
+                    </a>
+                    <% } %>
         </nav>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
 
             <div class="lg:col-span-5 flex flex-col items-center">
-                <div class="relative w-full aspect-[3/4] card-theme rounded-2xl shadow-xl overflow-hidden flex items-center justify-center group transition-colors">
+                <div
+                    class="relative w-full aspect-[3/4] card-theme rounded-2xl shadow-xl overflow-hidden flex items-center justify-center group transition-colors">
                     <% if(game.in_wishlist) { %>
-                        <div class="absolute top-4 left-4 bg-pink-500 text-white text-[10px] font-bold px-2 py-1 rounded shadow-md z-10 flex items-center gap-1">
+                        <div
+                            class="absolute top-4 left-4 bg-pink-500 text-white text-[10px] font-bold px-2 py-1 rounded shadow-md z-10 flex items-center gap-1">
                             <i class="fa-solid fa-gift"></i>
                             <%= t('index.section_wishlist') %>
                         </div>
-                    <% } %>
+                        <% } %>
 
-                    <img src="<%= game.cover_image %>" class="absolute inset-0 w-full h-full object-cover blur-xl opacity-30 scale-110 pointer-events-none">
-                    <img id="mainImage" src="<%= game.cover_image %>"
-                        class="relative z-10 w-full h-full object-contain p-4 transition-transform duration-300 group-hover:scale-[1.02]"
-                        alt="Game Cover">
+                            <img src="<%= game.cover_image %>"
+                                class="absolute inset-0 w-full h-full object-cover blur-xl opacity-30 scale-110 pointer-events-none">
+                            <img id="mainImage" src="<%= game.cover_image %>"
+                                class="relative z-10 w-full h-full object-contain p-4 transition-transform duration-300 group-hover:scale-[1.02]"
+                                alt="Game Cover">
 
-                    <span class="absolute top-4 right-4 z-20 bg-primary-theme/90 text-white text-xs px-3 py-1 rounded-full border border-white/10 shadow-sm">
-                        <i class="fa-solid fa-gamepad mr-1"></i> <%= t('media.game') %>
-                    </span>
+                            <span
+                                class="absolute top-4 right-4 z-20 bg-primary-theme/90 text-white text-xs px-3 py-1 rounded-full border border-white/10 shadow-sm">
+                                <i class="fa-solid fa-gamepad mr-1"></i>
+                                <%= t('media.game') %>
+                            </span>
                 </div>
 
                 <div class="w-full mt-6 grid grid-cols-2 gap-4">
@@ -46,12 +54,14 @@
                         <span class="block text-[10px] uppercase font-bold opacity-50 mb-1">
                             <%= t('confirm_game.field_status') %>
                         </span>
-                        <% let statusColor='text-gray-500'; if(game.playStatus==='playing') statusColor='text-blue-500'; else if(game.playStatus==='played') statusColor='text-green-500'; %>
-                        <span class="text-sm font-bold <%= statusColor %>">
-                            <%= game.playStatus==='playing' ? t('confirm_game.status_playing') :
-                                (game.playStatus==='played' ? t('confirm_game.status_played') :
-                                t('confirm_game.status_to_play')) %>
-                        </span>
+                        <% let statusColor='text-gray-500' ; if(game.playStatus==='playing' )
+                            statusColor='text-blue-500' ; else if(game.playStatus==='played' )
+                            statusColor='text-green-500' ; %>
+                            <span class="text-sm font-bold <%= statusColor %>">
+                                <%= game.playStatus==='playing' ? t('confirm_game.status_playing') :
+                                    (game.playStatus==='played' ? t('confirm_game.status_played') :
+                                    t('confirm_game.status_to_play')) %>
+                            </span>
                     </div>
                     <div class="card-theme p-4 rounded-xl text-center shadow-sm">
                         <span class="block text-[10px] uppercase font-bold opacity-50 mb-1">
@@ -59,8 +69,9 @@
                         </span>
                         <div class="flex justify-center text-yellow-500 text-xs">
                             <% for(let i=1; i<=5; i++) { %>
-                                <i class="<%= i <= game.user_rating ? 'fa-solid' : (i - 0.5 === game.user_rating ? 'fa-solid fa-star-half-stroke' : 'fa-regular') %> fa-star"></i>
-                            <% } %>
+                                <i
+                                    class="<%= i <= game.user_rating ? 'fa-solid' : (i - 0.5 === game.user_rating ? 'fa-solid fa-star-half-stroke' : 'fa-regular') %> fa-star"></i>
+                                <% } %>
                         </div>
                     </div>
                 </div>
@@ -68,7 +79,8 @@
 
             <div class="lg:col-span-7 space-y-8">
                 <div>
-                    <p class="text-primary-theme font-bold text-sm mb-1 uppercase tracking-wider flex items-center gap-2">
+                    <p
+                        class="text-primary-theme font-bold text-sm mb-1 uppercase tracking-wider flex items-center gap-2">
                         <i class="fa-solid fa-gamepad"></i>
                         <%= game.platform || t('media.game') %>
                     </p>
@@ -81,28 +93,34 @@
                     </h2>
 
                     <div class="flex flex-wrap gap-2">
-                        <% const formatColors = { 'physical': 'bg-gray-600 text-white', 'collector': 'bg-amber-600 text-white', 'limited': 'bg-purple-600 text-white', 'steelbook': 'bg-sky-600 text-white' };
-                           let badgeColor = formatColors[game.format] || 'bg-gray-600 text-white'; %>
-                        <span class="px-3 py-1 rounded-full text-xs font-bold tracking-wider <%= badgeColor %> shadow-sm">
-                            <%= t('media.' + (game.format || 'physical')) %>
-                        </span>
-
-                        <% if (game.year) { %>
-                            <span class="px-3 py-1 bg-black/5 dark:bg-white/10 border border-transparent rounded-full text-xs opacity-80 transition-colors">
-                                <%= game.year %>
+                        <% const formatColors={ 'physical' : 'bg-gray-600 text-white' , 'collector'
+                            : 'bg-amber-600 text-white' , 'limited' : 'bg-purple-600 text-white' , 'steelbook'
+                            : 'bg-sky-600 text-white' }; let badgeColor=formatColors[game.format]
+                            || 'bg-gray-600 text-white' ; %>
+                            <span
+                                class="px-3 py-1 rounded-full text-xs font-bold tracking-wider <%= badgeColor %> shadow-sm">
+                                <%= t('media.' + (game.format || 'physical' )) %>
                             </span>
-                        <% } %>
 
-                        <% if (game.region) { %>
-                            <span class="px-3 py-1 bg-black/5 dark:bg-white/10 border border-transparent rounded-full text-xs opacity-80 transition-colors">
-                                <i class="fa-solid fa-globe opacity-50 mr-1"></i>
-                                <%= game.region %>
-                            </span>
-                        <% } %>
+                            <% if (game.year) { %>
+                                <span
+                                    class="px-3 py-1 bg-black/5 dark:bg-white/10 border border-transparent rounded-full text-xs opacity-80 transition-colors">
+                                    <%= game.year %>
+                                </span>
+                                <% } %>
 
-                        <span class="px-3 py-1 bg-black/5 dark:bg-white/10 border border-transparent rounded-full text-xs opacity-80 transition-colors">
-                            <%= t('confirm_game.field_quantity') %> : <%= game.quantity || 1 %>
-                        </span>
+                                    <% if (game.region) { %>
+                                        <span
+                                            class="px-3 py-1 bg-black/5 dark:bg-white/10 border border-transparent rounded-full text-xs opacity-80 transition-colors">
+                                            <i class="fa-solid fa-globe opacity-50 mr-1"></i>
+                                            <%= game.region %>
+                                        </span>
+                                        <% } %>
+
+                                            <span
+                                                class="px-3 py-1 bg-black/5 dark:bg-white/10 border border-transparent rounded-full text-xs opacity-80 transition-colors">
+                                                <%= t('confirm_game.field_quantity') %> : <%= game.quantity || 1 %>
+                                            </span>
                     </div>
                 </div>
 
@@ -117,24 +135,25 @@
                         </span>
                     </div>
 
-                    <% if ((game.genres && game.genres.length > 0) || (game.styles && game.styles.length > 0)) { %>
+                    <% if ((game.genres && game.genres.length> 0) || (game.styles && game.styles.length > 0)) { %>
                         <div class="flex flex-col gap-4">
-                            <% if (game.genres && game.genres.length > 0) { %>
+                            <% if (game.genres && game.genres.length> 0) { %>
                                 <div class="flex flex-col">
                                     <span class="text-[10px] uppercase tracking-widest opacity-50 font-bold mb-2">
                                         <%= t('confirm_vinyl.field_genres') %>
                                     </span>
                                     <div class="flex flex-wrap gap-2">
-                                        <% game.genres.forEach(genre => { %>
-                                            <span class="px-2 py-0.5 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-md text-[11px] font-medium transition-colors hover:bg-primary-theme/10 hover:border-primary-theme/30 cursor-default">
+                                        <% game.genres.forEach(genre=> { %>
+                                            <span
+                                                class="px-2 py-0.5 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-md text-[11px] font-medium transition-colors hover:bg-primary-theme/10 hover:border-primary-theme/30 cursor-default">
                                                 <%= genre %>
                                             </span>
-                                        <% }) %>
+                                            <% }) %>
                                     </div>
                                 </div>
-                            <% } %>
+                                <% } %>
                         </div>
-                    <% } %>
+                        <% } %>
                 </div>
 
                 <div class="card-theme rounded-xl p-6 grid grid-cols-2 gap-y-6 gap-x-4 transition-colors shadow-sm">
@@ -183,24 +202,27 @@
                             <%= t('detail.added_at') %>
                         </span>
                         <span class="transition-colors">
-                            <%= new Date(game.added_at).toLocaleDateString(currentLng==='fr' ? 'fr-FR' : 'en-US') %>
+                            <%= new Date(game.added_at).toLocaleDateString(currentLng==='fr' ? 'fr-FR' : 'en-US' ) %>
                         </span>
                     </div>
                     <% if (game.igdb_id) { %>
-                    <div class="col-span-2 border-t border-black/10 dark:border-white/10 mt-2 pt-4 transition-colors">
-                        <span class="block text-xs opacity-50 uppercase font-bold mb-1">
-                            <%= t('detail.source') %>
-                        </span>
-                        <a href="https://www.igdb.com/games/<%= game.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') %>" target="_blank"
-                            class="text-primary-theme hover:underline text-sm inline-flex items-center gap-1 transition-colors">
-                            IGDB <i class="fa-solid fa-external-link-alt text-[10px]"></i>
-                        </a>
-                    </div>
-                    <% } %>
+                        <div
+                            class="col-span-2 border-t border-black/10 dark:border-white/10 mt-2 pt-4 transition-colors">
+                            <span class="block text-xs opacity-50 uppercase font-bold mb-1">
+                                <%= t('detail.source') %>
+                            </span>
+                            <a href="https://www.igdb.com/games/<%= game.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') %>"
+                                target="_blank"
+                                class="text-primary-theme hover:underline text-sm inline-flex items-center gap-1 transition-colors">
+                                IGDB <i class="fa-solid fa-external-link-alt text-[10px]"></i>
+                            </a>
+                        </div>
+                        <% } %>
                 </div>
 
                 <% if (game.comments) { %>
-                    <div class="card-theme rounded-xl p-6 border border-black/10 dark:border-white/10 relative overflow-hidden shadow-sm transition-colors">
+                    <div
+                        class="card-theme rounded-xl p-6 border border-black/10 dark:border-white/10 relative overflow-hidden shadow-sm transition-colors">
                         <div class="absolute -right-2 -top-2 text-black/5 dark:text-white/5 text-6xl">
                             <i class="fa-solid fa-quote-right"></i>
                         </div>
@@ -212,32 +234,32 @@
                             <%= game.comments %>
                         </p>
                     </div>
-                <% } %>
+                    <% } %>
 
-                <% if (user && user.isAdmin) { %>
-                    <div class="pt-6 border-t border-black/10 dark:border-white/10 flex justify-end gap-4 transition-colors">
-                        <div class="flex-1 flex gap-2">
-                            <% if (game.igdb_id) { %>
-                                <button id="refreshInfoBtn"
-                                    onclick="refreshMetadata('<%= game._id %>')"
-                                    class="opacity-60 hover:opacity-100 px-4 py-2 text-sm transition-colors border border-black/10 dark:border-white/10 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 flex items-center gap-2">
-                                    <i class="fa-solid fa-arrows-rotate" id="refreshInfoIcon"></i>
-                                    <%= t('collection.refresh_metadata_btn') %>
+                        <% if (user && user.isAdmin) { %>
+                            <div
+                                class="pt-6 border-t border-black/10 dark:border-white/10 flex justify-end gap-4 transition-colors">
+                                <div class="flex-1 flex gap-2">
+                                    <% if (game.igdb_id) { %>
+                                        <button id="refreshInfoBtn" onclick="refreshMetadata('<%= game._id %>')"
+                                            class="opacity-60 hover:opacity-100 px-4 py-2 text-sm transition-colors border border-black/10 dark:border-white/10 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 flex items-center gap-2">
+                                            <i class="fa-solid fa-arrows-rotate" id="refreshInfoIcon"></i>
+                                            <%= t('collection.refresh_metadata_btn') %>
+                                        </button>
+                                        <% } %>
+                                </div>
+                                <a href="<%= baseUrl %>/game/edit/<%= game._id %>"
+                                    class="opacity-70 hover:opacity-100 hover:text-primary-theme px-4 py-2 text-sm transition-colors border border-black/10 dark:border-white/10 rounded-lg hover:bg-black/5 dark:hover:bg-white/5">
+                                    <i class="fa-solid fa-pen-to-square mr-2"></i>
+                                    <%= t('common.edit') %>
+                                </a>
+                                <button onclick="confirmDelete('<%= game._id %>')"
+                                    class="text-red-600 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400 bg-red-100 dark:bg-red-500/10 hover:bg-red-200 dark:hover:bg-red-500/20 px-4 py-2 rounded-lg text-sm transition-colors">
+                                    <i class="fa-solid fa-trash mr-2"></i>
+                                    <%= t('admin.tooltips.delete') %>
                                 </button>
+                            </div>
                             <% } %>
-                        </div>
-                        <a href="<%= baseUrl %>/game/edit/<%= game._id %>"
-                            class="opacity-70 hover:opacity-100 hover:text-primary-theme px-4 py-2 text-sm transition-colors border border-black/10 dark:border-white/10 rounded-lg hover:bg-black/5 dark:hover:bg-white/5">
-                            <i class="fa-solid fa-pen-to-square mr-2"></i>
-                            <%= t('common.edit') %>
-                        </a>
-                        <button onclick="confirmDelete('<%= game._id %>')"
-                            class="text-red-600 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400 bg-red-100 dark:bg-red-500/10 hover:bg-red-200 dark:hover:bg-red-500/20 px-4 py-2 rounded-lg text-sm transition-colors">
-                            <i class="fa-solid fa-trash mr-2"></i>
-                            <%= t('admin.tooltips.delete') %>
-                        </button>
-                    </div>
-                <% } %>
             </div>
         </div>
     </div>
@@ -252,7 +274,7 @@
                     });
                     const data = await response.json();
                     if (data.success) {
-                        window.location.href = data.redirectUrl;
+                        window.location.href = '<%= baseUrl %>' + data.redirectUrl;
                     } else {
                         alert(data.error);
                     }
@@ -290,4 +312,4 @@
         }
     </script>
 
-<%- include('partials/footer') %>
+    <%- include('partials/footer') %>
