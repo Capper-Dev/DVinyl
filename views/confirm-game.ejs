@@ -18,7 +18,7 @@
                     <div class="absolute inset-0 bg-black/40 hidden group-hover:flex items-center justify-center text-white text-xs font-bold backdrop-blur-sm cursor-pointer" onclick="document.getElementById('checkEditCover').click()">
                         <%= t('confirm_game.replace_cover') %>
                     </div>
-                    <div class="absolute top-2 right-2 bg-emerald-600/90 text-white text-[10px] font-bold px-2 py-1 rounded backdrop-blur-sm uppercase">
+                    <div class="absolute top-2 right-2 bg-primary-theme/90 text-white text-[10px] font-bold px-2 py-1 rounded backdrop-blur-sm uppercase">
                         <i class="fa-solid fa-gamepad mr-1"></i> <%= t('media.game') %>
                     </div>
                 </div>
@@ -66,7 +66,7 @@
             <div class="card-theme rounded-xl p-6 md:p-8 transition-colors shadow-sm">
                 
                 <h1 class="text-2xl font-bold mb-6 flex items-center gap-2">
-                    <i class="fa-solid fa-pen-to-square text-emerald-500"></i> <%= t('confirm_game.config_title') %>
+                    <i class="fa-solid fa-pen-to-square text-primary-theme"></i> <%= t('confirm_game.config_title') %>
                 </h1>
 
                 <form action="<%= baseUrl %>/save-game" method="POST" class="space-y-6">
@@ -75,31 +75,31 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60"><%= t('confirm_game.field_title') %></label>
-                            <input type="text" name="title" value="<%= game.title %>" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full p-3 transition-colors outline-none" required>
+                            <input type="text" name="title" value="<%= game.title %>" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-primary-theme focus:border-primary-theme block w-full p-3 transition-colors outline-none" required>
                         </div>
                         <div>
                             <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60"><%= t('confirm_game.field_developer') %></label>
-                            <input type="text" name="developer" value="<%= game.developer %>" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-emerald-500 focus:border-emerald-500 block w-full p-3 transition-colors outline-none">
+                            <input type="text" name="developer" value="<%= game.developer %>" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-primary-theme focus:border-primary-theme block w-full p-3 transition-colors outline-none">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60"><%= t('confirm_game.field_publisher') %></label>
-                            <input type="text" name="publisher" value="<%= game.publisher %>" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-emerald-500 block w-full p-3 transition-colors outline-none">
+                            <input type="text" name="publisher" value="<%= game.publisher %>" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-primary-theme block w-full p-3 transition-colors outline-none">
                         </div>
                         <div>
                             <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60"><%= t('confirm_game.field_year') %></label>
-                            <input type="text" name="year" value="<%= game.year %>" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-emerald-500 block w-full p-3 transition-colors outline-none">
+                            <input type="text" name="year" value="<%= game.year %>" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-primary-theme block w-full p-3 transition-colors outline-none">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div>
-                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest text-emerald-500 opacity-80">
+                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest text-primary-theme opacity-80">
                                 <i class="fa-solid fa-gamepad mr-1"></i> <%= t('confirm_game.field_platform') %>
                             </label>
-                            <select name="platform" class="bg-black/5 dark:bg-white/5 border border-transparent text-gray-900 dark:text-white text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block w-full p-3 transition-colors outline-none cursor-pointer">
+                            <select name="platform" class="bg-black/5 dark:bg-white/5 border border-transparent text-gray-900 dark:text-white text-sm rounded-lg focus:ring-primary-theme focus:border-primary-theme block w-full p-3 transition-colors outline-none cursor-pointer">
                                 <% game.platforms.forEach(p => { %>
                                     <option value="<%= p.name %>" class="bg-white dark:bg-[#1a1a1a]"><%= p.name %></option>
                                 <% }) %>
@@ -109,11 +109,11 @@
                             <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">
                                 <i class="fa-solid fa-globe mr-1"></i> <%= t('confirm_game.field_region') %>
                             </label>
-                            <input type="text" name="region" placeholder="<%= t('confirm_game.region_placeholder') %>" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-emerald-500 block w-full p-3 transition-colors outline-none">
+                            <input type="text" name="region" placeholder="<%= t('confirm_game.region_placeholder') %>" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-primary-theme block w-full p-3 transition-colors outline-none">
                         </div>
                         <div>
                             <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60"><%= t('confirm_game.field_format') %></label>
-                            <select name="format" class="bg-black/5 dark:bg-white/5 border border-transparent text-gray-900 dark:text-white text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block w-full p-3 transition-colors outline-none cursor-pointer">
+                            <select name="format" class="bg-black/5 dark:bg-white/5 border border-transparent text-gray-900 dark:text-white text-sm rounded-lg focus:ring-primary-theme focus:border-primary-theme block w-full p-3 transition-colors outline-none cursor-pointer">
                                 <option value="physical" class="bg-white dark:bg-[#1a1a1a]"><%= t('media.physical') %></option>
                                 <option value="collector" class="bg-white dark:bg-[#1a1a1a]"><%= t('media.collector') %></option>
                                 <option value="limited" class="bg-white dark:bg-[#1a1a1a]"><%= t('media.limited') %></option>
@@ -125,23 +125,23 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60"><%= t('confirm_game.field_barcode') %></label>
-                            <input type="text" name="barcode" value="<%= scanned_barcode || '' %>" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-emerald-500 block w-full p-3 transition-colors outline-none">
+                            <input type="text" name="barcode" value="<%= scanned_barcode || '' %>" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-primary-theme block w-full p-3 transition-colors outline-none">
                         </div>
                         <div>
                             <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60"><%= t('confirm_game.field_quantity') %></label>
-                            <input type="number" name="quantity" value="1" min="1" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-emerald-500 block w-full p-3 transition-colors outline-none">
+                            <input type="number" name="quantity" value="1" min="1" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-primary-theme block w-full p-3 transition-colors outline-none">
                         </div>
                     </div>
 
                     <hr class="border-black/10 dark:border-white/10 my-6 transition-colors">
 
                     <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-trophy text-emerald-500"></i> <%= t('confirm_game.play_tracking') %>
+                        <i class="fa-solid fa-trophy text-primary-theme"></i> <%= t('confirm_game.play_tracking') %>
                     </h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div>
                             <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60"><%= t('confirm_game.field_status') %></label>
-                            <select name="playStatus" class="bg-black/5 dark:bg-white/5 border border-transparent text-sm rounded-lg focus:ring-emerald-500 block w-full p-3 transition-colors outline-none cursor-pointer">
+                            <select name="playStatus" class="bg-black/5 dark:bg-white/5 border border-transparent text-sm rounded-lg focus:ring-primary-theme block w-full p-3 transition-colors outline-none cursor-pointer">
                                 <option value="to_play" class="bg-white dark:bg-[#1a1a1a]"><%= t('confirm_game.status_to_play') %></option>
                                 <option value="playing" class="bg-white dark:bg-[#1a1a1a]"><%= t('confirm_game.status_playing') %></option>
                                 <option value="played" class="bg-white dark:bg-[#1a1a1a]"><%= t('confirm_game.status_played') %></option>
@@ -149,7 +149,7 @@
                         </div>
                         <div>
                             <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60"><%= t('confirm_game.field_rating') %></label>
-                            <input type="number" name="user_rating" min="0" max="5" step="0.5" value="0" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-emerald-500 block w-full p-3 transition-colors outline-none" placeholder="Ex: 4.5">
+                            <input type="number" name="user_rating" min="0" max="5" step="0.5" value="0" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-primary-theme block w-full p-3 transition-colors outline-none" placeholder="Ex: 4.5">
                         </div>
                     </div>
 
@@ -157,7 +157,7 @@
 
                     <div class="space-y-4">
                         <div class="flex items-center">
-                            <input id="checkEditCover" type="checkbox" class="w-4 h-4 text-emerald-500 bg-black/5 dark:bg-white/10 border-transparent rounded focus:ring-emerald-500 focus:ring-2 cursor-pointer transition-colors">
+                            <input id="checkEditCover" type="checkbox" class="w-4 h-4 text-primary-theme bg-black/5 dark:bg-white/10 border-transparent rounded focus:ring-primary-theme focus:ring-2 cursor-pointer transition-colors">
                             <label for="checkEditCover" class="ml-2 text-sm font-bold cursor-pointer opacity-80 hover:opacity-100 transition-opacity">
                                 <%= t('confirm_game.replace_cover') %>
                             </label>
@@ -167,7 +167,7 @@
 
                         <div id="boxEditCover" class="hidden p-4 card-theme rounded-2xl border border-black/10 dark:border-white/10 shadow-inner transition-all">
                             <div class="flex gap-1 mb-4 p-1 bg-black/5 dark:bg-white/5 rounded-xl">
-                                <button type="button" onclick="setImgTab('local')" id="tab-local" class="flex-1 py-2 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all bg-emerald-500 text-white">
+                                <button type="button" onclick="setImgTab('local')" id="tab-local" class="flex-1 py-2 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all bg-primary-theme text-white">
                                     <i class="fa-solid fa-upload mr-1"></i> <%= t('image_source.local') %>
                                 </button>
                                 <button type="button" onclick="setImgTab('url')" id="tab-url" class="flex-1 py-2 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all opacity-50">
@@ -189,13 +189,13 @@
                             </div>
 
                             <div id="pane-url" class="img-pane hidden">
-                                <input type="url" id="urlInput" placeholder="https://site.com/cover.jpg" class="w-full bg-white dark:bg-black/20 border-transparent rounded-lg p-3 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+                                <input type="url" id="urlInput" placeholder="https://site.com/cover.jpg" class="w-full bg-white dark:bg-black/20 border-transparent rounded-lg p-3 text-sm outline-none focus:ring-2 focus:ring-primary-theme">
                             </div>
 
                             <div id="pane-search" class="img-pane hidden">
                                 <div class="flex gap-2 mb-4">
-                                    <input type="text" id="queryCover" value="<%= game.title %>" class="flex-grow bg-white dark:bg-black/20 border-transparent rounded-lg p-2 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
-                                    <button type="button" onclick="runUniversalSearch()" class="bg-emerald-500 text-white px-4 rounded-lg">
+                                    <input type="text" id="queryCover" value="<%= game.title %>" class="flex-grow bg-white dark:bg-black/20 border-transparent rounded-lg p-2 text-sm outline-none focus:ring-2 focus:ring-primary-theme">
+                                    <button type="button" onclick="runUniversalSearch()" class="bg-primary-theme text-white px-4 rounded-lg">
                                         <i class="fa-solid fa-search"></i>
                                     </button>
                                 </div>
@@ -208,7 +208,7 @@
                         <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">
                             <%= t('confirm_game.field_comments') %>
                         </label>
-                        <textarea name="comments" rows="3" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block w-full p-3 placeholder-opacity-50 transition-colors outline-none" placeholder="Commentaires"></textarea>
+                        <textarea name="comments" rows="3" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg focus:ring-primary-theme focus:border-emerald-500 block w-full p-3 placeholder-opacity-50 transition-colors outline-none" placeholder="Commentaires"></textarea>
                     </div>
 
                     <div class="mb-6 grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -216,7 +216,7 @@
                             <label class="block text-xs font-bold uppercase tracking-wider opacity-60 mb-2">
                                 <i class="fa-solid fa-box-archive mr-1"></i> <%= t('common.location') %>
                             </label>
-                            <input type="text" name="location" list="locationList" placeholder="<%= t('placeholders.location') %>" class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all">
+                            <input type="text" name="location" list="locationList" placeholder="<%= t('placeholders.location') %>" class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary-theme outline-none transition-all">
                             <datalist id="locationList">
                                 <% locations.forEach(loc => { %>
                                     <option value="<%= loc %>">
@@ -230,7 +230,7 @@
                             <input type="text" name="genres" 
                                 placeholder="Action, RPG..."
                                 value="<%= game.genres ? game.genres.join(', ') : '' %>"
-                                class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all">
+                                class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary-theme outline-none transition-all">
                         </div>
                     </div>
 
@@ -238,7 +238,7 @@
                         <button type="submit" name="in_wishlist" value="true" class="bg-black/5 dark:bg-white/5 hover:bg-pink-500 hover:text-white font-bold rounded-lg text-sm px-5 py-4 transition-colors flex items-center justify-center gap-2">
                             <i class="fa-solid fa-gift"></i> <%= t('confirm_game.btn_wishlist') %>
                         </button>
-                        <button type="submit" name="in_wishlist" value="false" class="text-white bg-emerald-500 hover:brightness-110 font-bold rounded-lg text-lg px-5 py-4 transition-transform hover:scale-[1.01] flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
+                        <button type="submit" name="in_wishlist" value="false" class="text-white bg-primary-theme hover:brightness-110 font-bold rounded-lg text-lg px-5 py-4 transition-transform hover:scale-[1.01] flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
                             <i class="fa-solid fa-check"></i> <%= t('confirm_game.btn_collection') %>
                         </button>
                     </div>
@@ -270,11 +270,11 @@
         document.querySelectorAll('.img-pane').forEach(p => p.classList.add('hidden'));
         document.getElementById(`pane-${mode}`).classList.remove('hidden');
         document.querySelectorAll('[id^="tab-"]').forEach(btn => {
-            btn.classList.remove('bg-emerald-500', 'text-white');
+            btn.classList.remove('bg-primary-theme', 'text-white');
             btn.classList.add('opacity-50');
         });
         const active = document.getElementById(`tab-${mode}`);
-        active.classList.add('bg-emerald-500', 'text-white');
+        active.classList.add('bg-primary-theme', 'text-white');
         active.classList.remove('opacity-50');
     }
 
@@ -295,7 +295,7 @@
             urls.forEach(url => {
                 const img = document.createElement('img');
                 img.src = url;
-                img.className = "aspect-[3/4] object-cover rounded-lg cursor-pointer border-2 border-transparent hover:border-emerald-500 transition-all shadow-sm";
+                img.className = "aspect-[3/4] object-cover rounded-lg cursor-pointer border-2 border-transparent hover:border-primary-theme transition-all shadow-sm";
                 img.onclick = () => updatePreview(url);
                 resultsDiv.appendChild(img);
             });
