@@ -49,7 +49,8 @@
 
                     <% const themeCats=[ {key: 'music' , label: t('perso.themes.music'), icon: 'fa-music' },
                         {key: 'books' , label: t('perso.themes.books'), icon: 'fa-book' }, {key: 'dvd' , label:
-                        t('perso.themes.dvd'), icon: 'fa-film' } ] %>
+                        t('perso.themes.dvd'), icon: 'fa-film' }, {key: 'games' , label:
+                        t('perso.themes.games'), icon: 'fa-gamepad' } ] %>
 
                         <% themeCats.forEach((tTheme)=> { %>
                             <div class="space-y-2">
@@ -100,7 +101,10 @@
                         settings.modules.dvd, options: [ { id: 'dvd' , label: t('media.dvd_gen') }, { id: 'dvd_dvd' ,
                         label: t('media.dvd') }, { id: 'dvd_bluray' , label: t('media.bluray') }, { id: 'dvd_4k' ,
                         label: t('media.4k') }, { id: 'dvd_vhs' , label: t('media.vhs') }, { id: 'dvd_laserdisc' ,
-                        label: t('media.laserdisc') } ] } ] %>
+                        label: t('media.laserdisc') } ] }, { label: t('perso.modules.games'), active:
+                        settings.modules.games, options: [ { id: 'games' , label: t('media.games') }, { id: 'game_physical' ,
+                        label: t('media.physical') }, { id: 'game_collector' , label: t('media.collector') }, { id: 'game_limited' ,
+                        label: t('media.limited') }, { id: 'game_steelbook' , label: t('media.steelbook') } ] } ] %>
 
                         <div class="flex gap-2 overflow-x-auto pb-2 scrollbar-hide flex-nowrap">
                             <% shortcutGroups.forEach((group, idx)=> { %>
@@ -169,7 +173,9 @@
                         (settings.modules.books) { fastAddOptions.push( { value: 'book' , label: t('media.books'),
                         icon: 'fa-book' , color: 'peer-checked:bg-amber-600' } ); } if (settings.modules.dvd) {
                         fastAddOptions.push( { value: 'dvd' , label: t('media.dvd_gen'), icon: 'fa-film' ,
-                        color: 'peer-checked:bg-red-600' } ); } %>
+                        color: 'peer-checked:bg-red-600' } ); } if (settings.modules.games) {
+                        fastAddOptions.push( { value: 'game' , label: t('media.games'), icon: 'fa-gamepad' ,
+                        color: 'peer-checked:bg-emerald-600' } ); } %>
                         <% fastAddOptions.forEach(opt=> { %>
                             <label class="cursor-pointer relative group">
                                 <input type="radio" name="fastAdd" value="<%= opt.value %>" class="peer sr-only"
@@ -245,6 +251,19 @@
                                 { id: 'dvd_laserdisc' , label: t('media.laserdiscs') }, 
                                 { id: 'director' , label: t('stats.top_director_label') },
                                 { id: 'studio', label: t('stats.top_studio_label') }
+                            ] 
+                        },
+                        { 
+                            group: t('perso.modules.games'), 
+                            active: settings.modules.games, 
+                            options: [ 
+                                { id: 'game_total' , label: t('stats.games_total_label') }, 
+                                { id: 'game_physical' , label: t('media.physical') }, 
+                                { id: 'game_collector' , label: t('media.collector') }, 
+                                { id: 'game_limited' , label: t('media.limited') }, 
+                                { id: 'game_steelbook' , label: t('media.steelbook') }, 
+                                { id: 'game_developer' , label: t('stats.top_developer_label') },
+                                { id: 'game_publisher', label: t('stats.top_game_publisher_label') }
                             ] 
                         } 
                     ] %>

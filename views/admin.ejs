@@ -41,7 +41,8 @@
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                         <% const mods=[ {key: 'music' , label: t('perso.modules.music'), icon: 'fa-music' , needsKey:
                             false}, {key: 'books' , label: t('perso.modules.books'), icon: 'fa-book' , needsKey: true},
-                            {key: 'dvd' , label: t('media.dvds'), icon: 'fa-film' , needsKey: true}, {key: 'advancedCD'
+                            {key: 'dvd' , label: t('media.dvds'), icon: 'fa-film' , needsKey: true}, {key: 'games'
+                            , label: t('perso.modules.games'), icon: 'fa-gamepad' , needsKey: true}, {key: 'advancedCD'
                             , label: t('admin.advanced_cd'), icon: 'fa-compact-disc' , needsKey: false} ] %>
                             <% mods.forEach((mod)=> { %>
                                 <div class="flex flex-col gap-2">
@@ -353,6 +354,11 @@
                                                     <%= t('media.dvds') %>
                                                 </option>
                                                 <% } %>
+                                            <% if (settings.modules.games) { %>
+                                                <option class="bg-white dark:bg-[#1a1a1a]" value="Game">
+                                                    <%= t('media.games') %>
+                                                </option>
+                                            <% } %>
                                 </select>
                             </div>
 
@@ -605,6 +611,60 @@
                                                 class="bg-purple-500 h-full transition-all duration-300 w-0"></div>
                                         </div>
                                         <p id="progressItemDvd" class="text-[10px] opacity-40 font-mono truncate"></p>
+                                    </div>
+                                </div>
+                                <% } %>
+
+                            <% if (settings.modules.games) { %>
+                                <!-- Games Refresh Block -->
+                                <div class="card-theme rounded-3xl p-6 md:p-8 shadow-sm transition-colors mb-6">
+                                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                                        <div class="max-w-xl">
+                                            <h2 class="text-lg font-bold flex items-center gap-2 mb-2">
+                                                <i class="fa-solid fa-gamepad text-emerald-600"></i>
+                                                <%= t('admin.maintenance.refresh_games_title') %>
+                                            </h2>
+                                            <p class="text-xs opacity-60 leading-relaxed mb-4">
+                                                <%= t('admin.maintenance.refresh_games_subtitle') %>
+                                            </p>
+                                            <div class="flex flex-col gap-2 max-w-xs">
+                                                <label class="block text-[10px] font-black uppercase tracking-widest opacity-50 ml-1">
+                                                    <%= t('admin.maintenance.mode_label') || 'Mode' %>
+                                                </label>
+                                                <select id="refreshModeGame"
+                                                    class="bg-black/5 dark:bg-white/5 border border-transparent text-gray-900 dark:text-white text-sm rounded-lg focus:ring-primary-theme focus:border-primary-theme block w-full p-3 transition-colors outline-none cursor-pointer">
+                                                    <option class="bg-white dark:bg-[#1a1a1a]" value="all">
+                                                        <%= t('admin.maintenance.mode_all') %>
+                                                    </option>
+                                                    <option class="bg-white dark:bg-[#1a1a1a]" value="missing" selected>
+                                                        <%= t('admin.maintenance.mode_missing') %>
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <button id="btnRefreshGame" onclick="startMetadataRefresh('Game')"
+                                                class="w-full sm:w-auto bg-black/5 dark:bg-white/5 hover:bg-emerald-600 hover:text-white px-8 py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 border border-black/10 dark:border-white/10 shadow-sm">
+                                                <i class="fa-solid fa-play" id="iconRefreshGame"></i>
+                                                <span id="textRefreshGame">
+                                                    <%= t('admin.maintenance.refresh_all_btn') %>
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div id="progressContainerGame"
+                                        class="hidden mt-6 space-y-3 p-4 bg-black/5 dark:bg-white/5 rounded-2xl animate-in fade-in slide-in-from-top-2 duration-500">
+                                        <div class="flex justify-between items-center text-[10px] uppercase font-bold tracking-widest opacity-60">
+                                            <span id="progressTitleGame">
+                                                <%= t('admin.maintenance.status_init') %>
+                                            </span>
+                                            <span id="progressPercentGame">0%</span>
+                                        </div>
+                                        <div class="w-full bg-black/10 dark:bg-white/10 rounded-full h-2 overflow-hidden">
+                                            <div id="progressBarGame"
+                                                class="bg-emerald-500 h-full transition-all duration-300 w-0"></div>
+                                        </div>
+                                        <p id="progressItemGame" class="text-[10px] opacity-40 font-mono truncate"></p>
                                     </div>
                                 </div>
                                 <% } %>
@@ -1149,9 +1209,11 @@
             document.addEventListener('DOMContentLoaded', () => {
                 const hasHardcoverKey = <%= locals.hasHardcoverKey || false %>;
                 const hasTmdbKey = <%= locals.hasTmdbKey      || false %>;
+                const hasIgdbKey = <%= locals.hasIgdbKey      || false %>;
                 const modulesWithKeys = [
                     { name: 'booksActive', hasKey: hasHardcoverKey, errorId: 'error-books' },
-                    { name: 'dvdActive', hasKey: hasTmdbKey, errorId: 'error-dvd' }
+                    { name: 'dvdActive', hasKey: hasTmdbKey, errorId: 'error-dvd' },
+                    { name: 'gamesActive', hasKey: hasIgdbKey, errorId: 'error-games' }
                 ];
                 modulesWithKeys.forEach(mod => {
                     const checkbox = document.querySelector(`input[name="${mod.name}"]`);
@@ -1210,7 +1272,8 @@
                 try {
                     const url = kind === 'Book' ? '<%= baseUrl %>/admin/refresh-all-books-metadata'
                         : kind === 'Dvd' ? '<%= baseUrl %>/admin/refresh-all-dvds-metadata'
-                            : '<%= baseUrl %>/admin/refresh-all-music-metadata';
+                            : kind === 'Game' ? '<%= baseUrl %>/admin/refresh-all-games-metadata'
+                                : '<%= baseUrl %>/admin/refresh-all-music-metadata';
 
                     const response = await fetch(url, {
                         method: 'POST',

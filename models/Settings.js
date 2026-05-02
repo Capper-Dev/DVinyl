@@ -10,13 +10,15 @@ const settingsSchema = new mongoose.Schema({
         music:   { type: Boolean, default: true },
         books:   { type: Boolean, default: false },
         dvd:     { type: Boolean, default: false },
+        games:   { type: Boolean, default: false },
         advancedCD: { type: Boolean, default: false }
     },
     theme: {
         home:    { type: Object, default: themeSchema },
         music:   { type: Object, default: themeSchema },
         books:   { type: Object, default: themeSchema },
-        dvd:     { type: Object, default: themeSchema }
+        dvd:     { type: Object, default: themeSchema },
+        games:   { type: Object, default: themeSchema }
     },
     navbarShortcuts: { 
         type: [String], 

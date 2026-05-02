@@ -38,6 +38,7 @@ const settingsRoutes = require('./routes/settingsRoutes.js');
 const backupRoutes = require('./routes/backupRoutes.js');
 const bookRoutes = require('./routes/bookRoutes');
 const dvdRoutes = require('./routes/dvdRoutes.js');
+const gameRoutes = require('./routes/gameRoutes.js');
 
 const app = express();
 const server = http.createServer(app);
@@ -199,17 +200,17 @@ app.use(BASE_URL + '/settings', settingsRoutes);
 app.use(BASE_URL + '/backup', backupRoutes);
 app.use(BASE_URL, bookRoutes);
 app.use(BASE_URL, dvdRoutes);
+app.use(BASE_URL, gameRoutes);
 
 app.use((req, res) => {
     res.status(404).render('404');
 });
 
+const connectDB = require('./config/db.js');
 const migrateDatabase = require('./utils/migrate.js');
 // Database connection and server start
-const dbURI = process.env.MONGODB_URL;
-mongoose.connect(dbURI)
+connectDB()
   .then(async () => {
-    console.log('✅ MongoDB connected');
     await migrateDatabase();
     server.listen(process.env.VINYL_PORT, () => {
         console.log(`🚀 Server started on port ${process.env.VINYL_PORT}`);

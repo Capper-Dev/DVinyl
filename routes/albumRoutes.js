@@ -71,7 +71,13 @@ router.get('/', requireAuth, async (req, res) => {
             dvd_bluray: allItems.filter(i => i.kind === 'Dvd' && i.format === 'bluray').reduce((acc, i) => acc + (i.quantity || 1), 0),
             dvd_4k: allItems.filter(i => i.kind === 'Dvd' && i.format === '4k').reduce((acc, i) => acc + (i.quantity || 1), 0),
             dvd_vhs: allItems.filter(i => i.kind === 'Dvd' && i.format === 'vhs').reduce((acc, i) => acc + (i.quantity || 1), 0),
-            dvd_laserdisc: allItems.filter(i => i.kind === 'Dvd' && i.format === 'laserdisc').reduce((acc, i) => acc + (i.quantity || 1), 0)
+            dvd_laserdisc: allItems.filter(i => i.kind === 'Dvd' && i.format === 'laserdisc').reduce((acc, i) => acc + (i.quantity || 1), 0),
+
+            game_total: allItems.filter(i => i.kind === 'Game').reduce((acc, i) => acc + (i.quantity || 1), 0),
+            game_physical: allItems.filter(i => i.kind === 'Game' && i.format === 'physical').reduce((acc, i) => acc + (i.quantity || 1), 0),
+            game_collector: allItems.filter(i => i.kind === 'Game' && i.format === 'collector').reduce((acc, i) => acc + (i.quantity || 1), 0),
+            game_limited: allItems.filter(i => i.kind === 'Game' && i.format === 'limited').reduce((acc, i) => acc + (i.quantity || 1), 0),
+            game_steelbook: allItems.filter(i => i.kind === 'Game' && i.format === 'steelbook').reduce((acc, i) => acc + (i.quantity || 1), 0)
         };
 
         const getTop = (items, field) => {
@@ -100,6 +106,9 @@ router.get('/', requireAuth, async (req, res) => {
 
         stats.director = getTop(allItems.filter(i => i.kind === 'Dvd'), 'director');
         stats.studio = getTop(allItems.filter(i => i.kind === 'Dvd'), 'studio');
+
+        stats.game_developer = getTop(allItems.filter(i => i.kind === 'Game'), 'developer');
+        stats.game_publisher = getTop(allItems.filter(i => i.kind === 'Game'), 'publisher');
 
         res.render('index', { 
             latestCollection: (await Item.find({ owner: adminId, in_wishlist: false }).sort({ added_at: -1 }).limit(4)).map(formatForView),
@@ -132,7 +141,7 @@ router.get('/collection', requireAuth, async (req, res) => {
 
         
         if (type && type !== 'all') {
-            const typeMap = { music: 'Music', books: 'Book', dvd: 'Dvd' };
+            const typeMap = { music: 'Music', books: 'Book', dvd: 'Dvd', games: 'Game' };
             if (type === 'music') {
                 
                 conditions.push({ 
@@ -206,6 +215,12 @@ router.get('/collection', requireAuth, async (req, res) => {
                 { id: 'dvd', label: req.t('media.dvd') },
                 { id: 'bluray', label: req.t('media.bluray') },
                 { id: '4k', label: req.t('media.4k') }
+            ],
+            games: [
+                { id: 'physical', label: req.t('media.physical') },
+                { id: 'collector', label: req.t('media.collector') },
+                { id: 'limited', label: req.t('media.limited') },
+                { id: 'steelbook', label: req.t('media.steelbook') }
             ]
         };
 
@@ -225,7 +240,7 @@ router.get('/collection', requireAuth, async (req, res) => {
             locations: await Item.distinct('location', { owner: adminId }),
             genres: await (async () => {
                 if (!type || type === 'all') return [];
-                const kind = { music: 'Music', books: 'Book', dvd: 'Dvd' }[type];
+                const kind = { music: 'Music', books: 'Book', dvd: 'Dvd', games: 'Game' }[type];
                 const typeQuery = type === 'music' ? { $or: [{ kind: 'Music' }, { kind: { $exists: false } }] } : { kind };
                 
                 const [gBase, gArray, sArray] = await Promise.all([

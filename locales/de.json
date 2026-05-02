@@ -129,7 +129,9 @@
       "status_processing": "Erfrischend: {{current}} / {{total}}",
       "status_starting": "Beginnt...",
       "subtitle": "Globale Verwaltung Ihrer Sammlungsmetadaten.",
-      "title": "Wartung"
+      "title": "Wartung",
+      "refresh_games_title": "Alle Metadaten aktualisieren (Videospiele)",
+      "refresh_games_subtitle": "Datenabruf (IGDB) für Videospiele erneut starten."
     },
     "modal": {
       "discogs_url": "Sammlungs-URL",
@@ -392,7 +394,8 @@
     "search": "Suchen",
     "url": "URL",
     "url_hint": "Das Bild wird automatisch in der Vorschau angezeigt.",
-    "url_label": "Direkter Link zum Bild"
+    "url_label": "Direkter Link zum Bild",
+    "compress_alert": "Das Bild ist zu groß (max. 5 MB). Es wird komprimiert."
   },
   "index": {
     "btn_estimate": "Schätzen",
@@ -449,7 +452,13 @@
     "vhs": "VHS",
     "vhss": "VHS-Kassetten",
     "vinyl": "Vinyl",
-    "vinyls": "Vinyls"
+    "vinyls": "Vinyls",
+    "games": "Videospiele",
+    "game": "Videospiel",
+    "physical": "Physisch",
+    "collector": "Collector",
+    "limited": "Limited Edition",
+    "steelbook": "Steelbook"
   },
   "messages": {
     "avatar_success": "Profilbild aktualisiert!",
@@ -502,7 +511,8 @@
       "dvd": "DVDs",
       "global": "Allgemein",
       "music": "Musik",
-      "title": "Aktive Module"
+      "title": "Aktive Module",
+      "games": "Videospiele"
     },
     "nav_desc": "Wählen Sie bis zu 6 Verknüpfungen zur Anzeige in Ihrer Navigationsleiste.",
     "nav_max": "Sie können nicht mehr als 6 Verknüpfungen auswählen.",
@@ -514,7 +524,8 @@
       "dvd": "Filme / DVD",
       "home": "Startseite",
       "music": "Musik",
-      "title": "Themen"
+      "title": "Themen",
+      "games": "Videospiele"
     },
     "title": "Personalisierung",
     "widgets_desc": "Wählen Sie die Statistiken aus, die Sie auf Ihrem Dashboard sehen möchten",
@@ -579,12 +590,18 @@
     "top_genre_label": "Liebling-Genre",
     "top_label_label": "Liebling-Label",
     "top_publisher_label": "Lieblingsverlag",
-    "top_studio_label": "Lieblingsstudio"
+    "top_studio_label": "Lieblingsstudio",
+    "games_total_label": "Videospiele Gesamt",
+    "top_developer_label": "Top-Entwickler",
+    "top_game_publisher_label": "Top-Publisher (Spiele)"
   },
   "status": {
     "read": "Lesen",
     "reading": "Lektüre",
-    "to_read": "Zum Lesen"
+    "to_read": "Zum Lesen",
+    "to_play": "Zu spielen",
+    "playing": "Spielt gerade",
+    "played": "Abgeschlossen"
   },
   "wishlist": {
     "btn_received": "Ich habe es erhalten!",
@@ -592,5 +609,57 @@
     "empty_msg": "Ihre Wunschliste ist leer.",
     "search_link": "Suchen Sie nach einem Album",
     "title": "Meine Wunschliste"
+  },
+  "add_game": {
+    "title": "Videospiel hinzufügen",
+    "desc": "Suche nach Titel oder scanne den Barcode.",
+    "search_placeholder": "Spieltitel...",
+    "btn_scan": "Barcode scannen",
+    "results_title": "Ergebnisse",
+    "no_results": "Keine Spiele gefunden.",
+    "scan_init": "Initialisierung...",
+    "scan_stop": "Scan stoppen",
+    "scan_found": "Barcode gefunden!",
+    "scan_error": "Kamerafehler",
+    "barcode_warning": "Das Scannen funktioniert derzeit möglicherweise nicht ordnungsgemäß."
+  },
+  "confirm_game": {
+    "config_title": "Überprüfen und vervollständigen",
+    "field_title": "Titel",
+    "field_developer": "Entwickler",
+    "field_publisher": "Publisher",
+    "field_platform": "Plattform",
+    "field_year": "Jahr",
+    "field_region": "Region / Version",
+    "region_placeholder": "z.B.: JAP, PAL, NTSC-U...",
+    "field_format": "Edition",
+    "field_barcode": "Barcode",
+    "field_quantity": "Menge",
+    "field_comments": "Notizen / Kommentare",
+    "field_status": "Status",
+    "field_rating": "Bewertung (von 5)",
+    "play_tracking": "Spielverlauf",
+    "status_to_play": "Zu spielen",
+    "status_playing": "Spielt gerade",
+    "status_played": "Abgeschlossen",
+    "replace_cover": "Hauptcover ersetzen",
+    "btn_collection": "Zur Sammlung hinzufügen",
+    "btn_wishlist": "Zur Wishlist hinzufügen",
+    "cover_preview": "Cover-Vorschau"
+  },
+  "edit_game": {
+    "title": "Spiel bearbeiten"
+  },
+  "game_detail": {
+    "tech_specs": "Technische Details",
+    "delete_confirm": "Möchten Sie dieses Spiel wirklich aus Ihrer Sammlung löschen?",
+    "platform_label": "Plattform",
+    "region_label": "Region",
+    "developer_label": "Entwickler",
+    "publisher_label": "Publisher",
+    "barcode_label": "Barcode",
+    "view_igdb": "Auf IGDB ansehen",
+    "refresh_info_success": "Metadaten erfolgreich aktualisiert!",
+    "refresh_info_error": "Fehler beim Aktualisieren der Metadaten."
   }
 }

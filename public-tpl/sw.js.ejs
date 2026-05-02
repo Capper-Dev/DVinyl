@@ -1,4 +1,4 @@
-const CACHE_NAME = 'dvinyl-v2.3';
+const CACHE_NAME = 'dvinyl-v2.5';
 
 const STATIC_ASSETS = [
   '<%= baseUrl %>/',
@@ -47,15 +47,15 @@ self.addEventListener('fetch', event => {
     '<%= baseUrl %>/login', '<%= baseUrl %>/logout', '<%= baseUrl %>/setup',
     // Collections
     '<%= baseUrl %>/collection', '<%= baseUrl %>/wishlist',
-    '<%= baseUrl %>/album/', '<%= baseUrl %>/book/', '<%= baseUrl %>/dvd/',
+    '<%= baseUrl %>/album/', '<%= baseUrl %>/book/', '<%= baseUrl %>/dvd/', '<%= baseUrl %>/game/',
     // Add / confirmation
-    '<%= baseUrl %>/add-vinyl', '<%= baseUrl %>/add-book', '<%= baseUrl %>/add-dvd',
-    '<%= baseUrl %>/confirm-vinyl/', '<%= baseUrl %>/confirm-dvd/', '<%= baseUrl %>/confirm-book/',
-    '<%= baseUrl %>/save-vinyl', '<%= baseUrl %>/save-book', '<%= baseUrl %>/save-dvd',
+    '<%= baseUrl %>/add-vinyl', '<%= baseUrl %>/add-book', '<%= baseUrl %>/add-dvd', '<%= baseUrl %>/add-game',
+    '<%= baseUrl %>/confirm-vinyl/', '<%= baseUrl %>/confirm-dvd/', '<%= baseUrl %>/confirm-book/', '<%= baseUrl %>/confirm-game/',
+    '<%= baseUrl %>/save-vinyl', '<%= baseUrl %>/save-book', '<%= baseUrl %>/save-dvd', '<%= baseUrl %>/save-game',
     // Edition
-    '<%= baseUrl %>/album/edit/', '<%= baseUrl %>/book/edit/', '<%= baseUrl %>/dvd/edit/',
+    '<%= baseUrl %>/album/edit/', '<%= baseUrl %>/book/edit/', '<%= baseUrl %>/dvd/edit/', '<%= baseUrl %>/game/edit/',
     // search
-    '<%= baseUrl %>/search-discogs', '<%= baseUrl %>/search-books', '<%= baseUrl %>/search-dvds',
+    '<%= baseUrl %>/search-discogs', '<%= baseUrl %>/search-books', '<%= baseUrl %>/search-dvds', '<%= baseUrl %>/search-games',
     // internals API
     '<%= baseUrl %>/api/',
     // Import

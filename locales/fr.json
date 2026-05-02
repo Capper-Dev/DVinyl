@@ -120,7 +120,13 @@
     "music": "Musique",
     "books": "Livres",
     "dvd_gen": "Films / Séries",
-    "format": "Format"
+    "format": "Format",
+    "games": "Jeux Vidéo",
+    "game": "Jeu Vidéo",
+    "physical": "Physique",
+    "collector": "Collector",
+    "limited": "Édition Limitée",
+    "steelbook": "Steelbook"
   },
   "index": {
     "welcome": "Salut",
@@ -149,7 +155,10 @@
     "top_publisher_label": "Éditeur Favori",
     "top_studio_label": "Studio Favori",
     "albums_unit": "albums",
-    "owned_times": "Possédé {{count}} fois dans la collection"
+    "owned_times": "Possédé {{count}} fois dans la collection",
+    "games_total_label": "Total Jeux Vidéo",
+    "top_developer_label": "Développeur Favori",
+    "top_game_publisher_label": "Éditeur Favori (Jeux)"
   },
   "modal": {
     "estimate_title": "Estimation en cours...",
@@ -279,7 +288,9 @@
       "refresh_books_title": "Actualiser toutes les métadonnées (Livres)",
       "refresh_books_subtitle": "Relancer la récupération des données (Hardcover/OpenLibrary) pour les livres.",
       "refresh_dvds_title": "Actualiser toutes les métadonnées (DVDs)",
-      "refresh_dvds_subtitle": "Relancer la récupération des données (TMDB) pour les DVDs et Blu-Rays."
+      "refresh_dvds_subtitle": "Relancer la récupération des données (TMDB) pour les DVDs et Blu-Rays.",
+    "refresh_games_title": "Actualiser toutes les métadonnées (Jeux Vidéo)",
+    "refresh_games_subtitle": "Relancer la récupération des données (IGDB) pour les jeux vidéo."
     },
     "errors": {
       "at_least_one_module": "Au moins un module doit être actif.",
@@ -465,14 +476,16 @@
       "music": "Musique",
       "books": "Livres",
       "dvd": "DVDs",
-      "global": "Général"
+      "global": "Général",
+      "games": "Jeux Vidéo"
     },
     "themes": {
       "title": "Thèmes & Couleurs",
       "home": "Page d'Accueil",
       "music": "Musique",
       "books": "Livres",
-      "dvd": "Films / DVD"
+      "dvd": "Films / DVD",
+      "games": "Jeux Vidéo"
     }
   },
   "add_book": {
@@ -525,7 +538,10 @@
   "status": {
     "to_read": "À lire",
     "reading": "En cours de lecture",
-    "read": "Terminé"
+    "read": "Terminé",
+    "to_play": "À jouer",
+    "playing": "En cours",
+    "played": "Terminé"
   },
   "image_source": {
     "local": "Fichier local",
@@ -533,7 +549,8 @@
     "search": "Rechercher",
     "hint": "Cliquez pour parcourir les fichiers",
     "url_hint": "L'image sera prévisualisée automatiquement.",
-    "url_label": "Lien direct vers l'image"
+    "url_label": "Lien direct vers l'image",
+    "compress_alert": "L'image est trop lourde (max 5 Mo). Elle sera compressée."
   },
   "add_dvd": {
     "title": "Ajouter un DVD / Série",
@@ -592,5 +609,57 @@
   "book": {
     "source_hardcover": "Voir sur Hardcover",
     "source_goodreads": "Voir sur GoodReads"
+  },
+  "add_game": {
+    "title": "Ajouter un Jeu Vidéo",
+    "desc": "Recherchez par titre ou scannez le code-barres.",
+    "search_placeholder": "Titre du jeu...",
+    "btn_scan": "Scanner un code-barres",
+    "results_title": "Résultats",
+    "no_results": "Aucun jeu trouvé.",
+    "scan_init": "Initialisation...",
+    "scan_stop": "Arrêter le scan",
+    "scan_found": "Code trouvé !",
+    "scan_error": "Erreur de caméra",
+    "barcode_warning": "Le scan peut ne pas fonctionner correctement pour le moment."
+  },
+  "confirm_game": {
+    "config_title": "Vérifier et compléter",
+    "field_title": "Titre",
+    "field_developer": "Développeur",
+    "field_publisher": "Éditeur",
+    "field_platform": "Plateforme",
+    "field_year": "Année",
+    "field_region": "Région / Version",
+    "region_placeholder": "Ex: JAP, PAL, NTSC-U...",
+    "field_format": "Édition",
+    "field_barcode": "Code-barres",
+    "field_quantity": "Quantité",
+    "field_comments": "Notes / Commentaires",
+    "field_status": "Statut",
+    "field_rating": "Note (sur 5)",
+    "play_tracking": "Suivi de jeu",
+    "status_to_play": "À jouer",
+    "status_playing": "En cours",
+    "status_played": "Terminé",
+    "replace_cover": "Remplacer la pochette principale",
+    "btn_collection": "Ajouter à la collection",
+    "btn_wishlist": "Ajouter à la Wishlist",
+    "cover_preview": "Aperçu de la couverture"
+  },
+  "edit_game": {
+    "title": "Modifier le jeu"
+  },
+  "game_detail": {
+    "tech_specs": "Détails Techniques",
+    "delete_confirm": "Voulez-vous vraiment supprimer ce jeu de votre collection ?",
+    "platform_label": "Plateforme",
+    "region_label": "Région",
+    "developer_label": "Développeur",
+    "publisher_label": "Éditeur",
+    "barcode_label": "Code-barres",
+    "view_igdb": "Voir sur IGDB",
+    "refresh_info_success": "Métadonnées actualisées avec succès !",
+    "refresh_info_error": "Erreur lors de l'actualisation des métadonnées."
   }
 }
