@@ -264,7 +264,7 @@ router.get('/add-vinyl', requireAuth, requireAdmin, (req, res) => {
     const validTypes = ['vinyl', 'cd', 'cassette'];
     const searchType = validTypes.includes(req.query.type) ? req.query.type : 'vinyl';
     const searchQuery = req.query.search || '';
-    res.render('add-vinyl', { searchType, searchQuery });
+    res.render('add-vinyl', { searchType, searchQuery, currentType: 'add-vinyl' });
 });
 
 // route for editing an existing album
@@ -284,7 +284,7 @@ router.get('/album/edit/:id', requireAuth, async (req, res) => {
             $or: [{ kind: 'Music' }, { kind: { $exists: false } }]
         });
         
-        res.render('edit-vinyl', { vinyl: albumFormatted, user: res.locals.user, locations, genres });
+        res.render('edit-vinyl', { vinyl: albumFormatted, user: res.locals.user, locations, genres, currentType: 'music' });
     } catch (err) {
         console.error(err);
         res.redirect('/collection?type=music');
@@ -399,11 +399,12 @@ router.post('/search-discogs', requireAuth, requireAdmin, async (req, res) => {
     res.render('add-vinyl', { 
         results: processedResults,
         searchType: type,
-        user: res.locals.user
+        user: res.locals.user,
+        currentType: 'add-vinyl'
     });
   } catch (err) {
     console.log(err);
-    res.render('add-vinyl', { results: [], error: req.t('errors.api_error'), searchType: type, user: res.locals.user });
+    res.render('add-vinyl', { results: [], error: req.t('errors.api_error'), searchType: type, user: res.locals.user, currentType: 'add-vinyl' });
   }
 });
 
@@ -492,7 +493,7 @@ router.get('/confirm-vinyl/:id', requireAuth, async (req, res) => {
             media_type: finalMediaType // Pass it to the view
         };
 
-        res.render('confirm-vinyl', { vinyl, user: res.locals.user, locations, genres });
+        res.render('confirm-vinyl', { vinyl, user: res.locals.user, locations, genres, currentType: 'music' });
     } catch (err) {
         console.log(err);
         res.status(500).send(req.t('errors.generic_server_error'));
@@ -654,7 +655,7 @@ router.get('/album/:id', requireAuth, async (req, res) => {
         if (!album) return res.redirect('/collection?type=music');
         const albumFormatted = formatForView(album);
 
-        res.render('vinyl-detail', { album: albumFormatted, vinyl: albumFormatted, user: res.locals.user });
+        res.render('vinyl-detail', { album: albumFormatted, vinyl: albumFormatted, user: res.locals.user, currentType: 'album' });
     } catch (err) {
         res.redirect('/collection?type=music');
     }

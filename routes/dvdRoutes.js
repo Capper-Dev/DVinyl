@@ -26,7 +26,7 @@ const formatTMDBItem = (item) => {
 
 
 router.get('/add-dvd', requireAuth, requireAdmin, (req, res) => {
-    res.render('add-dvd', { results: null, user: res.locals.user });
+    res.render('add-dvd', { results: null, user: res.locals.user, currentType: 'add-dvd' });
 });
 
 router.post('/search-dvds', requireAuth, requireAdmin, async (req, res) => {
@@ -69,12 +69,13 @@ router.post('/search-dvds', requireAuth, requireAdmin, async (req, res) => {
         res.render('add-dvd', {
             results,
             scanned_barcode: barcodeScanned,
-            user: res.locals.user
+            user: res.locals.user,
+            currentType: 'add-dvd'
         });
 
     } catch (err) {
         console.error("[ERR] DVD seaarch :", err);
-        res.render('add-dvd', { results: [], scanned_barcode: '', error: req.t('errors.api_error'), user: res.locals.user });
+        res.render('add-dvd', { results: [], scanned_barcode: '', error: req.t('errors.api_error'), user: res.locals.user, currentType: 'add-dvd' });
     }
 });
 
@@ -122,7 +123,8 @@ router.get('/confirm-dvd/:media_type/:tmdb_id', requireAuth, requireAdmin, async
             scanned_barcode: req.query.barcode || '',
             user: res.locals.user,
             locations,
-            genres
+            genres,
+            currentType: 'dvd'
         });
     } catch (err) {
         console.error("[ERR] DVD retrieval:", err);
@@ -215,7 +217,7 @@ router.get('/dvd/edit/:id', requireAuth, requireAdmin, async (req, res) => {
         const locations = await Item.distinct('location', { owner: adminId, location: { $ne: "" } });
         const genres = await Item.distinct('genre', { owner: adminId, genre: { $ne: "" }, kind: 'Dvd' });
 
-        res.render('edit-dvd', { dvd: dvd.toObject(), user: res.locals.user, locations, genres });
+        res.render('edit-dvd', { dvd: dvd.toObject(), user: res.locals.user, locations, genres, currentType: 'dvd' });
     } catch (err) {
         console.error(err);
         res.redirect('/collection?type=dvd');
@@ -227,7 +229,7 @@ router.get('/dvd/:id', requireAuth, async (req, res) => {
         const dvd = await Item.findById(req.params.id);
         if (!dvd || dvd.kind !== 'Dvd') return res.redirect('/collection?type=dvd');
 
-        res.render('dvd-detail', { dvd: dvd.toObject(), user: res.locals.user });
+        res.render('dvd-detail', { dvd: dvd.toObject(), user: res.locals.user, currentType: 'dvd' });
     } catch (err) {
         res.redirect('/collection?type=dvd');
     }

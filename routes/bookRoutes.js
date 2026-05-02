@@ -82,7 +82,7 @@ const formatHardcoverBook = (book) => {
 };
 
 router.get('/add-book', requireAuth, requireAdmin, (req, res) => {
-    res.render('add-book', { results: null, user: res.locals.user });
+    res.render('add-book', { results: null, user: res.locals.user, currentType: 'add-book' });
 });
 
 
@@ -152,12 +152,13 @@ router.post('/search-books', requireAuth, requireAdmin, async (req, res) => {
 
         res.render('add-book', { 
             results, 
-            user: res.locals.user 
+            user: res.locals.user,
+            currentType: 'add-book'
         });
 
     } catch (err) {
         console.error("[ERR] Hardcover API Error:", err.message);
-        res.render('add-book', { results: [], error: "Search error", user: res.locals.user });
+        res.render('add-book', { results: [], error: "Search error", user: res.locals.user, currentType: 'add-book' });
     }
 });
 
@@ -216,7 +217,7 @@ router.get('/confirm-book/:id', requireAuth, async (req, res) => {
         const locations = await Item.distinct('location', { owner: adminId, location: { $ne: "" } });
         const genres = await Item.distinct('genre', { owner: adminId, genre: { $ne: "" }, kind: 'Book' });
 
-        res.render('confirm-book', { book: bookData, user: res.locals.user, locations, genres });
+        res.render('confirm-book', { book: bookData, user: res.locals.user, locations, genres, currentType: 'books' });
     } catch (err) {
         console.error("[ERR] Hardcover API Error:", err?.response?.data || err.message);
         res.status(500).send(req.t('errors.generic_server_error'));
@@ -310,7 +311,7 @@ router.get('/book/edit/:id', requireAuth, async (req, res) => {
         const locations = await Item.distinct('location', { owner: adminId, location: { $ne: "" } });
         const genres = await Item.distinct('genre', { owner: adminId, genre: { $ne: "" }, kind: 'Book' });
         
-        res.render('edit-book', { book: book.toObject(), user: res.locals.user, locations, genres });
+        res.render('edit-book', { book: book.toObject(), user: res.locals.user, locations, genres, currentType: 'books' });
     } catch (err) {
         console.error(err);
         res.redirect('/collection?type=books');
@@ -322,7 +323,7 @@ router.get('/book/:id', requireAuth, async (req, res) => {
         const book = await Item.findById(req.params.id);
         if (!book || book.kind !== 'Book') return res.redirect('/collection?type=books');
 
-        res.render('book-detail', { book: book.toObject(), user: res.locals.user });
+        res.render('book-detail', { book: book.toObject(), user: res.locals.user, currentType: 'book' });
     } catch (err) {
         res.redirect('/collection?type=books');
     }
