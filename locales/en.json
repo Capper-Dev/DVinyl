@@ -10,7 +10,7 @@
     "cancel_back": "Cancel and back",
     "save_changes": "Save changes",
     "searching": "Searching...",
-    "no_results": "No images found.",
+    "no_results": "No results found.",
     "not_available": "N/A",
     "unknown": "Unknown",
     "go": "Go",
@@ -209,6 +209,7 @@
       "search_placeholder": "Title, Artist...",
       "hidden_items": "Hidden Items",
       "no_hidden_items": "No individual items hidden.",
+      "no_genres": "No genres found in collection.",
       "save_btn": "Save Visibility",
       "success_msg": "Visibility settings updated."
     },
@@ -593,7 +594,7 @@
     "search_placeholder": "Title, Director or Barcode...",
     "separator_or": "OR",
     "btn_scan": "Scan a Barcode",
-    "results_title": "RResults",
+    "results_title": "Results",
     "no_results": "No movies or TV shows found.",
     "scan_init": "Initializing...",
     "scan_stop": "Stop scanning",
@@ -636,9 +637,9 @@
     "delete_confirm": "Are you sure you want to delete this item from your collection?",
     "boxset": "Boxset",
     "movie": "Movie",
-    "series": "SSeries",
+    "series": "Series",
     "duration_label": "Duration",
-    "zone_label": "Zone / RRegion",
+    "zone_label": "Zone / Region",
     "barcode_label": "Barcode"
   },
   "book": {

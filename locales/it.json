@@ -188,6 +188,7 @@
       "hidden_items": "Oggetti nascosti",
       "hidden_types": "Tipi nascosti",
       "no_hidden_items": "Nessun singolo elemento nascosto.",
+      "no_genres": "Nessun genere trovato nella collezione.",
       "save_btn": "Salva visibilità",
       "search_item": "Cerca un oggetto da nascondere",
       "search_placeholder": "Titolo, Artista...",
@@ -244,7 +245,7 @@
     "go": "Andare",
     "items": "elementi",
     "location": "Posizione",
-    "no_results": "Nessuna immagine trovata.",
+    "no_results": "Nessun risultato trovato.",
     "not_available": "N / A",
     "not_specified": "Non specificato",
     "or": "O",
@@ -377,9 +378,9 @@
     "delete_confirm": "Sei sicuro di voler eliminare questo elemento dalla tua raccolta?",
     "duration_label": "Durata",
     "movie": "Film",
-    "series": "Serie S",
+    "series": "Serie",
     "tech_specs": "Dettagli tecnici",
-    "zone_label": "Zona/RRegione"
+    "zone_label": "Zona / Regione"
   },
   "edit_book": {
     "title": "Modifica libro"

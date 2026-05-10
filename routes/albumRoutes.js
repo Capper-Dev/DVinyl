@@ -363,7 +363,6 @@ router.get('/album/edit/:id', requireAuth, async (req, res) => {
             return res.redirect('/collection?type=music');
         }
         const albumFormatted = formatForView(album);
-        console.log(albumFormatted)
         const adminId = await getAdminId();
         const locations = await Item.distinct('location', { owner: adminId, location: { $ne: "" } });
         const genres = await Item.distinct('genre', { 
@@ -491,7 +490,7 @@ router.post('/search-discogs', requireAuth, requireAdmin, async (req, res) => {
         currentType: 'add-vinyl'
     });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     res.render('add-vinyl', { results: [], error: req.t('errors.api_error'), searchType: type, user: res.locals.user, currentType: 'add-vinyl' });
   }
 });
@@ -592,7 +591,7 @@ router.get('/confirm-vinyl/:id', requireAuth, async (req, res) => {
 
         res.render('confirm-vinyl', { vinyl, user: res.locals.user, locations, genres, currentType: 'music' });
     } catch (err) {
-        console.log(err);
+        console.error(err);
         res.status(500).send(req.t('errors.generic_server_error'));
     } 
 });
@@ -750,7 +749,7 @@ router.get('/wishlist', requireAuth, async (req, res) => {
             user: res.locals.user 
         });
     } catch (err) {
-        console.log(err);
+        console.error(err);
         res.status(500).send(req.t('errors.generic_server_error'));
     }
 });
@@ -812,7 +811,7 @@ router.get('/api/estimate/:discogsId', requireAuth, async (req, res) => {
                 
                 // Verify there's a non-zero lowest price
                 if (statsData.lowest_price && statsData.lowest_price.value > 0) {
-                    console.log(`💰 Plan A (market) for ID ${discogsId}: ${statsData.lowest_price.value}€`);
+                    // console.log(`💰 Plan A (market) for ID ${discogsId}: ${statsData.lowest_price.value}€`);
                     return res.json({
                         success: true,
                         source: 'market', // concrete market data
@@ -822,7 +821,7 @@ router.get('/api/estimate/:discogsId', requireAuth, async (req, res) => {
                 }
             }
         } catch (e) {
-            console.log(`⚠️ Plan A failed for ${discogsId} (not for sale or error)`);
+            // console.log(`⚠️ Plan A failed for ${discogsId} (not for sale or error)`);
         }
 
         // PLAN B: Price suggestions / historical fallback
@@ -843,7 +842,7 @@ router.get('/api/estimate/:discogsId', requireAuth, async (req, res) => {
                 const bestPrice = suggData[vgKey] || suggData[mintKey];
 
                 if (bestPrice && bestPrice.value > 0) {
-                    console.log(`📉 Plan B (history) for ID ${discogsId}: ${bestPrice.value}€`);
+                    // console.log(`📉 Plan B (history) for ID ${discogsId}: ${bestPrice.value}€`);
                     return res.json({
                         success: true,
                         source: 'history', // historical estimation
@@ -853,11 +852,11 @@ router.get('/api/estimate/:discogsId', requireAuth, async (req, res) => {
                 }
             }
             } catch (e) {
-            console.log(`⚠️ Plan B failed for ${discogsId}`);
+            // console.log(`⚠️ Plan B failed for ${discogsId}`);
         }
 
         // TOTAL FAILURE
-        console.log(`❌ No price found for ${discogsId}`);
+        // console.log(`❌ No price found for ${discogsId}`);
         res.json({ success: false, error: "Unavailable" });
 
     } catch (err) {

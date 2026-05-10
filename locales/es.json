@@ -12,7 +12,7 @@
     "desc": "Busca por título, director o escanea el código de barras.",
     "movie": "Película",
     "no_results": "No se encontraron películas ni programas de televisión.",
-    "results_title": "RResultados",
+    "results_title": "Resultados",
     "scan_error": "Error de cámara",
     "scan_found": "¡Código de barras encontrado!",
     "scan_init": "Inicializando...",
@@ -188,6 +188,7 @@
       "hidden_items": "Artículos ocultos",
       "hidden_types": "Tipos ocultos",
       "no_hidden_items": "No hay elementos individuales ocultos.",
+      "no_genres": "No se encontraron géneros en la colección.",
       "save_btn": "Guardar visibilidad",
       "search_item": "Buscar un elemento para ocultar",
       "search_placeholder": "Título, Artista...",
@@ -244,7 +245,7 @@
     "go": "Ir",
     "items": "elementos",
     "location": "Ubicación",
-    "no_results": "No se encontraron imágenes.",
+    "no_results": "No se encontraron resultados.",
     "not_available": "N / A",
     "not_specified": "No especificado",
     "or": "O",
@@ -377,9 +378,9 @@
     "delete_confirm": "¿Estás seguro de que deseas eliminar este elemento de tu colección?",
     "duration_label": "Duración",
     "movie": "Película",
-    "series": "Serie S",
+    "series": "Serie",
     "tech_specs": "Detalles técnicos",
-    "zone_label": "Zona / RRegión"
+    "zone_label": "Zona / Región"
   },
   "edit_book": {
     "title": "Editar libro"

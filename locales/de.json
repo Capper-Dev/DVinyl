@@ -12,7 +12,7 @@
     "desc": "Suchen Sie nach Titel, Regisseur oder scannen Sie den Barcode.",
     "movie": "Film",
     "no_results": "Keine Filme oder Fernsehsendungen gefunden.",
-    "results_title": "RErgebnisse",
+    "results_title": "Ergebnisse",
     "scan_error": "Kamerafehler",
     "scan_found": "Barcode gefunden!",
     "scan_init": "Initialisierung...",
@@ -188,6 +188,7 @@
       "hidden_items": "Versteckte Gegenstände",
       "hidden_types": "Versteckte Typen",
       "no_hidden_items": "Keine einzelnen Elemente ausgeblendet.",
+      "no_genres": "Keine Genres in der Sammlung gefunden.",
       "save_btn": "Sichtbarkeit speichern",
       "search_item": "Suchen Sie nach einem Element, das Sie ausblenden möchten",
       "search_placeholder": "Titel, Künstler...",
@@ -244,7 +245,7 @@
     "go": "Gehen",
     "items": "Artikel",
     "location": "Standort",
-    "no_results": "Keine Bilder gefunden.",
+    "no_results": "Keine Ergebnisse gefunden.",
     "not_available": "N / A",
     "not_specified": "Nicht angegeben",
     "or": "ODER",
@@ -377,9 +378,9 @@
     "delete_confirm": "Sind Sie sicher, dass Sie dieses Element aus Ihrer Sammlung löschen möchten?",
     "duration_label": "Dauer",
     "movie": "Film",
-    "series": "SSerie",
+    "series": "Serie",
     "tech_specs": "Technische Details",
-    "zone_label": "Zone / RRegion"
+    "zone_label": "Zone / Region"
   },
   "edit_book": {
     "title": "Buch bearbeiten"
