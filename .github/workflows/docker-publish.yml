@@ -45,7 +45,7 @@ jobs:
         with:
           images: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-            ${{ secrets.DOCKERHUB_USERNAME }}/NOM_DE_VOTRE_REPO_DOCKER_HUB
+            ${{ secrets.DOCKERHUB_USERNAME }}/dvinyl
           tags: |
             type=semver,pattern={{version}}
             type=raw,value=latest,enable=${{ github.event_name == 'release' || github.ref == 'refs/heads/main' }}
