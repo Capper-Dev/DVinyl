@@ -4,6 +4,7 @@ const axios = require('axios');
 const Game = require('../models/Game');
 const Item = require('../models/Item');
 const User = require('../models/User');
+const Collection = require('../models/Collection');
 const { requireAuth, requireAdmin } = require('../middleware/authMiddleware');
 const { igdbRequest } = require('../utils/igdbHelper');
 
@@ -124,6 +125,7 @@ router.get('/confirm-game/:igdb_id', requireAuth, requireAdmin, async (req, res)
         const adminId = await User.findOne({ isAdmin: true }).select('_id').lean();
         const locations = await Item.distinct('location', { owner: adminId ? adminId._id : null, location: { $ne: "" } });
         const genres = await Item.distinct('genre', { owner: adminId ? adminId._id : null, genre: { $ne: "" }, kind: 'Game' });
+        const collections = await Collection.find({ type: 'game' }).sort({ createdAt: 1 }).lean();
 
         res.render('confirm-game', {
             game: gameData,
@@ -131,6 +133,7 @@ router.get('/confirm-game/:igdb_id', requireAuth, requireAdmin, async (req, res)
             user: res.locals.user,
             locations,
             genres,
+            collections,
             currentType: 'games'
         });
     } catch (err) {
@@ -145,8 +148,8 @@ router.post('/save-game', requireAuth, requireAdmin, async (req, res) => {
         const {
             mongo_id, title, developer, publisher, platform, year,
             igdb_id, format, region, barcode, barcode_locked,
-            cover_image, in_wishlist, comments, location, genre, genres, styles, 
-            playStatus, user_rating, quantity
+            cover_image, in_wishlist, comments, location, genre, genres, styles,
+            playStatus, user_rating, quantity, collection_id
         } = req.body;
 
         const parsedGenres = Array.isArray(genres) ? genres : (genres ? genres.split(',').map(g => g.trim()).filter(Boolean) : []);
@@ -180,6 +183,7 @@ router.post('/save-game', requireAuth, requireAdmin, async (req, res) => {
             game.playStatus = playStatus || 'to_play';
             game.user_rating = user_rating || 0;
             game.quantity = quantity || 1;
+            game.collection = collection_id || null;
 
             await game.save();
         } else {
@@ -199,6 +203,7 @@ router.post('/save-game', requireAuth, requireAdmin, async (req, res) => {
                 playStatus: playStatus || 'to_play',
                 user_rating: user_rating || 0,
                 quantity: quantity || 1,
+                collection: collection_id || null,
             });
         }
 
@@ -225,8 +230,9 @@ router.get('/game/edit/:id', requireAuth, requireAdmin, async (req, res) => {
         const adminId = await getAdminId();
         const locations = await Item.distinct('location', { owner: adminId, location: { $ne: "" } });
         const genres = await Item.distinct('genre', { owner: adminId, genre: { $ne: "" }, kind: 'Game' });
+        const collections = await Collection.find({ type: 'game' }).sort({ createdAt: 1 }).lean();
 
-        res.render('edit-game', { game: game.toObject(), user: res.locals.user, locations, genres, currentType: 'games' });
+        res.render('edit-game', { game: game.toObject(), user: res.locals.user, locations, genres, collections, currentType: 'games' });
     } catch (err) {
         console.error(err);
         res.redirect('/collection?type=games');
