@@ -22,7 +22,7 @@ const createToken = (id) => {
 // GET /setup - render initial setup page if no users exist
 router.get('/', async (req, res) => {
     const count = await User.countDocuments();
-    if (count > 0) return res.redirect('/login'); // safety: only allow setup when DB empty
+    if (count > 0) return res.redirect('/');
     res.render('setup', { error: null });
 });
 

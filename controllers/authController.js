@@ -46,7 +46,7 @@ const handleErrors = (err) => {
  * Render the login page.
  */
 module.exports.login_get = (req, res) => {
-  res.render('login');
+  res.redirect('/');
 };
 
 /**

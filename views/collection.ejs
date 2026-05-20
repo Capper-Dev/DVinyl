@@ -291,10 +291,12 @@
                 Uncategorized
             </a>
             <% collectionsForType.forEach(function(col) { %>
-            <a href="?type=<%= currentType %>&collection=<%= col._id %>"
-               class="px-3 py-1 rounded-full text-xs font-semibold transition <%= activeCollectionId && activeCollectionId.toString() === col._id.toString() ? 'bg-primary-theme text-white' : 'card-theme opacity-70 hover:opacity-100' %>">
-                <%= col.name %>
-            </a>
+            <span class="inline-flex items-center gap-1 rounded-full text-xs font-semibold transition <%= activeCollectionId && activeCollectionId.toString() === col._id.toString() ? 'bg-primary-theme text-white' : 'card-theme opacity-70 hover:opacity-100' %>">
+                <a href="?type=<%= currentType %>&collection=<%= col._id %>" class="pl-3 py-1">
+                    <%= col.name %>
+                </a>
+                <button onclick="deleteCollection('<%= col._id %>', '<%= currentType %>')" class="pr-2 py-1 opacity-60 hover:opacity-100 transition leading-none">&times;</button>
+            </span>
             <% }) %>
         </div>
         <% } %>
@@ -870,6 +872,15 @@
     </div>
 
     <script>
+    async function deleteCollection(id, type) {
+        if (!confirm('Delete this collection? Items will become uncategorized.')) return;
+        const res = await fetch('<%= baseUrl %>/api/collections/' + id, { method: 'DELETE' });
+        if (res.ok) {
+            window.location.href = '?type=' + type;
+        } else {
+            alert('Failed to delete collection.');
+        }
+    }
     async function createCollection() {
         const name = document.getElementById('new-collection-name').value.trim();
         const type = '<%= currentType === "dvd" ? "dvd" : currentType === "games" ? "game" : "book" %>';
