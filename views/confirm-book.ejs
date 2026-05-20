@@ -236,11 +236,11 @@
                             <label class="block text-xs font-bold uppercase tracking-wider opacity-60 mb-2">
                                 <i class="fa-solid fa-box-archive mr-1"></i> <%= t('common.location') %>
                             </label>
-                            <input type="text" name="location" list="locationList" 
+                            <input type="text" name="location" list="locationList"
                                 placeholder="<%= t('placeholders.location') %>"
                                 value="<%= typeof book !== 'undefined' ? (book.location || '') : '' %>"
                                 class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary-theme outline-none transition-all">
-                            
+
                             <datalist id="locationList">
                                 <% locations.forEach(loc => { %>
                                     <option value="<%= loc %>">
@@ -251,7 +251,7 @@
                             <label class="block text-xs font-bold uppercase tracking-wider opacity-60 mb-2">
                                 <i class="fa-solid fa-book-open mr-1"></i> <%= t('confirm_vinyl.field_genres') %>
                             </label>
-                            <input type="text" name="genres" 
+                            <input type="text" name="genres"
                                 placeholder="Fantasy, Thriller..."
                                 value="<%= typeof book !== 'undefined' ? (book.genres ? book.genres.join(', ') : '') : '' %>"
                                 class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary-theme outline-none transition-all">
@@ -260,10 +260,23 @@
                             <label class="block text-xs font-bold uppercase tracking-wider opacity-60 mb-2">
                                 <i class="fa-solid fa-tags mr-1"></i> <%= t('confirm_vinyl.field_styles') %>
                             </label>
-                            <input type="text" name="styles" 
+                            <input type="text" name="styles"
                                 placeholder="Hard Magic, Cyberpunk..."
                                 value="<%= typeof book !== 'undefined' ? (book.styles ? book.styles.join(', ') : '') : '' %>"
                                 class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary-theme outline-none transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider opacity-60 mb-2">
+                                <i class="fa-solid fa-layer-group mr-1"></i> <%= t('common.collection') || 'Collection' %>
+                            </label>
+                            <select name="collection_id" class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary-theme outline-none transition-all cursor-pointer">
+                                <option value="">Uncategorized</option>
+                                <% if (typeof collections !== 'undefined') { %>
+                                <% collections.forEach(function(col) { %>
+                                <option value="<%= col._id %>"><%= col.name %></option>
+                                <% }) %>
+                                <% } %>
+                            </select>
                         </div>
                     </div>
 

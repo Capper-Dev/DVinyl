@@ -4,6 +4,7 @@ const axios = require('axios');
 const Book = require('../models/Book');
 const Item = require('../models/Item');
 const User = require('../models/User');
+const Collection = require('../models/Collection');
 const { requireAuth, requireAdmin } = require('../middleware/authMiddleware');
 const xml2js = require('xml2js');
 const { BOOK_GENRES_WHITELIST } = require('../config/constants');
@@ -216,8 +217,9 @@ router.get('/confirm-book/:id', requireAuth, async (req, res) => {
         const adminId = await User.findOne({ isAdmin: true }).select('_id').lean();
         const locations = await Item.distinct('location', { owner: adminId, location: { $ne: "" } });
         const genres = await Item.distinct('genre', { owner: adminId, genre: { $ne: "" }, kind: 'Book' });
+        const collections = await Collection.find({ type: 'book' }).sort({ createdAt: 1 }).lean();
 
-        res.render('confirm-book', { book: bookData, user: res.locals.user, locations, genres, currentType: 'books' });
+        res.render('confirm-book', { book: bookData, user: res.locals.user, locations, genres, collections, currentType: 'books' });
     } catch (err) {
         console.error("[ERR] Hardcover API Error:", err?.response?.data || err.message);
         res.status(500).send(req.t('errors.generic_server_error'));
@@ -226,10 +228,10 @@ router.get('/confirm-book/:id', requireAuth, async (req, res) => {
 
 router.post('/save-book', requireAuth, requireAdmin, async (req, res) => {
     try {
-        const { 
-            mongo_id, title, author, publisher, year, isbn, barcode, barcode_locked, pages, language, 
+        const {
+            mongo_id, title, author, publisher, year, isbn, barcode, barcode_locked, pages, language,
             format, series, volume, cover_image, hardcover_id, hardcover_slug,
-            in_wishlist, comments, location, genre, genres, styles, readingStatus, rating, quantity
+            in_wishlist, comments, location, genre, genres, styles, readingStatus, rating, quantity, collection_id
         } = req.body;
         
         const parsedGenres = Array.isArray(genres) ? genres : (genres ? genres.split(',').map(g => g.trim()).filter(Boolean) : []);
@@ -267,11 +269,12 @@ router.post('/save-book', requireAuth, requireAdmin, async (req, res) => {
             book.readingStatus = readingStatus || 'to_read';
             book.rating = rating || 0;
             book.quantity = quantity || 1;
-            
+            book.collection = collection_id || null;
+
             await book.save();
         } else {
             await Book.create({
-                title, author, publisher, year, isbn: barcode || isbn, barcode: barcode || isbn, 
+                title, author, publisher, year, isbn: barcode || isbn, barcode: barcode || isbn,
                 barcode_locked: barcode_locked === 'on',
                 pages, language,
                 format, series, volume, cover_image,
@@ -289,6 +292,7 @@ router.post('/save-book', requireAuth, requireAdmin, async (req, res) => {
                 quantity: quantity || 1,
                 hardcover_slug: hardcover_slug || '',
                 source: 'hardcover',
+                collection: collection_id || null,
             });
         }
 
@@ -314,8 +318,9 @@ router.get('/book/edit/:id', requireAuth, async (req, res) => {
         const adminId = await getAdminId();
         const locations = await Item.distinct('location', { owner: adminId, location: { $ne: "" } });
         const genres = await Item.distinct('genre', { owner: adminId, genre: { $ne: "" }, kind: 'Book' });
-        
-        res.render('edit-book', { book: book.toObject(), user: res.locals.user, locations, genres, currentType: 'books' });
+        const collections = await Collection.find({ type: 'book' }).sort({ createdAt: 1 }).lean();
+
+        res.render('edit-book', { book: book.toObject(), user: res.locals.user, locations, genres, collections, currentType: 'books' });
     } catch (err) {
         console.error(err);
         res.redirect('/collection?type=books');
