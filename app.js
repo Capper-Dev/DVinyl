@@ -39,6 +39,7 @@ const backupRoutes = require('./routes/backupRoutes.js');
 const bookRoutes = require('./routes/bookRoutes');
 const dvdRoutes = require('./routes/dvdRoutes.js');
 const gameRoutes = require('./routes/gameRoutes.js');
+const collectionRoutes = require('./routes/collectionRoutes.js');
 
 const app = express();
 const server = http.createServer(app);
@@ -197,6 +198,7 @@ app.use(BASE_URL + '/backup', backupRoutes);
 app.use(BASE_URL, bookRoutes);
 app.use(BASE_URL, dvdRoutes);
 app.use(BASE_URL, gameRoutes);
+app.use(BASE_URL + '/api/collections', collectionRoutes);
 
 app.use((req, res) => {
     res.status(404).render('404');
