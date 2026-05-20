@@ -46,6 +46,3 @@ services:
 
 networks:
   dvinyl_net:
-
-volumes:
-  mongo_data:
