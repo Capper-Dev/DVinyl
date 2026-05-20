@@ -1,26 +1,39 @@
 version: '3.8'
-
 services:
   dvinyl-app:
     build: .
     container_name: dvinyl_app
     restart: unless-stopped
     ports:
-      - "3099:3099" # External port : Internal port
+      - "3099:80"
     volumes:
       - ./public/uploads:/app/public/uploads
-    env_file:
-        - .env
     depends_on:
       - mongodb
+    networks:
+      - dvinyl_net
 
-  # Database service
   mongodb:
     image: mongo:latest
     container_name: dvinyl_db
     restart: unless-stopped
     volumes:
-      - ./mongo_data:/data/db 
+      - ./mongo_data:/data/db
+    networks:
+      - dvinyl_net
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: dvinyl_cloudflared
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN}
+    depends_on:
+      - dvinyl-app
+    networks:
+      - dvinyl_net
+
+networks:
+  dvinyl_net:
 
 volumes:
   mongo_data:
