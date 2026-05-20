@@ -1,107 +1,108 @@
 <%- include('partials/header') %>
 
-    <div class="max-w-screen-xl mx-auto px-1 md:px-0 pb-12">
+    <div class="max-w-screen-xl mx-auto px-4 md:px-6 pb-12">
 
-        <div class="pt-6 mb-6 flex items-center justify-between">
-            <h1 class="text-3xl font-bold transition-colors flex flex-col md:flex-row md:items-center gap-2 md:gap-3">
-                <span>
-                    <%= t('collection.title') %>
-                </span>
-                <span
-                    class="px-3 md:mt-1.5 py-1 bg-black/5 dark:bg-white/10 rounded-full text-sm font-medium opacity-70 w-fit">
-                    <%= totalItems %>
-                        <%= t('common.items') %>
-                </span>
-            </h1>
-            <% if (user.isAdmin) { %>
-                <% const addRoutes={ music: '/add-vinyl' , books: '/add-book' , dvd: '/add-dvd' , games: '/add-game' };
-                    const addRoute=addRoutes[currentType]; %>
-                    <div class="flex gap-2">
+        <%
+            const typeConfig = {
+                music:  { icon: 'fa-compact-disc', label: 'Music' },
+                books:  { icon: 'fa-book',         label: 'Books' },
+                dvd:    { icon: 'fa-film',          label: 'Movies' },
+                games:  { icon: 'fa-gamepad',       label: 'Games' },
+                all:    { icon: 'fa-layer-group',   label: 'All' }
+            };
+            const tc = typeConfig[currentType] || typeConfig.all;
+        %>
 
-                        <% if (addRoute) { %>
-                            <a href="<%= baseUrl + addRoute %>"
-                                class="flex-shrink-0 w-10 h-10 md:w-auto md:px-4 card-theme hover:text-primary-theme hover:border-primary-theme rounded-lg transition-all shadow-sm flex items-center justify-center gap-2 group"
-                                title="<%= t('collection.add') %>">
-                                <i class="fa-solid fa-plus group-hover:scale-110 transition-transform"></i>
-                                <span class="hidden md:inline text-xs font-bold uppercase tracking-widest">
-                                    <%= t('collection.add') %>
-                                </span>
-                            </a>
-                            <% } %>
-
-                        <% if (['dvd', 'games', 'books'].includes(currentType)) { %>
-                            <button onclick="document.getElementById('new-collection-modal').classList.remove('hidden')"
-                                    class="flex-shrink-0 w-10 h-10 md:w-auto md:px-4 card-theme hover:text-primary-theme hover:border-primary-theme rounded-lg transition-all shadow-sm flex items-center justify-center gap-2 group">
-                                <i class="fa-solid fa-folder-plus group-hover:scale-110 transition-transform"></i>
-                                <span class="hidden md:inline text-xs font-bold uppercase tracking-widest">New Collection</span>
-                            </button>
-                        <% } %>
-
-                                <% if (currentType==='music' ) { %>
-                                    <button onclick="openEstimateModal()"
-                                        class="flex-shrink-0 w-10 h-10 md:w-auto md:px-4 card-theme hover:text-primary-theme hover:border-primary-theme rounded-lg transition-all shadow-sm flex items-center justify-center gap-2 group"
-                                        title="<%= t('index.btn_estimate') %>">
-                                        <i
-                                            class="fa-solid fa-calculator group-hover:scale-110 transition-transform"></i>
-                                        <span class="hidden md:inline text-xs font-bold uppercase tracking-widest">
-                                            <%= t('index.btn_estimate') %>
-                                        </span>
-                                    </button>
-                                    <% } %>
-
-                                        <% if (user.discogsUsername && currentType==='music' ) { %>
-                                            <button onclick="refreshCollection()" id="refreshBtn"
-                                                class="flex-shrink-0 w-10 h-10 md:w-auto md:px-4 card-theme hover:text-primary-theme hover:border-primary-theme rounded-lg transition-all shadow-sm flex items-center justify-center gap-2 group"
-                                                title="<%= t('collection.refresh_tooltip') %>">
-                                                <i
-                                                    class="fa-solid fa-sync group-hover:rotate-180 transition-transform duration-500"></i>
-                                                <span
-                                                    class="hidden md:inline text-xs font-bold uppercase tracking-widest">
-                                                    <%= t('collection.refresh') %>
-                                                </span>
-                                            </button>
-                                            <% } %>
-
+        <div class="pt-8 pb-6 border-b border-black/5 dark:border-white/5 mb-6">
+            <div class="flex items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-primary-theme/10 flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid <%= tc.icon %> text-xl text-primary-theme"></i>
                     </div>
-                    <% } %>
-
-        </div>
-
-        <div class="space-y-6 mb-8">
-
-            <div class="flex flex-wrap items-center justify-between gap-4">
-                <div class="flex flex-wrap gap-2" id="formatFilters">
-                    <% const mainTypes=[ { id: 'all' , label: t('common.all') }, { id: 'music' , label: t('media.music')
-                        }, ...(settings.modules.books ? [{ id: 'books' , label: t('media.books') }] : []),
-                        ...(settings.modules.dvd ? [{ id: 'dvd' , label: t('media.dvds') }] : []),
-                        ...(settings.modules.games ? [{ id: 'games' , label: t('media.games') }] : []), ]; %>
-
-                        <% if (currentType==='all' ) { %>
-                            <% mainTypes.forEach(type=> { %>
-                                <button onclick="currentType = '<%= type.id %>'; currentFormat = 'all'; reloadPage();"
-                                    class="px-4 py-2 rounded-full text-xs font-bold transition-all active:scale-95 <%= currentType === type.id ? 'bg-primary-theme text-white shadow-lg' : 'bg-black/5 dark:bg-white/10 opacity-60' %>">
-                                    <%= type.label %>
-                                </button>
-                                <% }) %>
-                                    <% } else { %>
-                                        <button onclick="currentType = 'all'; currentFormat = 'all'; reloadPage();"
-                                            class="px-4 py-2 rounded-full text-xs font-bold transition-all active:scale-95 bg-black/5 dark:bg-white/10 opacity-60">
-                                            <i class="fa-solid fa-arrow-left mr-2"></i>
-                                            <%= t('common.all') %>
-                                        </button>
-                                        <% activeFilters.forEach(filter=> { %>
-                                            <button onclick="currentFormat = '<%= filter.id %>'; reloadPage();"
-                                                class="px-4 py-2 rounded-full text-xs font-bold transition-all active:scale-95 <%= (currentFormat === filter.id) ? 'bg-primary-theme text-white shadow-lg' : 'bg-black/5 dark:bg-white/10 opacity-60' %>">
-                                                <%= filter.label %>
-                                            </button>
-                                            <% }) %>
-                                        <% } %>
+                    <div>
+                        <h1 class="text-2xl md:text-3xl font-black leading-none"><%= tc.label %></h1>
+                        <p class="text-sm opacity-40 mt-0.5 font-medium"><%= totalItems %> <%= t('common.items') %></p>
+                    </div>
                 </div>
 
+                <% if (user.isAdmin) { %>
+                <% const addRoutes={ music: '/add-vinyl', books: '/add-book', dvd: '/add-dvd', games: '/add-game' };
+                   const addRoute = addRoutes[currentType]; %>
+                <div class="flex gap-2">
+                    <% if (addRoute) { %>
+                    <a href="<%= baseUrl + addRoute %>"
+                        class="flex items-center gap-2 bg-primary-theme text-white text-sm font-bold px-4 py-2.5 rounded-xl hover:brightness-110 transition-all active:scale-95 shadow-lg shadow-primary-theme/20">
+                        <i class="fa-solid fa-plus"></i>
+                        <span class="hidden sm:inline">Add</span>
+                    </a>
+                    <% } %>
+
+                    <% if (['dvd', 'games', 'books'].includes(currentType)) { %>
+                    <button onclick="document.getElementById('new-collection-modal').classList.remove('hidden')"
+                            class="flex items-center gap-2 card-theme text-sm font-bold px-4 py-2.5 rounded-xl hover:border-primary-theme hover:text-primary-theme transition-all active:scale-95">
+                        <i class="fa-solid fa-folder-plus"></i>
+                        <span class="hidden sm:inline">New List</span>
+                    </button>
+                    <% } %>
+
+                    <% if (currentType === 'music') { %>
+                    <button onclick="openEstimateModal()"
+                        class="flex items-center gap-2 card-theme text-sm font-bold px-4 py-2.5 rounded-xl hover:border-primary-theme hover:text-primary-theme transition-all active:scale-95">
+                        <i class="fa-solid fa-calculator"></i>
+                    </button>
+                    <% } %>
+
+                    <% if (user.discogsUsername && currentType === 'music') { %>
+                    <button onclick="refreshCollection()" id="refreshBtn"
+                        class="flex items-center gap-2 card-theme text-sm font-bold px-4 py-2.5 rounded-xl hover:border-primary-theme hover:text-primary-theme transition-all active:scale-95">
+                        <i class="fa-solid fa-sync"></i>
+                    </button>
+                    <% } %>
+                </div>
+                <% } %>
+            </div>
+
+            <%-- Type switcher tabs --%>
+            <div class="flex gap-1 mt-5 overflow-x-auto pb-1">
+                <%
+                    const tabTypes = [];
+                    tabTypes.push({ id: 'all', icon: 'fa-layer-group', label: 'All' });
+                    if (settings.modules.music) tabTypes.push({ id: 'music', icon: 'fa-compact-disc', label: 'Music' });
+                    if (settings.modules.books) tabTypes.push({ id: 'books', icon: 'fa-book', label: 'Books' });
+                    if (settings.modules.dvd)   tabTypes.push({ id: 'dvd',   icon: 'fa-film',          label: 'Movies' });
+                    if (settings.modules.games) tabTypes.push({ id: 'games', icon: 'fa-gamepad',       label: 'Games' });
+                %>
+                <% tabTypes.forEach(tab => { %>
+                <button onclick="currentType = '<%= tab.id %>'; currentFormat = 'all'; reloadPage();"
+                    class="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all whitespace-nowrap
+                    <%= currentType === tab.id ? 'bg-primary-theme text-white shadow-md shadow-primary-theme/20' : 'opacity-40 hover:opacity-80 hover:bg-black/5 dark:hover:bg-white/5' %>">
+                    <i class="fa-solid <%= tab.icon %> text-xs"></i>
+                    <%= tab.label %>
+                </button>
+                <% }) %>
+            </div>
+
+            <%-- Format sub-filters (only when a specific type is selected) --%>
+            <% if (currentType !== 'all' && activeFilters && activeFilters.length > 1) { %>
+            <div class="flex gap-1.5 mt-3 flex-wrap">
+                <% activeFilters.forEach(filter => { %>
+                <button onclick="currentFormat = '<%= filter.id %>'; reloadPage();"
+                    class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all
+                    <%= currentFormat === filter.id ? 'bg-black/10 dark:bg-white/15 opacity-100' : 'opacity-40 hover:opacity-70' %>">
+                    <%= filter.label %>
+                </button>
+                <% }) %>
+            </div>
+            <% } %>
+        </div>
+
+        <div class="space-y-4 mb-6">
+
+            <div class="flex flex-wrap items-center justify-between gap-3">
                 <button onclick="toggleMobileFilters()"
-                    class="sm:hidden flex items-center gap-2 px-4 py-2 rounded-lg card-theme border text-sm font-bold opacity-70 hover:opacity-100 transition-all">
-                    <i class="fa-solid fa-filter"></i>
-                    <%= t('common.filters') %>
+                    class="sm:hidden flex items-center gap-2 px-4 py-2 rounded-xl card-theme text-sm font-bold opacity-70 hover:opacity-100 transition-all">
+                    <i class="fa-solid fa-filter text-xs"></i>
+                    Filters
                 </button>
             </div>
 
@@ -281,91 +282,85 @@
         </div>
 
         <% if (typeof collectionsForType !== 'undefined' && collectionsForType.length > 0) { %>
-        <div class="flex flex-wrap gap-2 mb-4">
+        <div class="flex flex-wrap gap-2 mb-5">
             <a href="?type=<%= currentType %>"
-               class="px-3 py-1 rounded-full text-xs font-semibold transition <%= !activeCollectionId ? 'bg-primary-theme text-white' : 'card-theme opacity-70 hover:opacity-100' %>">
+               class="px-4 py-2 rounded-xl text-xs font-bold transition-all <%= !activeCollectionId ? 'bg-primary-theme text-white shadow-md shadow-primary-theme/20' : 'card-theme opacity-50 hover:opacity-100' %>">
                 All
             </a>
             <a href="?type=<%= currentType %>&collection=uncategorized"
-               class="px-3 py-1 rounded-full text-xs font-semibold transition <%= activeCollectionId === 'uncategorized' ? 'bg-primary-theme text-white' : 'card-theme opacity-70 hover:opacity-100' %>">
+               class="px-4 py-2 rounded-xl text-xs font-bold transition-all <%= activeCollectionId === 'uncategorized' ? 'bg-primary-theme text-white shadow-md shadow-primary-theme/20' : 'card-theme opacity-50 hover:opacity-100' %>">
                 Uncategorized
             </a>
-            <% collectionsForType.forEach(function(col) { %>
-            <span class="inline-flex items-center gap-1 rounded-full text-xs font-semibold transition <%= activeCollectionId && activeCollectionId.toString() === col._id.toString() ? 'bg-primary-theme text-white' : 'card-theme opacity-70 hover:opacity-100' %>">
-                <a href="?type=<%= currentType %>&collection=<%= col._id %>" class="pl-3 py-1">
+            <% collectionsForType.forEach(function(col) {
+                const isActive = activeCollectionId && activeCollectionId.toString() === col._id.toString();
+            %>
+            <span class="inline-flex items-center rounded-xl overflow-hidden text-xs font-bold transition-all <%= isActive ? 'bg-primary-theme text-white shadow-md shadow-primary-theme/20' : 'card-theme opacity-50 hover:opacity-100' %>">
+                <a href="?type=<%= currentType %>&collection=<%= col._id %>" class="px-4 py-2">
                     <%= col.name %>
                 </a>
-                <button onclick="deleteCollection('<%= col._id %>', '<%= currentType %>')" class="pr-2 py-1 opacity-60 hover:opacity-100 transition leading-none">&times;</button>
+                <button onclick="deleteCollection('<%= col._id %>', '<%= currentType %>')"
+                    class="px-2 py-2 border-l border-white/20 <%= isActive ? 'hover:bg-black/20' : 'hover:bg-black/5 dark:hover:bg-white/10' %> transition-colors leading-none text-base">
+                    &times;
+                </button>
             </span>
             <% }) %>
         </div>
         <% } %>
 
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6" id="albumGrid">
-            <% albums.forEach(album=> { %>
-                <% const isBook=album.kind==='Book' ; const isDvd=album.kind==='Dvd' || (album.tmdb_id !==undefined &&
-                    album.tmdb_id !==null); const isGame=album.kind==='Game' ; const aspectClass='aspect-square' ; let
-                    detailUrl=`/album/${album._id}`; if (isBook) detailUrl=`/book/${album._id}`; if (isDvd)
-                    detailUrl=`/dvd/${album._id}`; if (isGame) detailUrl=`/game/${album._id}`; const formatKey=isGame ?
-                    (album.format || 'physical' ) : ((isDvd) ? album.format : (album.media_type || album.format)); let
-                    isAdvancedCD=false; let advancedCDType='' ; if (settings && settings.modules &&
-                    settings.modules.advancedCD && formatKey==='cd' && album.format_type) { if
-                    (album.format_type.toLowerCase().includes('sacd')) { isAdvancedCD=true; advancedCDType='sacd' ; }
-                    else if (album.format_type.toLowerCase().includes('cdr')) { isAdvancedCD=true; advancedCDType='cdr'
-                    ; } } const badgeMap={ 'vinyl' : 'bg-green-600/90' , 'cd' : 'bg-blue-600/90' , 'cassette'
-                    : 'bg-orange-600/90' , 'manga' : 'bg-pink-600/90' , 'comic' : 'bg-indigo-600/90' , 'hardcover'
-                    : 'bg-purple-600/90' , 'paperback' : 'bg-amber-600/90' , 'book' : 'bg-amber-700/90' , 'dvd'
-                    : 'bg-sky-600/90' , 'bluray' : 'bg-indigo-700/90' , '4k' : 'bg-red-600/90' , 'vhs'
-                    : 'bg-amber-600/90' , 'laserdisc' : 'bg-purple-600/90' , 'physical' : 'bg-emerald-600/90'
-                    , 'collector' : 'bg-amber-600/90' , 'limited' : 'bg-purple-600/90' , 'steelbook' : 'bg-sky-600/90'
-                    }; let badgeClass=isAdvancedCD ? (advancedCDType==='sacd' ? 'bg-red-600/90' : 'bg-blue-600/90' ) :
-                    (badgeMap[formatKey] || 'bg-gray-600/90' ); let displayFormat=isAdvancedCD ? t('media.' +
-                    advancedCDType) : (isGame ? (album.platform || 'Game' ) : t('media.' + formatKey)); %>
-
-                    <div class="album-card group relative card-theme rounded-xl overflow-hidden hover:border-primary-theme transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
-                        data-location="<%= album.location || '' %>"
-                        data-format="<%= isDvd ? album.format : (album.media_type || album.format || '') %>">
-                        <a href="<%= baseUrl + detailUrl %>" class="block">
-                            <div
-                                class="<%= aspectClass %> w-full relative overflow-hidden bg-black/5 flex items-center justify-center">
-
-                                <% if (isBook || isDvd || isGame) { %>
-                                    <img src="<%= album.cover_image %>"
-                                        class="absolute inset-0 w-full h-full object-cover blur-xl opacity-30 scale-110 pointer-events-none">
-                                    <% } %>
-
-                                        <img src="<%= album.cover_image %>"
-                                            class="relative z-10 w-full h-full <%= (isBook || isDvd || isGame) ? 'object-contain p-2' : 'object-cover' %> transition-transform duration-500 group-hover:scale-105"
-                                            loading="lazy">
-
-                                        <span
-                                            class="absolute bottom-2 left-2 z-20 text-white text-[10px] font-bold px-2 py-1 rounded backdrop-blur-md border border-white/10 shadow-sm <%= badgeClass %>">
-                                            <%= displayFormat %>
-                                        </span>
-                            </div>
-
-                            <div class="p-3">
-                                <h3 class="font-bold text-sm truncate" title="<%= album.title %>">
-                                    <%= album.title %>
-                                </h3>
-                                <p class="text-xs opacity-60 truncate mb-2">
-                                    <%= isBook ? album.author : (isGame ? (album.developer || album.publisher || '' ) :
-                                        (album.artist || album.director || 'Inconnu' )) %>
-                                </p>
-
-                                <% if(album.variant_color) { %>
-                                    <div class="flex items-center gap-1">
-                                        <span
-                                            class="w-2 h-2 rounded-full bg-[var(--text-main)] opacity-40 inline-block flex-shrink-0"></span>
-                                        <span class="text-[10px] opacity-60 truncate max-w-full">
-                                            <%= album.variant_color %>
-                                        </span>
-                                    </div>
-                                    <% } %>
-                            </div>
-                        </a>
-                    </div>
-                    <% }) %>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4" id="albumGrid">
+            <% albums.forEach(album => {
+                const isBook = album.kind === 'Book';
+                const isDvd  = album.kind === 'Dvd' || (album.tmdb_id !== undefined && album.tmdb_id !== null);
+                const isGame = album.kind === 'Game';
+                const isPoster = isBook || isDvd || isGame;
+                const aspectClass = isPoster ? 'aspect-[2/3]' : 'aspect-square';
+                let detailUrl = `/album/${album._id}`;
+                if (isBook) detailUrl = `/book/${album._id}`;
+                if (isDvd)  detailUrl = `/dvd/${album._id}`;
+                if (isGame) detailUrl = `/game/${album._id}`;
+                const formatKey = isGame ? (album.format || 'physical') : (isDvd ? album.format : (album.media_type || album.format));
+                let isAdvancedCD = false, advancedCDType = '';
+                if (settings?.modules?.advancedCD && formatKey === 'cd' && album.format_type) {
+                    if (album.format_type.toLowerCase().includes('sacd')) { isAdvancedCD = true; advancedCDType = 'sacd'; }
+                    else if (album.format_type.toLowerCase().includes('cdr')) { isAdvancedCD = true; advancedCDType = 'cdr'; }
+                }
+                const badgeMap = {
+                    vinyl: 'bg-green-600/90', cd: 'bg-blue-600/90', cassette: 'bg-orange-600/90',
+                    manga: 'bg-pink-600/90', comic: 'bg-indigo-600/90', hardcover: 'bg-purple-600/90',
+                    paperback: 'bg-amber-600/90', book: 'bg-amber-700/90', dvd: 'bg-sky-600/90',
+                    bluray: 'bg-indigo-700/90', '4k': 'bg-red-600/90', vhs: 'bg-amber-600/90',
+                    laserdisc: 'bg-purple-600/90', physical: 'bg-emerald-600/90',
+                    collector: 'bg-amber-600/90', limited: 'bg-purple-600/90', steelbook: 'bg-sky-600/90'
+                };
+                const badgeClass = isAdvancedCD ? (advancedCDType === 'sacd' ? 'bg-red-600/90' : 'bg-blue-600/90') : (badgeMap[formatKey] || 'bg-gray-600/90');
+                const displayFormat = isAdvancedCD ? t('media.' + advancedCDType) : (isGame ? (album.platform || 'Game') : t('media.' + formatKey));
+                const subtitle = isBook ? album.author : (isGame ? (album.developer || album.publisher || '') : (album.artist || album.director || ''));
+            %>
+                <div class="album-card group relative"
+                    data-location="<%= album.location || '' %>"
+                    data-format="<%= isDvd ? album.format : (album.media_type || album.format || '') %>">
+                    <a href="<%= baseUrl + detailUrl %>" class="block">
+                        <div class="<%= aspectClass %> w-full relative overflow-hidden rounded-xl bg-black/5 dark:bg-white/5 shadow-sm group-hover:shadow-xl group-hover:-translate-y-1 transition-all duration-300">
+                            <% if (isPoster) { %>
+                            <img src="<%= album.cover_image %>"
+                                class="absolute inset-0 w-full h-full object-cover blur-xl opacity-20 scale-110 pointer-events-none">
+                            <% } %>
+                            <img src="<%= album.cover_image %>"
+                                class="relative z-10 w-full h-full <%= isPoster ? 'object-contain p-1' : 'object-cover' %> transition-transform duration-500 group-hover:scale-105"
+                                loading="lazy">
+                            <span class="absolute bottom-2 left-2 z-20 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-md backdrop-blur-md bg-black/50 border border-white/10">
+                                <%= displayFormat %>
+                            </span>
+                        </div>
+                        <div class="mt-2 px-0.5">
+                            <p class="font-semibold text-xs truncate leading-tight" title="<%= album.title %>"><%= album.title %></p>
+                            <% if (subtitle) { %>
+                            <p class="text-[11px] opacity-40 truncate mt-0.5"><%= subtitle %></p>
+                            <% } %>
+                        </div>
+                    </a>
+                </div>
+            <% }) %>
         </div>
 
         <div
@@ -857,16 +852,17 @@
 
 
     </script>
-    <div id="new-collection-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-        <div class="card-theme rounded-xl p-6 w-full max-w-sm shadow-2xl">
-            <h3 class="text-base font-bold mb-4">New Collection</h3>
-            <input id="new-collection-name" type="text" placeholder="e.g. Casper's Games"
-                   class="w-full card-theme border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-sm mb-4 focus:outline-none">
-            <div class="flex gap-2 justify-end">
+    <div id="new-collection-modal" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm sm:p-4">
+        <div class="card-theme w-full max-w-sm rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl">
+            <div class="w-10 h-1 bg-black/10 dark:bg-white/10 rounded-full mx-auto mb-5 sm:hidden"></div>
+            <h3 class="text-lg font-black mb-4">New List</h3>
+            <input id="new-collection-name" type="text" placeholder="e.g. Danish Films"
+                   class="w-full bg-black/5 dark:bg-white/5 border border-transparent focus:border-primary-theme rounded-xl px-4 py-3 text-sm mb-4 focus:outline-none transition-colors">
+            <div class="flex gap-2">
                 <button onclick="document.getElementById('new-collection-modal').classList.add('hidden')"
-                        class="px-4 py-2 text-sm rounded-lg card-theme opacity-70 hover:opacity-100 transition">Cancel</button>
+                        class="flex-1 py-3 text-sm font-bold rounded-xl bg-black/5 dark:bg-white/5 opacity-60 hover:opacity-100 transition">Cancel</button>
                 <button onclick="createCollection()"
-                        class="px-4 py-2 text-sm font-semibold rounded-lg bg-primary-theme text-white hover:opacity-90 transition">Create</button>
+                        class="flex-1 py-3 text-sm font-bold rounded-xl bg-primary-theme text-white hover:brightness-110 transition active:scale-95">Create</button>
             </div>
         </div>
     </div>
