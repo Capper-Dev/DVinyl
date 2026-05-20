@@ -41,7 +41,27 @@
             </button>
         </div>
 
-        <div id="reader" class="hidden mt-6 rounded-2xl overflow-hidden shadow-lg border border-black/10 dark:border-white/10"></div>
+        <div class="hidden mt-6" id="readerWrapper">
+            <div class="relative rounded-2xl overflow-hidden shadow-lg border border-black/10 dark:border-white/10">
+                <div id="reader"></div>
+                <div id="scanLine" class="absolute left-0 right-0 h-0.5 bg-primary-theme/80 shadow-lg shadow-primary-theme/50 pointer-events-none z-30" style="top:50%; animation: scanMove 2s ease-in-out infinite;"></div>
+                <div class="absolute inset-0 pointer-events-none z-20 flex items-center justify-center">
+                    <div class="w-64 h-24 border-2 border-primary-theme/60 rounded-lg relative">
+                        <span class="absolute -top-px -left-px w-4 h-4 border-t-2 border-l-2 border-primary-theme rounded-tl"></span>
+                        <span class="absolute -top-px -right-px w-4 h-4 border-t-2 border-r-2 border-primary-theme rounded-tr"></span>
+                        <span class="absolute -bottom-px -left-px w-4 h-4 border-b-2 border-l-2 border-primary-theme rounded-bl"></span>
+                        <span class="absolute -bottom-px -right-px w-4 h-4 border-b-2 border-r-2 border-primary-theme rounded-br"></span>
+                    </div>
+                </div>
+            </div>
+            <p class="text-center text-xs opacity-40 mt-2 font-medium">Point camera at barcode</p>
+        </div>
+        <style>
+            @keyframes scanMove {
+                0%, 100% { transform: translateY(-40px); opacity: 0.4; }
+                50% { transform: translateY(40px); opacity: 1; }
+            }
+        </style>
     </form>
 
     <% if (locals.results) { %>
@@ -98,7 +118,7 @@
 
     const html5QrCode = new Html5Qrcode("reader");
     const scanButton = document.getElementById('start-scan');
-    const readerDiv = document.getElementById('reader');
+    const readerWrapper = document.getElementById('readerWrapper');
     const searchInput = document.querySelector('input[name="query"]');
     const form = document.querySelector('form[action="<%= baseUrl %>/search-books"]');
     let isScanning = false;
@@ -106,16 +126,16 @@
     scanButton.addEventListener('click', () => {
         if (isScanning) {
             html5QrCode.stop().then(() => {
-                readerDiv.classList.add('hidden');
+                readerWrapper.classList.add('hidden');
                 scanButton.innerHTML = scanTranslations.btnDefault;
-                
+
                 scanButton.classList.remove('bg-red-600', 'hover:bg-red-500', 'text-white');
                 scanButton.classList.add('bg-black/5', 'dark:bg-white/5', 'hover:bg-black/10', 'dark:hover:bg-white/10');
-                
+
                 isScanning = false;
             }).catch(err => console.error("Erreur stop scan", err));
         } else {
-            readerDiv.classList.remove('hidden');
+            readerWrapper.classList.remove('hidden');
             scanButton.innerHTML = scanTranslations.init;
             
             const config = {
@@ -129,12 +149,18 @@
                 ]
             };
             
+            const videoConstraints = {
+                facingMode: { ideal: 'environment' },
+                focusMode: { ideal: 'continuous' },
+                advanced: [{ focusMode: 'continuous' }]
+            };
+
             html5QrCode.start(
-                { facingMode: "environment" },
+                videoConstraints,
                 config,
                 (decodedText) => {
                     html5QrCode.stop().then(() => {
-                        readerDiv.classList.add('hidden');
+                        readerWrapper.classList.add('hidden');
                         scanButton.innerHTML = scanTranslations.found;
                         searchInput.value = decodedText;
                         form.submit();
@@ -144,9 +170,18 @@
             ).then(() => {
                 isScanning = true;
                 scanButton.innerHTML = scanTranslations.stop;
-                
                 scanButton.classList.remove('bg-black/5', 'dark:bg-white/5', 'hover:bg-black/10', 'dark:hover:bg-white/10');
                 scanButton.classList.add('bg-red-600', 'hover:bg-red-500', 'text-white');
+
+                setTimeout(() => {
+                    const video = readerWrapper.querySelector('video');
+                    if (video && video.srcObject) {
+                        const track = video.srcObject.getVideoTracks()[0];
+                        if (track && track.applyConstraints) {
+                            track.applyConstraints({ advanced: [{ focusMode: 'continuous' }] }).catch(() => {});
+                        }
+                    }
+                }, 1000);
             }).catch(err => {
                 console.error("Erreur start scan", err);
                 scanButton.innerHTML = scanTranslations.error;
