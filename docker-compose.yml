@@ -6,6 +6,18 @@ services:
     restart: unless-stopped
     ports:
       - "3099:80"
+    environment:
+      - MONGODB_URL=mongodb://mongodb:27017/dvinyl
+      - VINYL_PORT=80
+      - PROD=true
+      - PASSJWT=${PASSJWT}
+      - SESSION_SECRET=${SESSION_SECRET}
+      - DISCOGS_TOKEN=${DISCOGS_TOKEN}
+      - HARDCOVER_API_KEY=${HARDCOVER_API_KEY}
+      - TMDB_API_KEY=${TMDB_API_KEY}
+      - TWITCH_CLIENT_ID=${TWITCH_CLIENT_ID}
+      - TWITCH_CLIENT_SECRET=${TWITCH_CLIENT_SECRET}
+      - CLOUDFLARE_TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
     volumes:
       - ./public/uploads:/app/public/uploads
     depends_on:
