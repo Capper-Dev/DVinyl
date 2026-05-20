@@ -58,8 +58,21 @@ router.post('/search-dvds', requireAuth, requireAdmin, async (req, res) => {
 
             if (!resolvedFromBarcode) {
                 try {
+                    const myMoviesRes = await axios.get(`https://c.mymovies.dk/DiscTitle/${barcodeScanned}`, { timeout: 5000 });
+                    if (myMoviesRes.data && myMoviesRes.data.Title) {
+                        searchQuery = myMoviesRes.data.Title;
+                        resolvedFromBarcode = true;
+                        console.log(`[INFO] mymovies.dk resolved barcode ${barcodeScanned} -> "${searchQuery}"`);
+                    }
+                } catch (mmErr) {
+                    console.error("[ERR] mymovies.dk lookup:", mmErr.message);
+                }
+            }
+
+            if (!resolvedFromBarcode) {
+                try {
                     const eanResponse = await axios.get(
-                        `https://api.themoviedb.org/3/find/${barcodeScanned}?api_key=${tmdbApiKey}&external_source=ean_id&language=en-US`
+                        `https://api.themoviedb.org/3/find/${barcodeScanned}?api_key=${tmdbApiKey}&external_source=ean_id&language=da-DK`
                     );
                     const eanResults = [
                         ...(eanResponse.data.movie_results || []),
@@ -85,8 +98,8 @@ router.post('/search-dvds', requireAuth, requireAdmin, async (req, res) => {
         }
 
         const [page1, page2] = await Promise.all([
-            axios.get(`https://api.themoviedb.org/3/search/multi?api_key=${tmdbApiKey}&query=${encodeURIComponent(searchQuery)}&language=en-US&page=1`),
-            axios.get(`https://api.themoviedb.org/3/search/multi?api_key=${tmdbApiKey}&query=${encodeURIComponent(searchQuery)}&language=en-US&page=2`),
+            axios.get(`https://api.themoviedb.org/3/search/multi?api_key=${tmdbApiKey}&query=${encodeURIComponent(searchQuery)}&language=da-DK&page=1`),
+            axios.get(`https://api.themoviedb.org/3/search/multi?api_key=${tmdbApiKey}&query=${encodeURIComponent(searchQuery)}&language=da-DK&page=2`),
         ]);
 
         const allResults = [
@@ -97,9 +110,12 @@ router.post('/search-dvds', requireAuth, requireAdmin, async (req, res) => {
         const filteredResults = allResults.filter(item => item.media_type === 'movie' || item.media_type === 'tv');
         const results = filteredResults.map(formatTMDBItem);
 
+        const barcodeNoResults = barcodeScanned && results.length === 0;
+
         res.render('add-dvd', {
-            results,
+            results: barcodeNoResults ? null : results,
             scanned_barcode: barcodeScanned,
+            barcode_no_results: barcodeNoResults,
             user: res.locals.user,
             currentType: 'add-dvd'
         });
@@ -116,7 +132,7 @@ router.get('/confirm-dvd/:media_type/:tmdb_id', requireAuth, requireAdmin, async
 
     try {
         const tmdbApiKey = process.env.TMDB_API_KEY;
-        const url = `https://api.themoviedb.org/3/${mediaType}/${tmdbId}?api_key=${tmdbApiKey}&language=en-US&append_to_response=credits`;
+        const url = `https://api.themoviedb.org/3/${mediaType}/${tmdbId}?api_key=${tmdbApiKey}&language=da-DK&append_to_response=credits`;
 
         const response = await axios.get(url);
         const data = response.data;
@@ -301,7 +317,7 @@ router.post('/api/dvd/:id/refresh-info', requireAuth, requireAdmin, async (req, 
 
         const tmdbApiKey = process.env.TMDB_API_KEY;
         const type = dvd.media_type === 'tv' ? 'tv' : 'movie';
-        const response = await axios.get(`https://api.themoviedb.org/3/${type}/${dvd.tmdb_id}?api_key=${tmdbApiKey}&language=en-US`);
+        const response = await axios.get(`https://api.themoviedb.org/3/${type}/${dvd.tmdb_id}?api_key=${tmdbApiKey}&language=da-DK`);
 
         if (!response.data) {
             return res.status(404).json({ success: false, error: 'Not found on TMDB API' });

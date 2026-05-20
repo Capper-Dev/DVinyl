@@ -56,7 +56,7 @@
                     <i class="fa-solid fa-xmark text-sm"></i>
                 </button>
             </div>
-            <p class="text-center text-xs opacity-40 mt-2">Point camera at barcode</p>
+            <p id="scanStatus" class="text-center text-xs opacity-60 mt-2 font-medium">Initializing camera...</p>
         </div>
         <style>
             @keyframes scanMove {
@@ -65,6 +65,16 @@
             }
         </style>
     </form>
+
+    <% if (locals.barcode_no_results) { %>
+        <div class="max-w-2xl mx-auto mb-8 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-start gap-3">
+            <i class="fa-solid fa-triangle-exclamation text-amber-500 mt-0.5"></i>
+            <div>
+                <p class="font-semibold text-sm">Barcode not found in database</p>
+                <p class="text-xs opacity-60 mt-0.5">The barcode <code class="font-mono"><%= locals.scanned_barcode %></code> didn't match any movie. Search by title instead — the search box is pre-filled with the barcode, just replace it with the movie title.</p>
+            </div>
+        </div>
+    <% } %>
 
     <% if (locals.results) { %>
         <div class="mb-4 flex items-center justify-between">
@@ -113,16 +123,28 @@
     const stopButton = document.getElementById('stop-scan');
     const readerWrapper = document.getElementById('readerWrapper');
     const video = document.getElementById('scanVideo');
+    const scanStatus = document.getElementById('scanStatus');
     const searchInput = document.querySelector('input[name="query"]');
     const form = document.querySelector('form[action="<%= baseUrl %>/search-dvds"]');
     let stream = null;
     let scanInterval = null;
     const BARCODE_FORMATS = ['ean_13', 'ean_8', 'upc_a', 'upc_e'];
 
+    function setStatus(msg) {
+        if (scanStatus) scanStatus.textContent = msg;
+    }
+
     async function startScanner() {
         readerWrapper.classList.remove('hidden');
         scanButton.disabled = true;
         scanButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Starting...</span>';
+        setStatus('Requesting camera...');
+
+        if (!window.BarcodeDetector) {
+            setStatus('BarcodeDetector not supported — type barcode manually');
+            stopScanner();
+            return;
+        }
 
         try {
             stream = await navigator.mediaDevices.getUserMedia({
@@ -130,6 +152,7 @@
             });
             video.srcObject = stream;
             await video.play();
+            setStatus('Camera active — point at barcode');
 
             const track = stream.getVideoTracks()[0];
             if (track.applyConstraints) {
@@ -138,21 +161,19 @@
 
             scanButton.innerHTML = '<i class="fa-solid fa-barcode"></i> <span>Scanning...</span>';
 
-            if (window.BarcodeDetector) {
-                const detector = new BarcodeDetector({ formats: BARCODE_FORMATS });
-                scanInterval = setInterval(async () => {
-                    try {
-                        const codes = await detector.detect(video);
-                        if (codes.length > 0) onBarcodeFound(codes[0].rawValue);
-                    } catch (e) {}
-                }, 200);
-            } else {
-                stopScanner();
-                alert('Barcode scanning not supported in this browser. Please type the barcode manually.');
-            }
+            const detector = new BarcodeDetector({ formats: BARCODE_FORMATS });
+            scanInterval = setInterval(async () => {
+                try {
+                    const codes = await detector.detect(video);
+                    if (codes.length > 0) {
+                        setStatus('Found: ' + codes[0].rawValue);
+                        onBarcodeFound(codes[0].rawValue);
+                    }
+                } catch (e) {}
+            }, 200);
         } catch (err) {
+            setStatus('Camera error: ' + err.message);
             stopScanner();
-            alert('Camera error: ' + err.message);
         }
     }
 
