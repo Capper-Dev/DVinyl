@@ -62,7 +62,7 @@
                 <% } %>
             </div>
 
-            <%-- Type switcher tabs --%>
+            <%# Type switcher tabs %>
             <div class="flex gap-1 mt-5 overflow-x-auto pb-1">
                 <%
                     const tabTypes = [];
@@ -82,7 +82,7 @@
                 <% }) %>
             </div>
 
-            <%-- Format sub-filters (only when a specific type is selected) --%>
+            <%# Format sub-filters (only when a specific type is selected) %>
             <% if (currentType !== 'all' && activeFilters && activeFilters.length > 1) { %>
             <div class="flex gap-1.5 mt-3 flex-wrap">
                 <% activeFilters.forEach(filter => { %>
@@ -314,10 +314,10 @@
                 const isGame = album.kind === 'Game';
                 const isPoster = isBook || isDvd || isGame;
                 const aspectClass = isPoster ? 'aspect-[2/3]' : 'aspect-square';
-                let detailUrl = `/album/${album._id}`;
-                if (isBook) detailUrl = `/book/${album._id}`;
-                if (isDvd)  detailUrl = `/dvd/${album._id}`;
-                if (isGame) detailUrl = `/game/${album._id}`;
+                let detailUrl = '/album/' + album._id;
+                if (isBook) detailUrl = '/book/' + album._id;
+                if (isDvd)  detailUrl = '/dvd/' + album._id;
+                if (isGame) detailUrl = '/game/' + album._id;
                 const formatKey = isGame ? (album.format || 'physical') : (isDvd ? album.format : (album.media_type || album.format));
                 let isAdvancedCD = false, advancedCDType = '';
                 if (settings && settings.modules && settings.modules.advancedCD && formatKey === 'cd' && album.format_type) {
