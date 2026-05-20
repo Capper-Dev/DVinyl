@@ -33,17 +33,16 @@
         </div>
 
         <div class="flex justify-center mt-3">
-            <button type="button" id="start-scan"
-                class="bg-black/5 dark:bg-white/5 hover:bg-primary-theme hover:text-white px-6 py-3 rounded-xl font-bold text-sm transition-all flex items-center gap-2 active:scale-95">
-                <i class="fa-solid fa-barcode"></i>
-                <%= t('add_dvd.btn_scan') %>
+            <button type="button" id="scan-trigger"
+                class="bg-black/5 dark:bg-white/5 hover:bg-primary-theme hover:text-white px-6 py-3 rounded-xl font-bold text-sm transition-all flex items-center gap-2 active:scale-95 disabled:opacity-50">
+                <i class="fa-solid fa-camera"></i>
+                <span><%= t('add_dvd.btn_scan') %></span>
             </button>
+            <input type="file" id="scan-file" accept="image/*" capture="environment" class="hidden">
         </div>
 
-        <div class="hidden mt-4" id="readerWrapper">
-            <div id="reader" class="rounded-2xl overflow-hidden"></div>
-            <p class="text-center text-xs opacity-40 mt-2">Hold barcode steady in the box</p>
-        </div>
+        <p id="scan-status" class="text-center text-sm mt-3 opacity-50"></p>
+        <div id="scan-decoder" class="hidden"></div>
     </form>
 
     <% if (locals.barcode_no_results) { %>
@@ -98,58 +97,6 @@
     <% } %>
 </div>
 
-<script>
-    const scanButton = document.getElementById('start-scan');
-    const readerWrapper = document.getElementById('readerWrapper');
-    const searchInput = document.querySelector('input[name="query"]');
-    const form = document.querySelector('form[action="<%= baseUrl %>/search-dvds"]');
-    let scanner = null;
-    let scanning = false;
-
-    scanButton.addEventListener('click', async () => {
-        if (scanning) {
-            await scanner.stop();
-            readerWrapper.classList.add('hidden');
-            scanning = false;
-            scanButton.innerHTML = '<i class="fa-solid fa-barcode"></i> <span><%= t("add_dvd.btn_scan") %></span>';
-            scanButton.classList.remove('bg-red-600', 'text-white');
-            scanButton.classList.add('bg-black/5', 'dark:bg-white/5');
-            return;
-        }
-
-        readerWrapper.classList.remove('hidden');
-        scanButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Starting...</span>';
-
-        scanner = new Html5Qrcode('reader');
-        try {
-            await scanner.start(
-                { facingMode: 'environment' },
-                { fps: 10, qrbox: { width: 280, height: 100 }, formatsToSupport: [
-                    Html5QrcodeSupportedFormats.EAN_13,
-                    Html5QrcodeSupportedFormats.EAN_8,
-                    Html5QrcodeSupportedFormats.UPC_A,
-                    Html5QrcodeSupportedFormats.UPC_E
-                ]},
-                (code) => {
-                    scanner.stop().then(() => {
-                        readerWrapper.classList.add('hidden');
-                        scanning = false;
-                        searchInput.value = code;
-                        form.submit();
-                    });
-                },
-                () => {}
-            );
-            scanning = true;
-            scanButton.innerHTML = '<i class="fa-solid fa-xmark"></i> <span>Stop</span>';
-            scanButton.classList.remove('bg-black/5', 'dark:bg-white/5');
-            scanButton.classList.add('bg-red-600', 'text-white');
-        } catch (err) {
-            readerWrapper.classList.add('hidden');
-            scanButton.innerHTML = '<i class="fa-solid fa-barcode"></i> <span><%= t("add_dvd.btn_scan") %></span>';
-            alert('Camera error: ' + err);
-        }
-    });
-</script>
+<script src="<%= baseUrl %>/js/barcode-capture.js"></script>
 
 <%- include('partials/footer') %>

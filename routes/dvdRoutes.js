@@ -34,6 +34,7 @@ router.post('/search-dvds', requireAuth, requireAdmin, async (req, res) => {
     let query = req.body.query.trim();
     let searchQuery = query;
     let barcodeScanned = '';
+    let barcodeYear = '';
 
     try {
         const tmdbApiKey = process.env.TMDB_API_KEY;
@@ -48,25 +49,18 @@ router.post('/search-dvds', requireAuth, requireAdmin, async (req, res) => {
             try {
                 const upcResponse = await axios.get(`https://api.upcitemdb.com/prod/trial/lookup?upc=${barcodeScanned}`);
                 if (upcResponse.data.items && upcResponse.data.items.length > 0) {
-                    searchQuery = upcResponse.data.items[0].title;
-                    searchQuery = searchQuery.replace(/DVD|Blu-ray|Blu Ray|Coffret|Edition/gi, '').trim();
+                    const upcItem = upcResponse.data.items[0];
+                    searchQuery = upcItem.title
+                        .replace(/\b(DVD|Blu-?ray|4K|UHD|Ultra HD|Coffret|Edition|Steelbook|Combo|Pack)\b/gi, '')
+                        .replace(/[\[\(].*?[\]\)]/g, '')
+                        .replace(/\s{2,}/g, ' ')
+                        .trim();
+                    const yearMatch = (upcItem.title + ' ' + (upcItem.description || '')).match(/\b(19|20)\d{2}\b/);
+                    if (yearMatch) barcodeYear = yearMatch[0];
                     resolvedFromBarcode = true;
                 }
             } catch (upcErr) {
                 console.error("[ERR] UPC Lookup:", upcErr.message);
-            }
-
-            if (!resolvedFromBarcode) {
-                try {
-                    const myMoviesRes = await axios.get(`https://c.mymovies.dk/DiscTitle/${barcodeScanned}`, { timeout: 5000 });
-                    if (myMoviesRes.data && myMoviesRes.data.Title) {
-                        searchQuery = myMoviesRes.data.Title;
-                        resolvedFromBarcode = true;
-                        console.log(`[INFO] mymovies.dk resolved barcode ${barcodeScanned} -> "${searchQuery}"`);
-                    }
-                } catch (mmErr) {
-                    console.error("[ERR] mymovies.dk lookup:", mmErr.message);
-                }
             }
 
             if (!resolvedFromBarcode) {
@@ -97,18 +91,33 @@ router.post('/search-dvds', requireAuth, requireAdmin, async (req, res) => {
             }
         }
 
-        const [page1, page2] = await Promise.all([
-            axios.get(`https://api.themoviedb.org/3/search/multi?api_key=${tmdbApiKey}&query=${encodeURIComponent(searchQuery)}&language=da-DK&page=1`),
-            axios.get(`https://api.themoviedb.org/3/search/multi?api_key=${tmdbApiKey}&query=${encodeURIComponent(searchQuery)}&language=da-DK&page=2`),
-        ]);
+        let results;
 
-        const allResults = [
-            ...(page1.data.results || []),
-            ...(page2.data.results || []),
-        ];
+        if (barcodeScanned) {
+            // Barcode resolved to a title — discs are movies. Use the
+            // movie-only endpoint with the release year to avoid the
+            // wall of sequels/spin-offs that search/multi returns.
+            const yearParam = barcodeYear ? `&primary_release_year=${barcodeYear}` : '';
+            const movieRes = await axios.get(
+                `https://api.themoviedb.org/3/search/movie?api_key=${tmdbApiKey}&query=${encodeURIComponent(searchQuery)}&language=da-DK&page=1${yearParam}`
+            );
+            results = (movieRes.data.results || [])
+                .map(item => formatTMDBItem({ ...item, media_type: 'movie' }));
+        } else {
+            const [page1, page2] = await Promise.all([
+                axios.get(`https://api.themoviedb.org/3/search/multi?api_key=${tmdbApiKey}&query=${encodeURIComponent(searchQuery)}&language=da-DK&page=1`),
+                axios.get(`https://api.themoviedb.org/3/search/multi?api_key=${tmdbApiKey}&query=${encodeURIComponent(searchQuery)}&language=da-DK&page=2`),
+            ]);
+            results = [...(page1.data.results || []), ...(page2.data.results || [])]
+                .filter(item => item.media_type === 'movie' || item.media_type === 'tv')
+                .map(formatTMDBItem);
+        }
 
-        const filteredResults = allResults.filter(item => item.media_type === 'movie' || item.media_type === 'tv');
-        const results = filteredResults.map(formatTMDBItem);
+        // Barcode + year is a precise identifier — if it pins down a single
+        // movie, skip the results grid and go straight to confirmation.
+        if (barcodeScanned && barcodeYear && results.length === 1) {
+            return res.redirect(`/confirm-dvd/movie/${results[0].tmdb_id}?barcode=${barcodeScanned}`);
+        }
 
         const barcodeNoResults = barcodeScanned && results.length === 0;
 

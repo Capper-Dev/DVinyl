@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(git -C F:/MainProjects/DVinyl add routes/collectionRoutes.js)",
-      "Bash(git -C F:/MainProjects/DVinyl commit -m \"fix: add error handling to collection routes\")"
+      "Bash(git -C F:/MainProjects/DVinyl commit -m \"fix: add error handling to collection routes\")",
+      "WebSearch",
+      "WebFetch(domain:c.mymovies.dk)"
     ]
   }
 }
