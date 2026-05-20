@@ -221,7 +221,7 @@
                             <label class="block text-xs font-bold uppercase tracking-wider opacity-60 mb-2">
                                 <i class="fa-solid fa-film mr-1"></i> <%= t('confirm_vinyl.field_genres') %>
                             </label>
-                            <input type="text" name="genres" 
+                            <input type="text" name="genres"
                                 placeholder="Action, Sci-Fi..."
                                 value="<%= typeof dvd !== 'undefined' ? (dvd.genres ? dvd.genres.join(', ') : '') : '' %>"
                                 class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary-theme outline-none transition-all">
@@ -230,11 +230,23 @@
                             <label class="block text-xs font-bold uppercase tracking-wider opacity-60 mb-2">
                                 <i class="fa-solid fa-tags mr-1"></i> <%= t('confirm_vinyl.field_styles') %>
                             </label>
-                            <input type="text" name="styles" 
+                            <input type="text" name="styles"
                                 placeholder="Cyberpunk, Noir..."
                                 value="<%= typeof dvd !== 'undefined' ? (dvd.styles ? dvd.styles.join(', ') : '') : '' %>"
                                 class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary-theme outline-none transition-all">
                         </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider opacity-60 mb-2">Collection</label>
+                        <select name="collection_id" class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-theme transition-all">
+                            <option value="">Uncategorized</option>
+                            <% if (typeof collections !== 'undefined') { %>
+                            <% collections.forEach(function(col) { %>
+                            <option value="<%= col._id %>"><%= col.name %></option>
+                            <% }) %>
+                            <% } %>
+                        </select>
                     </div>
 
                     <div class="pt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
