@@ -42,20 +42,50 @@ router.post('/search-dvds', requireAuth, requireAdmin, async (req, res) => {
 
         if (isBarcode) {
             barcodeScanned = query.replace(/[- ]/g, '');
+            let resolvedFromBarcode = false;
+
             try {
                 const upcResponse = await axios.get(`https://api.upcitemdb.com/prod/trial/lookup?upc=${barcodeScanned}`);
                 if (upcResponse.data.items && upcResponse.data.items.length > 0) {
                     searchQuery = upcResponse.data.items[0].title;
                     searchQuery = searchQuery.replace(/DVD|Blu-ray|Blu Ray|Coffret|Edition/gi, '').trim();
+                    resolvedFromBarcode = true;
                 }
             } catch (upcErr) {
                 console.error("[ERR] UPC Lookup:", upcErr.message);
             }
+
+            if (!resolvedFromBarcode) {
+                try {
+                    const eanResponse = await axios.get(
+                        `https://api.themoviedb.org/3/find/${barcodeScanned}?api_key=${tmdbApiKey}&external_source=ean_id&language=en-US`
+                    );
+                    const eanResults = [
+                        ...(eanResponse.data.movie_results || []),
+                        ...(eanResponse.data.tv_results || [])
+                    ];
+                    if (eanResults.length > 0) {
+                        const hit = eanResults[0];
+                        const filteredDirect = eanResults.map(item => ({
+                            ...formatTMDBItem({ ...item, media_type: item.title ? 'movie' : 'tv' })
+                        }));
+                        res.render('add-dvd', {
+                            results: filteredDirect,
+                            scanned_barcode: barcodeScanned,
+                            user: res.locals.user,
+                            currentType: 'add-dvd'
+                        });
+                        return;
+                    }
+                } catch (eanErr) {
+                    console.error("[ERR] TMDB EAN Lookup:", eanErr.message);
+                }
+            }
         }
 
         const [page1, page2] = await Promise.all([
-            axios.get(`https://api.themoviedb.org/3/search/multi?api_key=${tmdbApiKey}&query=${encodeURIComponent(searchQuery)}&language=fr-FR&page=1`),
-            axios.get(`https://api.themoviedb.org/3/search/multi?api_key=${tmdbApiKey}&query=${encodeURIComponent(searchQuery)}&language=fr-FR&page=2`),
+            axios.get(`https://api.themoviedb.org/3/search/multi?api_key=${tmdbApiKey}&query=${encodeURIComponent(searchQuery)}&language=en-US&page=1`),
+            axios.get(`https://api.themoviedb.org/3/search/multi?api_key=${tmdbApiKey}&query=${encodeURIComponent(searchQuery)}&language=en-US&page=2`),
         ]);
 
         const allResults = [
@@ -85,7 +115,7 @@ router.get('/confirm-dvd/:media_type/:tmdb_id', requireAuth, requireAdmin, async
 
     try {
         const tmdbApiKey = process.env.TMDB_API_KEY;
-        const url = `https://api.themoviedb.org/3/${mediaType}/${tmdbId}?api_key=${tmdbApiKey}&language=fr-FR&append_to_response=credits`;
+        const url = `https://api.themoviedb.org/3/${mediaType}/${tmdbId}?api_key=${tmdbApiKey}&language=en-US&append_to_response=credits`;
 
         const response = await axios.get(url);
         const data = response.data;
@@ -265,7 +295,7 @@ router.post('/api/dvd/:id/refresh-info', requireAuth, requireAdmin, async (req, 
 
         const tmdbApiKey = process.env.TMDB_API_KEY;
         const type = dvd.media_type === 'tv' ? 'tv' : 'movie';
-        const response = await axios.get(`https://api.themoviedb.org/3/${type}/${dvd.tmdb_id}?api_key=${tmdbApiKey}&language=fr-FR`);
+        const response = await axios.get(`https://api.themoviedb.org/3/${type}/${dvd.tmdb_id}?api_key=${tmdbApiKey}&language=en-US`);
 
         if (!response.data) {
             return res.status(404).json({ success: false, error: 'Not found on TMDB API' });

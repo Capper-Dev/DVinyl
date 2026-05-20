@@ -8,9 +8,9 @@ const settingsSchema = new mongoose.Schema({
     siteName: { type: String, default: 'DVinyl' },
     modules: {
         music:   { type: Boolean, default: true },
-        books:   { type: Boolean, default: false },
-        dvd:     { type: Boolean, default: false },
-        games:   { type: Boolean, default: false },
+        books:   { type: Boolean, default: true },
+        dvd:     { type: Boolean, default: true },
+        games:   { type: Boolean, default: true },
         advancedCD: { type: Boolean, default: false }
     },
     theme: {
@@ -20,9 +20,9 @@ const settingsSchema = new mongoose.Schema({
         dvd:     { type: Object, default: themeSchema },
         games:   { type: Object, default: themeSchema }
     },
-    navbarShortcuts: { 
-        type: [String], 
-        default: ['global_home', 'music_vinyl', 'music_cd', 'music_cassette', 'global_wishlist']
+    navbarShortcuts: {
+        type: [String],
+        default: ['global_home', 'books', 'dvd', 'games', 'global_wishlist']
     },
     statsWidgets: { 
         type: [String], 

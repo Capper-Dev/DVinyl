@@ -10,8 +10,8 @@ module.exports = async (req, res, next) => {
         if (!settings) {
             settings = {
                 siteName: 'DVinyl',
-                modules: { music: true, books: false, dvd: false },
-                navbarShortcuts: ['global_home', 'music_vinyl', 'music_cd', 'music_cassette', 'global_wishlist'],
+                modules: { music: true, books: true, dvd: true, games: true },
+                navbarShortcuts: ['global_home', 'books', 'dvd', 'games', 'global_wishlist'],
                 statsWidgets: ['total', 'vinyl', 'cd', 'cassette', 'artist'],
                 theme: {
                     home: { preset: 'default' },
@@ -22,19 +22,19 @@ module.exports = async (req, res, next) => {
             };
         } else {
             if (!settings.navbarShortcuts) {
-                settings.navbarShortcuts = ['global_home', 'music_vinyl', 'music_cd', 'music_cassette', 'global_wishlist'];
+                settings.navbarShortcuts = ['global_home', 'books', 'dvd', 'games', 'global_wishlist'];
             }
             if (!settings.statsWidgets) {
                 settings.statsWidgets = ['total', 'vinyl', 'cd', 'cassette', 'artist'];
             }
         }
 
-        settings.navbarShortcuts = settings.navbarShortcuts || ['global_home', 'music_vinyl', 'music_cd', 'music_cassette', 'global_wishlist'];
+        settings.navbarShortcuts = settings.navbarShortcuts || ['global_home', 'books', 'dvd', 'games', 'global_wishlist'];
         settings.statsWidgets = settings.statsWidgets || ['total', 'vinyl', 'cd', 'cassette', 'artist'];
 
         res.locals.settings = settings;
 
-        res.locals.currentLng = res.locals.user?.language || req.language || 'fr';
+        res.locals.currentLng = 'en';
         res.locals.isDark = res.locals.user ? (res.locals.user.theme === 'dark') : true;
 
         const fullPath = req.path.toLowerCase();
@@ -80,7 +80,7 @@ module.exports = async (req, res, next) => {
     } catch (err) {
         console.error("[ERR] SettingsMiddleware:", err);
         res.locals.isDark = true;
-        res.locals.currentLng = 'fr';
+        res.locals.currentLng = 'en';
         res.locals.settings = { theme: { home: { preset: 'default' } } };
         next();
     }

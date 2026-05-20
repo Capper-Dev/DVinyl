@@ -399,7 +399,7 @@ router.get('/api/search-image-universal', requireAuth, requireAdmin, async (req,
                 // TMDB fallback
                 const tmdbApiKey = process.env.TMDB_API_KEY;
                 if (tmdbApiKey) {
-                    const tmdbUrl = `https://api.themoviedb.org/3/search/multi?api_key=${tmdbApiKey}&query=${encodeURIComponent(q)}&language=fr-FR`;
+                    const tmdbUrl = `https://api.themoviedb.org/3/search/multi?api_key=${tmdbApiKey}&query=${encodeURIComponent(q)}&language=en-US`;
                     const tmdbRes = await axios.get(tmdbUrl, axiosConfig);
                     const tmdbUrls = (tmdbRes.data.results || [])
                         .filter(item => item.poster_path)
@@ -429,7 +429,7 @@ router.get('/api/search-image-universal', requireAuth, requireAdmin, async (req,
                 return res.status(500).json({ error: "Missing TMDB API Key" });
             }
 
-            const tmdbUrl = `https://api.themoviedb.org/3/search/multi?api_key=${tmdbApiKey}&query=${encodeURIComponent(q)}&language=fr-FR`;
+            const tmdbUrl = `https://api.themoviedb.org/3/search/multi?api_key=${tmdbApiKey}&query=${encodeURIComponent(q)}&language=en-US`;
             const response = await axios.get(tmdbUrl, axiosConfig);
 
             const results = (response.data.results || [])
@@ -772,7 +772,7 @@ router.post('/refresh-all-dvds-metadata', requireAuth, requireAdmin, async (req,
                     }
 
                     const type = dvd.media_type === 'tv' ? 'tv' : 'movie';
-                    const response = await axios.get(`https://api.themoviedb.org/3/${type}/${dvd.tmdb_id}?api_key=${tmdbKey}&language=fr-FR`);
+                    const response = await axios.get(`https://api.themoviedb.org/3/${type}/${dvd.tmdb_id}?api_key=${tmdbKey}&language=en-US`);
 
                     if (response.data) {
                         const genres = (response.data.genres || []).map(g => g.name);

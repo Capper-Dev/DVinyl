@@ -48,20 +48,16 @@ const io = new Server(server, {
 
 
 i18next
-  .use(i18nMiddleware.LanguageDetector) // Detect language via query/cookie/header
   .init({
-    fallbackLng: 'fr',
-    preload: ['fr', 'en', 'es', 'it', 'de'],
+    lng: 'en',
+    fallbackLng: 'en',
+    preload: ['en', 'fr', 'es', 'it', 'de'],
     resources: {
       en: { translation: require('./locales/en.json') },
       fr: { translation: require('./locales/fr.json') },
       es: { translation: require('./locales/es.json') },
       it: { translation: require('./locales/it.json') },
       de: { translation: require('./locales/de.json') }
-    },
-    detection: {
-      order: ['querystring', 'cookie', 'header'], // detection order
-      caches: ['cookie']
     }
   });
 
