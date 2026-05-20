@@ -21,7 +21,8 @@ const itemSchema = new mongoose.Schema({
   styles: [String],
   barcode: { type: String, default: '' },
   barcode_locked: { type: Boolean, default: false },
-  added_at: { type: Date, default: Date.now }
+  added_at: { type: Date, default: Date.now },
+  collection: { type: mongoose.Schema.Types.ObjectId, ref: 'Collection', default: null }
 
 }, options);
 
