@@ -135,7 +135,7 @@
     
   <div id="page-loader" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center transition-opacity duration-500">
     <div class="relative">
-        <i class="fa-solid fa-compact-disc fa-spin text-6xl text-primary-theme drop-shadow-md"></i>
+        <i class="fa-solid fa-compact-disc fa-spin text-4xl opacity-40 text-[var(--text-main)]"></i>
     </div>
   </div>
 
@@ -148,58 +148,10 @@
       </a>
 
       <div class="flex items-center md:order-2 gap-4">
-        
-        <% if (locals.user) { %>
-        <button type="button" class="flex text-sm bg-black/5 dark:bg-white/10 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" id="user-menu-button" data-dropdown-toggle="user-dropdown">
-          <img class="w-8 h-8 rounded-full object-cover" src="<%= baseUrl + user.img %>" alt="user photo">
-        </button>
-  
-        <div class="z-50 hidden my-4 text-base list-none card-theme rounded-lg shadow-xl min-w-[200px]" id="user-dropdown">          
-          <div class="flex justify-center py-4 rounded-t-lg">
-            <img src="<%= baseUrl + user.img %>" alt="user photo" class="w-20 h-20 rounded-full border-4 border-white dark:border-white/10 object-cover shadow-lg">
-          </div>
-       
-          <div class="divide-y divide-black/5 dark:divide-white/10">
-            <div class="px-4 pt-1 pb-3 text-center">
-              <span class="block text-sm font-bold opacity-90 text-[var(--text-main)]"><%= user.username %></span>
-              <span class="block text-xs opacity-60 truncate text-[var(--text-sub)]"><%= user.email %></span>
-            </div>
-            <ul class="py-2">
-              <% if (user.isAdmin) { %>
-              <li>
-                <a href="<%= baseUrl %>/admin" class="block px-4 py-2 text-sm text-[var(--text-main)] hover:bg-black/5 dark:hover:bg-white/10 mx-2 rounded transition flex items-center gap-3">
-                  <i class="fa-solid fa-crown w-5 text-center opacity-70"></i> <span><%= t('nav.admin') %></span>
-                </a>
-              </li>
-              <li>
-                <a href="<%= baseUrl %>/admin/personnalisation" class="block px-4 py-2 text-sm text-[var(--text-main)] hover:bg-black/5 dark:hover:bg-white/10 mx-2 rounded transition flex items-center gap-3">
-                  <i class="fa-solid fa-wand-magic-sparkles w-5 text-center opacity-70"></i> <span>Personnalisation</span>
-                </a>
-              </li>
-              <% } %>
-              <li>
-                <a href="<%= baseUrl %>/settings" class="block px-4 py-2 text-sm text-[var(--text-main)] hover:bg-black/5 dark:hover:bg-white/10 mx-2 rounded transition flex items-center gap-3">
-                  <i class="fa-solid fa-user-gear w-5 text-center opacity-70"></i> <span><%= t('nav.settings') %></span>
-                </a>
-              </li>
-              <li>
-                <button id="theme-toggle" class="w-[calc(100%-1rem)] text-left block px-4 py-2 text-sm text-[var(--text-main)] hover:bg-black/5 dark:hover:bg-white/10 mx-2 rounded transition flex items-center gap-3">
-                    <i id="theme-icon" class="fa-solid fa-moon w-5 text-center"></i> 
-                    <span id="theme-text"><%= isDark ? t('nav.theme_light') : t('nav.theme_dark') %></span>
-                </button>
-              </li>
 
-              <li class="pt-2 border-t border-black/5 dark:border-white/10 mt-2">
-                <a href="<%= baseUrl %>/logout" class="block px-4 py-2 text-sm font-bold text-center text-white bg-red-500 hover:bg-red-600 rounded-md mx-4 mb-2 transition-colors shadow-sm">
-                  <%= t('nav.logout') %>
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <% } else { %>
-          <a href="<%= baseUrl %>/login" class="text-sm font-bold text-primary-theme hover:underline"><%= t('nav.login') %></a>
-        <% } %>
+        <button id="theme-toggle" class="p-2 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 transition text-[var(--text-main)]">
+            <i id="theme-icon" class="fa-solid fa-moon w-4 text-center"></i>
+        </button>
 
         <button data-collapse-toggle="navbar-user" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm opacity-70 rounded-lg md:hidden hover:bg-black/5 dark:hover:bg-white/10 focus:outline-none text-[var(--text-main)]">
           <i class="fa-solid fa-bars text-xl"></i>
@@ -259,33 +211,22 @@
 
   <script>
     document.body.classList.add('js-ready');
-    const navTranslations = {
-        themeDark: "<%= t('nav.theme_dark') %>",
-        themeLight: "<%= t('nav.theme_light') %>"
-    };
-    
+
     document.addEventListener('DOMContentLoaded', () => {
         const themeToggleBtn = document.getElementById('theme-toggle');
         const themeIcon = document.getElementById('theme-icon');
-        const themeText = document.getElementById('theme-text');
         const htmlElement = document.documentElement;
-  
+
         function updateButtonVisuals() {
             const isDark = htmlElement.classList.contains('dark');
-            if(themeIcon && themeText) {
-                if (isDark) {
-                    themeIcon.className = 'fa-solid fa-sun w-5 text-center text-yellow-400';
-                    themeText.textContent = navTranslations.themeLight;
-                } else {
-                    themeIcon.className = 'fa-solid fa-moon w-5 text-center text-indigo-500';
-                    themeText.textContent = navTranslations.themeDark;
-                }
+            if (themeIcon) {
+                themeIcon.className = isDark ? 'fa-solid fa-sun w-4 text-center' : 'fa-solid fa-moon w-4 text-center';
             }
         }
-        
+
         updateButtonVisuals();
-  
-        if(themeToggleBtn){
+
+        if (themeToggleBtn) {
             themeToggleBtn.addEventListener('click', async () => {
                 htmlElement.classList.toggle('dark');
                 updateButtonVisuals();
@@ -296,18 +237,26 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ theme: newTheme })
                     });
-                } catch (e) { console.error('Erreur thème', e); }
+                } catch (e) {}
             });
         }
     });
-    
+
     window.addEventListener('load', () => {
         const loader = document.getElementById('page-loader');
-        if(loader) {
+        if (loader) {
             loader.style.opacity = '0';
             setTimeout(() => { loader.remove(); }, 500);
         }
     });
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('<%= baseUrl %>/sw.js')
+                .then(reg => console.log('[SW] saved', reg.scope))
+                .catch(err => console.warn('[SW] error:', err));
+        });
+    }
   </script>
 
   <main class="p-6">

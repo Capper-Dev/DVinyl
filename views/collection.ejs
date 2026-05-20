@@ -29,6 +29,14 @@
                             </a>
                             <% } %>
 
+                        <% if (['dvd', 'games', 'books'].includes(currentType)) { %>
+                            <button onclick="document.getElementById('new-collection-modal').classList.remove('hidden')"
+                                    class="flex-shrink-0 w-10 h-10 md:w-auto md:px-4 card-theme hover:text-primary-theme hover:border-primary-theme rounded-lg transition-all shadow-sm flex items-center justify-center gap-2 group">
+                                <i class="fa-solid fa-folder-plus group-hover:scale-110 transition-transform"></i>
+                                <span class="hidden md:inline text-xs font-bold uppercase tracking-widest">New Collection</span>
+                            </button>
+                        <% } %>
+
                                 <% if (currentType==='music' ) { %>
                                     <button onclick="openEstimateModal()"
                                         class="flex-shrink-0 w-10 h-10 md:w-auto md:px-4 card-theme hover:text-primary-theme hover:border-primary-theme rounded-lg transition-all shadow-sm flex items-center justify-center gap-2 group"
@@ -272,6 +280,25 @@
             </div>
         </div>
 
+        <% if (typeof collectionsForType !== 'undefined' && collectionsForType.length > 0) { %>
+        <div class="flex flex-wrap gap-2 mb-4">
+            <a href="?type=<%= currentType %>"
+               class="px-3 py-1 rounded-full text-xs font-semibold transition <%= !activeCollectionId ? 'bg-primary-theme text-white' : 'card-theme opacity-70 hover:opacity-100' %>">
+                All
+            </a>
+            <a href="?type=<%= currentType %>&collection=uncategorized"
+               class="px-3 py-1 rounded-full text-xs font-semibold transition <%= activeCollectionId === 'uncategorized' ? 'bg-primary-theme text-white' : 'card-theme opacity-70 hover:opacity-100' %>">
+                Uncategorized
+            </a>
+            <% collectionsForType.forEach(function(col) { %>
+            <a href="?type=<%= currentType %>&collection=<%= col._id %>"
+               class="px-3 py-1 rounded-full text-xs font-semibold transition <%= activeCollectionId && activeCollectionId.toString() === col._id.toString() ? 'bg-primary-theme text-white' : 'card-theme opacity-70 hover:opacity-100' %>">
+                <%= col.name %>
+            </a>
+            <% }) %>
+        </div>
+        <% } %>
+
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6" id="albumGrid">
             <% albums.forEach(album=> { %>
                 <% const isBook=album.kind==='Book' ; const isDvd=album.kind==='Dvd' || (album.tmdb_id !==undefined &&
@@ -327,7 +354,7 @@
                                 <% if(album.variant_color) { %>
                                     <div class="flex items-center gap-1">
                                         <span
-                                            class="w-2 h-2 rounded-full bg-primary-theme inline-block flex-shrink-0"></span>
+                                            class="w-2 h-2 rounded-full bg-[var(--text-main)] opacity-40 inline-block flex-shrink-0"></span>
                                         <span class="text-[10px] opacity-60 truncate max-w-full">
                                             <%= album.variant_color %>
                                         </span>
@@ -828,6 +855,38 @@
 
 
     </script>
+    <div id="new-collection-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+        <div class="card-theme rounded-xl p-6 w-full max-w-sm shadow-2xl">
+            <h3 class="text-base font-bold mb-4">New Collection</h3>
+            <input id="new-collection-name" type="text" placeholder="e.g. Casper's Games"
+                   class="w-full card-theme border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-sm mb-4 focus:outline-none">
+            <div class="flex gap-2 justify-end">
+                <button onclick="document.getElementById('new-collection-modal').classList.add('hidden')"
+                        class="px-4 py-2 text-sm rounded-lg card-theme opacity-70 hover:opacity-100 transition">Cancel</button>
+                <button onclick="createCollection()"
+                        class="px-4 py-2 text-sm font-semibold rounded-lg bg-primary-theme text-white hover:opacity-90 transition">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    async function createCollection() {
+        const name = document.getElementById('new-collection-name').value.trim();
+        const type = '<%= currentType === "dvd" ? "dvd" : currentType === "games" ? "game" : "book" %>';
+        if (!name) return;
+        const res = await fetch('<%= baseUrl %>/api/collections', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, type })
+        });
+        if (res.ok) {
+            window.location.reload();
+        } else {
+            alert('Failed to create collection. Please try again.');
+        }
+    }
+    </script>
+
     <%- include('partials/footer') %>
 </body>
 </html>

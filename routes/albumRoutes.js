@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const axios = require('axios');
+const mongoose = require('mongoose');
 const Album = require('../models/Vinyl');
 
 const Item = require('../models/Item');
@@ -10,6 +11,7 @@ const { requireAuth, requireAdmin } = require('../middleware/authMiddleware'); /
 const User = require('../models/User');
 const { STANDARD_FORMAT_TERMS } = require('../config/constants');
 const { applyVisibilityFilter } = require('../utils/visibilityHelper');
+const Collection = require('../models/Collection');
 
 async function getAdminId() {
     const admin = await User.findOne({ isAdmin: true }).select('_id');
@@ -220,6 +222,21 @@ router.get('/collection', requireAuth, async (req, res) => {
         }
 
 
+        const typeToCollectionType = { dvd: 'dvd', games: 'game', books: 'book' };
+        const collectionType = typeToCollectionType[type];
+        let collectionsForType = [];
+        let activeCollectionId = req.query.collection || null;
+
+        if (collectionType) {
+            collectionsForType = await Collection.find({ type: collectionType }).sort({ createdAt: 1 }).lean();
+        }
+
+        if (activeCollectionId === 'uncategorized') {
+            query.collection = null;
+        } else if (activeCollectionId && mongoose.isValidObjectId(activeCollectionId)) {
+            query.collection = activeCollectionId;
+        }
+
         // Wrap conditions if filterMode is 'hide'
         const filterMode = req.query.filterMode || 'show';
         if (filterMode === 'hide' && conditions.length > 0) {
@@ -339,6 +356,8 @@ router.get('/collection', requireAuth, async (req, res) => {
                 return [...new Set([...gBase, ...gArray, ...sArray])].filter(Boolean).sort();
             })(),
             standardFormatTerms: STANDARD_FORMAT_TERMS,
+            collectionsForType,
+            activeCollectionId,
         });
 
     } catch (err) {
