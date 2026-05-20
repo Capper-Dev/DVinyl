@@ -320,7 +320,7 @@
                 if (isGame) detailUrl = `/game/${album._id}`;
                 const formatKey = isGame ? (album.format || 'physical') : (isDvd ? album.format : (album.media_type || album.format));
                 let isAdvancedCD = false, advancedCDType = '';
-                if (settings?.modules?.advancedCD && formatKey === 'cd' && album.format_type) {
+                if (settings && settings.modules && settings.modules.advancedCD && formatKey === 'cd' && album.format_type) {
                     if (album.format_type.toLowerCase().includes('sacd')) { isAdvancedCD = true; advancedCDType = 'sacd'; }
                     else if (album.format_type.toLowerCase().includes('cdr')) { isAdvancedCD = true; advancedCDType = 'cdr'; }
                 }
