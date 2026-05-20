@@ -30,7 +30,7 @@ services:
     container_name: dvinyl_db
     restart: unless-stopped
     volumes:
-      - ./mongo_data:/data/db
+      - mongo_data:/data/db
     networks:
       - dvinyl_net
 
@@ -46,3 +46,6 @@ services:
 
 networks:
   dvinyl_net:
+
+volumes:
+  mongo_data:
