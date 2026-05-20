@@ -1,4 +1,5 @@
 <%- include('partials/header') %>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
 <div class="max-w-screen-lg mx-auto pb-20 px-4">
     
@@ -39,31 +40,10 @@
             </button>
         </div>
 
-        <div class="hidden mt-6" id="readerWrapper">
-            <div class="relative rounded-2xl overflow-hidden shadow-lg border border-black/10 dark:border-white/10 bg-black" style="aspect-ratio:4/3">
-                <video id="scanVideo" class="w-full h-full object-cover" autoplay playsinline muted></video>
-                <div class="absolute inset-0 pointer-events-none flex items-center justify-center">
-                    <div class="w-64 h-24 relative">
-                        <div class="absolute inset-0 border-2 border-primary-theme/50 rounded-lg"></div>
-                        <span class="absolute -top-px -left-px w-5 h-5 border-t-2 border-l-2 border-primary-theme rounded-tl"></span>
-                        <span class="absolute -top-px -right-px w-5 h-5 border-t-2 border-r-2 border-primary-theme rounded-tr"></span>
-                        <span class="absolute -bottom-px -left-px w-5 h-5 border-b-2 border-l-2 border-primary-theme rounded-bl"></span>
-                        <span class="absolute -bottom-px -right-px w-5 h-5 border-b-2 border-r-2 border-primary-theme rounded-br"></span>
-                        <div id="scanLine" class="absolute left-0 right-0 h-0.5 bg-primary-theme shadow-lg shadow-primary-theme/60" style="animation: scanMove 1.8s ease-in-out infinite;"></div>
-                    </div>
-                </div>
-                <button type="button" id="stop-scan" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/80 transition">
-                    <i class="fa-solid fa-xmark text-sm"></i>
-                </button>
-            </div>
-            <p class="text-center text-xs opacity-40 mt-2">Point camera at barcode</p>
+        <div class="hidden mt-4" id="readerWrapper">
+            <div id="reader" class="rounded-2xl overflow-hidden"></div>
+            <p class="text-center text-xs opacity-40 mt-2">Hold barcode steady in the box</p>
         </div>
-        <style>
-            @keyframes scanMove {
-                0%, 100% { top: 10%; opacity: 0.5; }
-                50% { top: 85%; opacity: 1; }
-            }
-        </style>
     </form>
 
     <% if (locals.results) { %>
@@ -111,70 +91,56 @@
 
 <script>
     const scanButton = document.getElementById('start-scan');
-    const stopButton = document.getElementById('stop-scan');
     const readerWrapper = document.getElementById('readerWrapper');
-    const video = document.getElementById('scanVideo');
     const searchInput = document.querySelector('input[name="query"]');
     const form = document.querySelector('form[action="<%= baseUrl %>/search-books"]');
-    let stream = null;
-    let scanInterval = null;
-    const BARCODE_FORMATS = ['ean_13', 'ean_8', 'upc_a', 'upc_e'];
+    let scanner = null;
+    let scanning = false;
 
-    async function startScanner() {
+    scanButton.addEventListener('click', async () => {
+        if (scanning) {
+            await scanner.stop();
+            readerWrapper.classList.add('hidden');
+            scanning = false;
+            scanButton.innerHTML = '<i class="fa-solid fa-barcode"></i> <span><%= t("add_book.btn_scan") %></span>';
+            scanButton.classList.remove('bg-red-600', 'text-white');
+            scanButton.classList.add('bg-black/5', 'dark:bg-white/5');
+            return;
+        }
+
         readerWrapper.classList.remove('hidden');
-        scanButton.disabled = true;
         scanButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Starting...</span>';
 
+        scanner = new Html5Qrcode('reader');
         try {
-            stream = await navigator.mediaDevices.getUserMedia({
-                video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } }
-            });
-            video.srcObject = stream;
-            await video.play();
-
-            const track = stream.getVideoTracks()[0];
-            if (track.applyConstraints) {
-                track.applyConstraints({ advanced: [{ focusMode: 'continuous' }] }).catch(() => {});
-            }
-
-            scanButton.innerHTML = '<i class="fa-solid fa-barcode"></i> <span>Scanning...</span>';
-
-            if (window.BarcodeDetector) {
-                const detector = new BarcodeDetector({ formats: BARCODE_FORMATS });
-                scanInterval = setInterval(async () => {
-                    try {
-                        const codes = await detector.detect(video);
-                        if (codes.length > 0) onBarcodeFound(codes[0].rawValue);
-                    } catch (e) {}
-                }, 200);
-            } else {
-                stopScanner();
-                alert('Barcode scanning not supported in this browser. Please type the barcode manually.');
-            }
+            await scanner.start(
+                { facingMode: 'environment' },
+                { fps: 10, qrbox: { width: 280, height: 100 }, formatsToSupport: [
+                    Html5QrcodeSupportedFormats.EAN_13,
+                    Html5QrcodeSupportedFormats.EAN_8,
+                    Html5QrcodeSupportedFormats.UPC_A,
+                    Html5QrcodeSupportedFormats.UPC_E
+                ]},
+                (code) => {
+                    scanner.stop().then(() => {
+                        readerWrapper.classList.add('hidden');
+                        scanning = false;
+                        searchInput.value = code;
+                        form.submit();
+                    });
+                },
+                () => {}
+            );
+            scanning = true;
+            scanButton.innerHTML = '<i class="fa-solid fa-xmark"></i> <span>Stop</span>';
+            scanButton.classList.remove('bg-black/5', 'dark:bg-white/5');
+            scanButton.classList.add('bg-red-600', 'text-white');
         } catch (err) {
-            stopScanner();
-            alert('Camera error: ' + err.message);
+            readerWrapper.classList.add('hidden');
+            scanButton.innerHTML = '<i class="fa-solid fa-barcode"></i> <span><%= t("add_book.btn_scan") %></span>';
+            alert('Camera error: ' + err);
         }
-    }
-
-    function stopScanner() {
-        clearInterval(scanInterval);
-        scanInterval = null;
-        if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
-        video.srcObject = null;
-        readerWrapper.classList.add('hidden');
-        scanButton.disabled = false;
-        scanButton.innerHTML = '<i class="fa-solid fa-barcode"></i> <span><%= t("add_book.btn_scan") %></span>';
-    }
-
-    function onBarcodeFound(code) {
-        stopScanner();
-        searchInput.value = code;
-        form.submit();
-    }
-
-    scanButton.addEventListener('click', startScanner);
-    stopButton.addEventListener('click', stopScanner);
+    });
 </script>
 
 <%- include('partials/footer') %>
