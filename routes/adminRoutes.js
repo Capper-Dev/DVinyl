@@ -317,8 +317,10 @@ router.get('/api/search-collection', requireAuth, requireAdmin, async (req, res)
         const regex = new RegExp(q, 'i');
         const items = await Item.find({
             owner: adminId,
-            kind: { $in: ['Dvd', 'Game'] },
-            $or: [{ title: regex }, { director: regex }]
+            $and: [
+                { $or: [{ kind: 'Dvd' }, { kind: 'Game' }] },
+                { $or: [{ title: regex }, { director: regex }] }
+            ]
         }).limit(10).select('_id title director kind cover_image format format_type platform media_type').lean();
 
         res.json(items);

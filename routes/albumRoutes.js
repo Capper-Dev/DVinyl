@@ -242,7 +242,7 @@ router.get('/collection', requireAuth, async (req, res) => {
         };
 
         const artistList = await (async () => {
-            const baseQuery = { owner: adminId, in_wishlist: false, kind: { $in: ['Dvd', 'Game'] } };
+            const baseQuery = { owner: adminId, in_wishlist: false, $or: [{ kind: 'Dvd' }, { kind: 'Game' }] };
             if (!type || type === 'all') {
                 const [directors, developers] = await Promise.all([
                     Item.distinct('director', { ...baseQuery, director: { $nin: ['', null] } }),
@@ -275,7 +275,7 @@ router.get('/collection', requireAuth, async (req, res) => {
 
             activeFilters: filterMap[type] || [],
             artistList,
-            locations: await Item.distinct('location', { owner: adminId, kind: { $in: ['Dvd', 'Game'] } }),
+            locations: await Item.distinct('location', { owner: adminId, $or: [{ kind: 'Dvd' }, { kind: 'Game' }] }),
             genres: await (async () => {
                 if (!type || type === 'all') return [];
                 const kind = { dvd: 'Dvd', games: 'Game' }[type];

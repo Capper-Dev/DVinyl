@@ -12,7 +12,7 @@
  */
 function applyVisibilityFilter(query, isAdmin, settings) {
     if (!query.$and) query.$and = [];
-    query.$and.push({ kind: { $in: ['Dvd', 'Game'] } });
+    query.$and.push({ $or: [{ kind: 'Dvd' }, { kind: 'Game' }] });
 
     if (!settings || !settings.visibility) {
         return;
