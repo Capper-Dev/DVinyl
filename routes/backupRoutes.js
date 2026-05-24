@@ -99,11 +99,8 @@ router.post('/import', async (req, res) => {
         }
 
         if (data.albums && data.albums.length > 0) {
-            const cleanAlbums = data.albums.map(album => {
-                if (!album.kind) return { ...album, kind: 'Music' };
-                return album;
-            });
-            await Item.insertMany(cleanAlbums);
+            const cleanAlbums = data.albums.filter(album => album.kind === 'Dvd' || album.kind === 'Game');
+            if (cleanAlbums.length > 0) await Item.insertMany(cleanAlbums);
         }
 
         if (data.logs && data.logs.length > 0) {

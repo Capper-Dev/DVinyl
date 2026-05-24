@@ -11,6 +11,9 @@
  * @param {Object} settings - The application settings.
  */
 function applyVisibilityFilter(query, isAdmin, settings) {
+    if (!query.$and) query.$and = [];
+    query.$and.push({ kind: { $in: ['Dvd', 'Game'] } });
+
     if (!settings || !settings.visibility) {
         return;
     }

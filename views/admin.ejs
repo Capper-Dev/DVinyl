@@ -39,11 +39,8 @@
 
                 <form action="<%= baseUrl %>/admin/modules/save" method="POST" class="space-y-6">
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                        <% const mods=[ {key: 'music' , label: 'Musik', icon: 'fa-music' , needsKey:
-                            false}, {key: 'books' , label: 'Bøger', icon: 'fa-book' , needsKey: true},
-                            {key: 'dvd' , label: "DVD'er", icon: 'fa-film' , needsKey: true}, {key: 'games'
-                            , label: 'Videospil', icon: 'fa-gamepad' , needsKey: true}, {key: 'advancedCD'
-                            , label: 'Aktivér specifikke formater (SACD, CDr)', icon: 'fa-compact-disc' , needsKey: false} ] %>
+                        <% const mods=[ {key: 'dvd' , label: "DVD'er", icon: 'fa-film' , needsKey: true},
+                            {key: 'games' , label: 'Videospil', icon: 'fa-gamepad' , needsKey: true} ] %>
                             <% mods.forEach((mod)=> { %>
                                 <div class="flex flex-col gap-2">
                                     <label
@@ -244,82 +241,6 @@
 
                 <section>
                     <div class="flex items-center gap-4 mb-6">
-                        <h2 class="text-xl font-bold flex items-center gap-2 transition-colors whitespace-nowrap">
-                            <i class="fa-solid fa-cloud-arrow-down text-primary-theme"></i>
-                            Import fra eksterne tjenester
-                        </h2>
-                        <div class="flex-grow border-t border-black/10 dark:border-white/10 transition-colors"></div>
-                    </div>
-                    <p class="text-sm opacity-50 -mt-3 mb-6">
-                        Importér din samling fra dine foretrukne tjenester.
-                    </p>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                        <div class="card-theme rounded-3xl p-6 md:p-8 shadow-sm transition-colors">
-                            <div class="flex flex-col gap-4">
-                                <div class="flex items-center gap-3">
-                                    <div
-                                        class="w-10 h-10 rounded-xl bg-black/5 dark:bg-white/5 flex items-center justify-center shrink-0">
-                                        <i class="fa-solid fa-record-vinyl text-primary-theme"></i>
-                                    </div>
-                                    <div>
-                                        <h3 class="font-bold">
-                                            Discogs-import
-                                        </h3>
-                                        <p class="text-xs opacity-50">
-                                            Importér din Discogs-samling eller ønskeliste
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="flex flex-wrap gap-3 pt-2 border-t border-black/5 dark:border-white/5">
-                                    <button onclick="openImportModal('collection')"
-                                        class="flex-1 bg-black/5 dark:bg-white/5 hover:bg-primary-theme hover:text-white px-4 py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2">
-                                        <i class="fa-solid fa-record-vinyl"></i>
-                                        Importér samling
-                                    </button>
-                                    <button onclick="openImportModal('wishlist')"
-                                        class="flex-1 bg-black/5 dark:bg-white/5 hover:bg-primary-theme hover:text-white px-4 py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2">
-                                        <i class="fa-solid fa-heart"></i>
-                                        Importér ønskeliste
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <% if (settings.modules.books) { %>
-                            <div class="card-theme rounded-3xl p-6 md:p-8 shadow-sm transition-colors">
-                                <div class="flex flex-col gap-4">
-                                    <div class="flex items-center gap-3">
-                                        <div
-                                            class="w-10 h-10 rounded-xl bg-[#553B08]/10 flex items-center justify-center shrink-0">
-                                            <i class="fa-solid fa-book-open text-[#553B08] dark:text-yellow-600"></i>
-                                        </div>
-                                        <div>
-                                            <h3 class="font-bold">
-                                                GoodReads
-                                            </h3>
-                                            <p class="text-xs opacity-50">
-                                                Importér dit GoodReads-bibliotek
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div class="pt-2 border-t border-black/5 dark:border-white/5">
-                                        <button onclick="toggleModal('importGoodreadsModal')"
-                                            class="w-full bg-black/5 dark:bg-white/5 hover:bg-[#553B08] dark:hover:bg-yellow-700 hover:text-white px-4 py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2">
-                                            <i class="fa-solid fa-rss"></i>
-                                            Importér CSV
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <% } %>
-
-                    </div>
-                </section>
-
-                <section>
-                    <div class="flex items-center gap-4 mb-6">
                         <h2 class="text-lg sm:text-xl font-bold flex items-center gap-2 whitespace-nowrap">
                             <i class="fa-solid fa-clock-rotate-left text-red-500"></i>
                             Slet seneste elementer
@@ -341,24 +262,16 @@
                                 </label>
                                 <select id="deleteKind"
                                     class="bg-black/5 dark:bg-white/5 border border-transparent text-gray-900 dark:text-white text-sm rounded-lg focus:ring-primary-theme focus:border-primary-theme block w-full p-3 transition-colors outline-none cursor-pointer">
-                                    <option class="bg-white dark:bg-[#1a1a1a]" value="Music">
-                                        Musik
-                                    </option>
-                                    <% if (settings.modules.books) { %>
-                                        <option class="bg-white dark:bg-[#1a1a1a]" value="Book">
-                                            Bøger
+                                    <% if (settings.modules.dvd) { %>
+                                        <option class="bg-white dark:bg-[#1a1a1a]" value="Dvd">
+                                            DVD'er
                                         </option>
-                                        <% } %>
-                                            <% if (settings.modules.dvd) { %>
-                                                <option class="bg-white dark:bg-[#1a1a1a]" value="Dvd">
-                                                    DVD'er
-                                                </option>
-                                                <% } %>
-                                            <% if (settings.modules.games) { %>
-                                                <option class="bg-white dark:bg-[#1a1a1a]" value="Game">
-                                                    Videospil
-                                                </option>
-                                            <% } %>
+                                    <% } %>
+                                    <% if (settings.modules.games) { %>
+                                        <option class="bg-white dark:bg-[#1a1a1a]" value="Game">
+                                            Videospil
+                                        </option>
+                                    <% } %>
                                 </select>
                             </div>
 
@@ -448,61 +361,7 @@
                         Global håndtering af dine samlingers metadata.
                     </p>
 
-                    <!-- Music Refresh Block -->
-                    <div class="card-theme rounded-3xl p-6 md:p-8 shadow-sm transition-colors mb-6">
-                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                            <div class="max-w-xl">
-                                <h2 class="text-lg font-bold flex items-center gap-2 mb-2">
-                                    <i class="fa-solid fa-arrows-rotate text-primary-theme"></i>
-                                    Opdater al metadata (musik)
-                                </h2>
-                                <p class="text-xs opacity-60 leading-relaxed mb-4">
-                                    Dette opdaterer genrer, stilarter og tracklister for AL din musik med Discogs-data. ⚠️ Processen er langsom (ca. 1,5 sek pr. element) for at respektere API-rate limits og overskriver dine manuelle ændringer.
-                                </p>
-                                <div class="flex flex-col gap-2 max-w-xs">
-                                    <label
-                                        class="block text-[10px] font-black uppercase tracking-widest opacity-50 ml-1">
-                                        Opdateringstilstand
-                                    </label>
-                                    <select id="refreshModeMusic"
-                                        class="bg-black/5 dark:bg-white/5 border border-transparent text-gray-900 dark:text-white text-sm rounded-lg focus:ring-primary-theme focus:border-primary-theme block w-full p-3 transition-colors outline-none cursor-pointer">
-                                        <option class="bg-white dark:bg-[#1a1a1a]" value="all">
-                                            Alle elementer (langsom)
-                                        </option>
-                                        <option class="bg-white dark:bg-[#1a1a1a]" value="missing" selected>
-                                            Kun elementer med manglende genrer/stilarter (hurtigst)
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div>
-                                <button id="btnRefreshMusic" onclick="startMetadataRefresh('Music')"
-                                    class="w-full sm:w-auto bg-black/5 dark:bg-white/5 hover:bg-primary-theme hover:text-white px-8 py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 border border-black/10 dark:border-white/10 shadow-sm">
-                                    <i class="fa-solid fa-play" id="iconRefreshMusic"></i>
-                                    <span id="textRefreshMusic">
-                                        Start opdatering
-                                    </span>
-                                </button>
-                            </div>
-                        </div>
-                        <div id="progressContainerMusic"
-                            class="hidden mt-6 space-y-3 p-4 bg-black/5 dark:bg-white/5 rounded-2xl animate-in fade-in slide-in-from-top-2 duration-500">
-                            <div
-                                class="flex justify-between items-center text-[10px] uppercase font-bold tracking-widest opacity-60">
-                                <span id="progressTitleMusic">
-                                    Initialiserer...
-                                </span>
-                                <span id="progressPercentMusic">0%</span>
-                            </div>
-                            <div class="w-full bg-black/10 dark:bg-white/10 rounded-full h-2 overflow-hidden">
-                                <div id="progressBarMusic"
-                                    class="bg-primary-theme h-full transition-all duration-300 w-0"></div>
-                            </div>
-                            <p id="progressItemMusic" class="text-[10px] opacity-40 font-mono truncate"></p>
-                        </div>
-                    </div>
-
-                    <% if (settings.modules.books) { %>
+                    <% if (false) { %>
                         <!-- Books Refresh Block -->
                         <div class="card-theme rounded-3xl p-6 md:p-8 shadow-sm transition-colors mb-6">
                             <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -1204,11 +1063,9 @@
             }
 
             document.addEventListener('DOMContentLoaded', () => {
-                const hasHardcoverKey = <%= locals.hasHardcoverKey || false %>;
                 const hasTmdbKey = <%= locals.hasTmdbKey      || false %>;
                 const hasIgdbKey = <%= locals.hasIgdbKey      || false %>;
                 const modulesWithKeys = [
-                    { name: 'booksActive', hasKey: hasHardcoverKey, errorId: 'error-books' },
                     { name: 'dvdActive', hasKey: hasTmdbKey, errorId: 'error-dvd' },
                     { name: 'gamesActive', hasKey: hasIgdbKey, errorId: 'error-games' }
                 ];
@@ -1267,10 +1124,8 @@
                 progressContainer.classList.remove('hidden');
 
                 try {
-                    const url = kind === 'Book' ? '<%= baseUrl %>/admin/refresh-all-books-metadata'
-                        : kind === 'Dvd' ? '<%= baseUrl %>/admin/refresh-all-dvds-metadata'
-                            : kind === 'Game' ? '<%= baseUrl %>/admin/refresh-all-games-metadata'
-                                : '<%= baseUrl %>/admin/refresh-all-music-metadata';
+                    const url = kind === 'Game' ? '<%= baseUrl %>/admin/refresh-all-games-metadata'
+                        : '<%= baseUrl %>/admin/refresh-all-dvds-metadata';
 
                     const response = await fetch(url, {
                         method: 'POST',

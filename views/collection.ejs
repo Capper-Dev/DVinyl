@@ -4,8 +4,6 @@
 
         <%
             const typeConfig = {
-                music:  { icon: 'fa-compact-disc', label: 'Music' },
-                books:  { icon: 'fa-book',         label: 'Books' },
                 dvd:    { icon: 'fa-film',          label: 'Movies' },
                 games:  { icon: 'fa-gamepad',       label: 'Games' },
                 all:    { icon: 'fa-layer-group',   label: 'All' }
@@ -26,7 +24,7 @@
                 </div>
 
                 <% if (user.isAdmin) { %>
-                <% const addRoutes={ music: '/add-vinyl', books: '/add-book', dvd: '/add-dvd', games: '/add-game' };
+                <% const addRoutes={ dvd: '/add-dvd', games: '/add-game' };
                    const addRoute = addRoutes[currentType]; %>
                 <div class="flex gap-2">
                     <% if (addRoute) { %>
@@ -37,25 +35,11 @@
                     </a>
                     <% } %>
 
-                    <% if (['dvd', 'games', 'books'].includes(currentType)) { %>
+                    <% if (['dvd', 'games'].includes(currentType)) { %>
                     <button onclick="document.getElementById('new-collection-modal').classList.remove('hidden')"
                             class="flex items-center gap-2 card-theme text-sm font-bold px-4 py-2.5 rounded-xl hover:border-primary-theme hover:text-primary-theme transition-all active:scale-95">
                         <i class="fa-solid fa-folder-plus"></i>
                         <span class="hidden sm:inline">New List</span>
-                    </button>
-                    <% } %>
-
-                    <% if (currentType === 'music') { %>
-                    <button onclick="openEstimateModal()"
-                        class="flex items-center gap-2 card-theme text-sm font-bold px-4 py-2.5 rounded-xl hover:border-primary-theme hover:text-primary-theme transition-all active:scale-95">
-                        <i class="fa-solid fa-calculator"></i>
-                    </button>
-                    <% } %>
-
-                    <% if (user.discogsUsername && currentType === 'music') { %>
-                    <button onclick="refreshCollection()" id="refreshBtn"
-                        class="flex items-center gap-2 card-theme text-sm font-bold px-4 py-2.5 rounded-xl hover:border-primary-theme hover:text-primary-theme transition-all active:scale-95">
-                        <i class="fa-solid fa-sync"></i>
                     </button>
                     <% } %>
                 </div>
@@ -67,8 +51,6 @@
                 <%
                     const tabTypes = [];
                     tabTypes.push({ id: 'all', icon: 'fa-layer-group', label: 'All' });
-                    if (settings.modules.music) tabTypes.push({ id: 'music', icon: 'fa-compact-disc', label: 'Music' });
-                    if (settings.modules.books) tabTypes.push({ id: 'books', icon: 'fa-book', label: 'Books' });
                     if (settings.modules.dvd)   tabTypes.push({ id: 'dvd',   icon: 'fa-film',          label: 'Movies' });
                     if (settings.modules.games) tabTypes.push({ id: 'games', icon: 'fa-gamepad',       label: 'Games' });
                 %>
@@ -308,37 +290,27 @@
 
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4" id="albumGrid">
             <% albums.forEach(album => {
-                const isBook = album.kind === 'Book';
                 const isDvd  = album.kind === 'Dvd' || (album.tmdb_id !== undefined && album.tmdb_id !== null);
                 const isGame = album.kind === 'Game';
-                const isPoster = isBook || isDvd || isGame;
-                const aspectClass = isPoster ? 'aspect-[2/3]' : 'aspect-square';
-                let detailUrl = '/album/' + album._id;
-                if (isBook) detailUrl = '/book/' + album._id;
-                if (isDvd)  detailUrl = '/dvd/' + album._id;
+                const aspectClass = 'aspect-[2/3]';
+                let detailUrl = '/dvd/' + album._id;
                 if (isGame) detailUrl = '/game/' + album._id;
-                const formatKey = isGame ? (album.format || 'physical') : (isDvd ? album.format : (album.media_type || album.format));
-                let isAdvancedCD = false, advancedCDType = '';
-                if (settings && settings.modules && settings.modules.advancedCD && formatKey === 'cd' && album.format_type) {
-                    if (album.format_type.toLowerCase().includes('sacd')) { isAdvancedCD = true; advancedCDType = 'sacd'; }
-                    else if (album.format_type.toLowerCase().includes('cdr')) { isAdvancedCD = true; advancedCDType = 'cdr'; }
-                }
+                const formatKey = isGame ? (album.format || 'physical') : (album.format || '');
                 const badgeMap = {
-                    vinyl: 'bg-green-600/90', cd: 'bg-blue-600/90', cassette: 'bg-orange-600/90',
-                    manga: 'bg-pink-600/90', comic: 'bg-indigo-600/90', hardcover: 'bg-purple-600/90',
-                    paperback: 'bg-amber-600/90', book: 'bg-amber-700/90', dvd: 'bg-sky-600/90',
-                    bluray: 'bg-indigo-700/90', '4k': 'bg-red-600/90', vhs: 'bg-amber-600/90',
-                    laserdisc: 'bg-purple-600/90', physical: 'bg-emerald-600/90',
-                    collector: 'bg-amber-600/90', limited: 'bg-purple-600/90', steelbook: 'bg-sky-600/90'
+                    dvd: 'bg-sky-600/90', bluray: 'bg-indigo-700/90', '4k': 'bg-red-600/90',
+                    vhs: 'bg-amber-600/90', laserdisc: 'bg-purple-600/90',
+                    physical: 'bg-emerald-600/90', collector: 'bg-amber-600/90',
+                    limited: 'bg-purple-600/90', steelbook: 'bg-sky-600/90'
                 };
-                const badgeClass = isAdvancedCD ? (advancedCDType === 'sacd' ? 'bg-red-600/90' : 'bg-blue-600/90') : (badgeMap[formatKey] || 'bg-gray-600/90');
-                const mediaLabels = { vinyl: 'Vinyl', vinyls: 'Vinyler', cd: 'CD', cds: "CD'er", cassette: 'Kassette', cassettes: 'Kassetter', dvd: 'DVD', dvds: "DVD'er", bluray: 'Blu-ray', blurays: 'Blu-rays', '4k': '4K Ultra HD', vhs: 'VHS', laserdisc: 'Laserdisc', book: 'Bog', music: 'Musik', books: 'Bøger', sacd: 'SACD', cdr: 'CDr', physical: 'Fysisk', collector: 'Collector', limited: 'Limited', steelbook: 'Steelbook', hardcover: 'Hardcover', paperback: 'Paperback', manga: 'Manga', comic: 'Tegneserie', graphic_novel: 'Grafisk roman' };
-                const displayFormat = isAdvancedCD ? (mediaLabels[advancedCDType] || advancedCDType) : (isGame ? (album.platform || 'Game') : (mediaLabels[formatKey] || formatKey));
-                const subtitle = isBook ? album.author : (isGame ? (album.developer || album.publisher || '') : (album.artist || album.director || ''));
+                const badgeClass = badgeMap[formatKey] || 'bg-gray-600/90';
+                const mediaLabels = { dvd: 'DVD', bluray: 'Blu-ray', '4k': '4K Ultra HD', vhs: 'VHS', laserdisc: 'Laserdisc', physical: 'Fysisk', collector: 'Collector', limited: 'Limited', steelbook: 'Steelbook' };
+                const displayFormat = isGame ? (album.platform || 'Game') : (mediaLabels[formatKey] || formatKey);
+                const subtitle = isGame ? (album.developer || album.publisher || '') : (album.director || '');
+                const isPoster = true;
             %>
                 <div class="album-card group relative"
                     data-location="<%= album.location || '' %>"
-                    data-format="<%= isDvd ? album.format : (album.media_type || album.format || '') %>">
+                    data-format="<%= album.format || '' %>">
                     <a href="<%= baseUrl + detailUrl %>" class="block">
                         <div class="<%= aspectClass %> w-full relative overflow-hidden rounded-xl bg-black/5 dark:bg-white/5 shadow-sm group-hover:shadow-xl group-hover:-translate-y-1 transition-all duration-300">
                             <% if (isPoster) { %>

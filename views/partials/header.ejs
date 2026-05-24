@@ -5,18 +5,12 @@
   
   const rawCategory = (typeof locals.currentType !== 'undefined') ? locals.currentType : (locals.detectedType || 'home');
 
-  let themeKey = 'home'; 
-  
-  const musicTypes = ['music', 'vinyl', 'cd', 'cassette', 'add-vinyl', 'album'];
-  const bookTypes  = ['books', 'add-book', 'book'];
-  const dvdTypes   = ['dvd', 'add-dvd'];
-  const gameTypes  = ['games', 'add-game', 'game'];
+  let themeKey = 'home';
 
-  if (musicTypes.includes(rawCategory)) {
-      themeKey = 'music';
-  } else if (bookTypes.includes(rawCategory)) {
-      themeKey = 'books';
-  } else if (dvdTypes.includes(rawCategory)) {
+  const dvdTypes  = ['dvd', 'add-dvd'];
+  const gameTypes = ['games', 'add-game', 'game'];
+
+  if (dvdTypes.includes(rawCategory)) {
       themeKey = 'dvd';
   } else if (gameTypes.includes(rawCategory)) {
       themeKey = 'games';
@@ -163,18 +157,6 @@
                 'global_home': { label: 'Forside', url: '/' },
                 'global_collection': { label: 'Samling', url: '/collection' },
                 'global_wishlist': { label: 'Ønskeliste', url: '/wishlist' },
-
-                'music': { label: 'Musik', url: '/collection?type=music', module: 'music' },
-                'music_vinyl': { label: 'Vinyler', url: '/collection?type=music&format=vinyl', module: 'music' },
-                'music_cd': { label: "CD'er", url: '/collection?type=music&format=cd', module: 'music' },
-                'music_cassette': { label: 'Kassetter', url: '/collection?type=music&format=cassette', module: 'music' },
-
-                'books': { label: 'Bøger', url: '/collection?type=books', module: 'books' },
-                'book_hardcover': { label: 'Hardcover', url: '/collection?type=books&format=hardcover', module: 'books' },
-                'book_paperback': { label: 'Paperback', url: '/collection?type=books&format=paperback', module: 'books' },
-                'book_manga': { label: 'Manga', url: '/collection?type=books&format=manga', module: 'books' },
-                'book_comic': { label: 'Tegneserie', url: '/collection?type=books&format=comic', module: 'books' },
-                'book_graphic_novel': { label: 'Grafisk roman', url: '/collection?type=books&format=graphic_novel', module: 'books' },
 
                 'dvd': { label: 'Film / TV-serier', url: '/collection?type=dvd', module: 'dvd' },
                 'dvd_dvd': { label: 'DVD', url: '/collection?type=dvd&format=dvd', module: 'dvd' },

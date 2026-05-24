@@ -10,47 +10,41 @@ module.exports = async (req, res, next) => {
         if (!settings) {
             settings = {
                 siteName: 'DVinyl',
-                modules: { music: true, books: true, dvd: true, games: true },
-                navbarShortcuts: ['global_home', 'books', 'dvd', 'games', 'global_wishlist'],
-                statsWidgets: ['total', 'vinyl', 'cd', 'cassette', 'artist'],
+                modules: { dvd: true, games: true },
+                navbarShortcuts: ['global_home', 'dvd', 'games', 'global_wishlist'],
+                statsWidgets: ['total', 'dvd_total', 'game_total', 'director'],
                 theme: {
                     home: { preset: 'default' },
-                    music: { preset: 'default' },
-                    books: { preset: 'default' },
-                    dvd: { preset: 'default' }
+                    dvd: { preset: 'default' },
+                    games: { preset: 'default' }
                 }
             };
         } else {
             if (!settings.navbarShortcuts) {
-                settings.navbarShortcuts = ['global_home', 'books', 'dvd', 'games', 'global_wishlist'];
+                settings.navbarShortcuts = ['global_home', 'dvd', 'games', 'global_wishlist'];
             }
             if (!settings.statsWidgets) {
-                settings.statsWidgets = ['total', 'vinyl', 'cd', 'cassette', 'artist'];
+                settings.statsWidgets = ['total', 'dvd_total', 'game_total', 'director'];
             }
         }
 
-        settings.navbarShortcuts = settings.navbarShortcuts || ['global_home', 'books', 'dvd', 'games', 'global_wishlist'];
-        settings.statsWidgets = settings.statsWidgets || ['total', 'vinyl', 'cd', 'cassette', 'artist'];
+        settings.navbarShortcuts = settings.navbarShortcuts || ['global_home', 'dvd', 'games', 'global_wishlist'];
+        settings.statsWidgets = settings.statsWidgets || ['total', 'dvd_total', 'game_total', 'director'];
 
         res.locals.settings = settings;
 
         res.locals.isDark = res.locals.user ? (res.locals.user.theme === 'dark') : true;
 
         const fullPath = req.path.toLowerCase();
-        // Strip BASE_URL from path to avoid false positives if BASE_URL contains keywords like "vinyl"
-        const path = fullPath.startsWith(BASE_URL.toLowerCase()) 
-            ? fullPath.slice(BASE_URL.length) 
+        const path = fullPath.startsWith(BASE_URL.toLowerCase())
+            ? fullPath.slice(BASE_URL.length)
             : fullPath;
 
-        const queryType = req.query.type; // ex: ?type=books
+        const queryType = req.query.type;
 
         let detectedType = 'home';
 
-        if (path.includes('vinyl') || path.includes('search-discogs') || path.includes('cd') || path.includes('cassette') || path.includes('album') || path.includes('music')) {
-            detectedType = 'music';
-        } else if (path.includes('book') || path.includes('books')) {
-            detectedType = 'books';
-        } else if (path.includes('game') || path.includes('games')) {
+        if (path.includes('game') || path.includes('games')) {
             detectedType = 'games';
         } else if (path.includes('dvd')) {
             detectedType = 'dvd';
@@ -62,12 +56,9 @@ module.exports = async (req, res, next) => {
         res.locals.currentType = activeType;
 
         const isAllowedAction = req.method === 'DELETE' || path.startsWith(BASE_URL + '/api/') ||
-            path.includes('/book/') || path.includes('/dvd/') || path.includes('/game/') || path.includes('/album/') ||
+            path.includes('/dvd/') || path.includes('/game/') ||
             path.includes('/save-');
 
-        if (activeType === 'books' && !settings.modules.books && path !== '/' && !isAllowedAction) {
-            return res.status(404).render('404');
-        }
         if (activeType === 'dvd' && !settings.modules.dvd && path !== '/' && !isAllowedAction) {
             return res.status(404).render('404');
         }
