@@ -1,51 +1,69 @@
 <!DOCTYPE html>
-<% 
+<%
   const isDark = (typeof locals.isDark !== 'undefined') ? locals.isDark : true;
   const THEMES = (typeof locals.allThemes !== 'undefined') ? locals.allThemes : {};
-  
+
   const rawCategory = (typeof locals.currentType !== 'undefined') ? locals.currentType : (locals.detectedType || 'home');
 
   let themeKey = 'home';
-
   const dvdTypes  = ['dvd', 'add-dvd'];
   const gameTypes = ['games', 'add-game', 'game'];
-
-  if (dvdTypes.includes(rawCategory)) {
-      themeKey = 'dvd';
-  } else if (gameTypes.includes(rawCategory)) {
-      themeKey = 'games';
-  }
+  if (dvdTypes.includes(rawCategory)) themeKey = 'dvd';
+  else if (gameTypes.includes(rawCategory)) themeKey = 'games';
 
   let activePresetKey = 'default';
   if (typeof settings !== 'undefined' && settings && settings.theme) {
-        if (settings.theme[themeKey] && settings.theme[themeKey].preset) {
+      if (settings.theme[themeKey] && settings.theme[themeKey].preset) {
           activePresetKey = settings.theme[themeKey].preset;
-      } 
-      else if (settings.theme.home && settings.theme.home.preset) {
+      } else if (settings.theme.home && settings.theme.home.preset) {
           activePresetKey = settings.theme.home.preset;
       }
   }
 
-  const safeFallback = { 
-      light: { bg: '#e2e8f0', card: '#ffffff', navbar: '#1e293b', navText: '#ffffff', text: '#0f172a', subtext: '#475569', highlight: '#10b981' },
-      dark:  { bg: '#171717', card: '#262626', navbar: '#0a0a0a', navText: '#ffffff', text: '#ffffff', subtext: '#a3a3a3', highlight: '#10b981' }
+  const safeFallback = {
+      light: { bg: '#fafafa', card: '#ffffff', navbar: '#ffffff', text: '#0a0a0a', subtext: '#525252', highlight: '#10b981' },
+      dark:  { bg: '#0a0a0a', card: '#171717', navbar: '#0a0a0a', text: '#fafafa', subtext: '#a3a3a3', highlight: '#10b981' }
   };
-
   const activeTheme = (THEMES[activePresetKey]) ? THEMES[activePresetKey] : (THEMES['default'] || safeFallback);
+
+  const navItems = [];
+  const shortcutConfig = {
+      'global_home':       { label: 'Forside',     url: '/' },
+      'global_collection': { label: 'Samling',     url: '/collection' },
+      'global_wishlist':   { label: 'Ønskeliste',  url: '/wishlist' },
+      'dvd':               { label: 'Film & TV',   url: '/collection?type=dvd',   module: 'dvd' },
+      'dvd_dvd':           { label: 'DVD',         url: '/collection?type=dvd&format=dvd',       module: 'dvd' },
+      'dvd_bluray':        { label: 'Blu-ray',     url: '/collection?type=dvd&format=bluray',    module: 'dvd' },
+      'dvd_4k':            { label: '4K',          url: '/collection?type=dvd&format=4k',        module: 'dvd' },
+      'dvd_vhs':           { label: 'VHS',         url: '/collection?type=dvd&format=vhs',       module: 'dvd' },
+      'dvd_laserdisc':     { label: 'Laserdisc',   url: '/collection?type=dvd&format=laserdisc', module: 'dvd' },
+      'games':             { label: 'Spil',        url: '/collection?type=games', module: 'games' }
+  };
+  if (settings && settings.navbarShortcuts) {
+      settings.navbarShortcuts.forEach(id => {
+          const item = shortcutConfig[id];
+          if (!item) return;
+          if (item.module && (!settings.modules || !settings.modules[item.module])) return;
+          navItems.push(item);
+      });
+  }
 %>
 
 <html lang="da-DK" class="<%= isDark ? 'dark' : '' %>">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>DVinyl</title>
-  
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       darkMode: 'class',
       theme: {
         extend: {
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif']
+          },
           colors: {
             theme: {
                 bg: 'var(--bg-page)',
@@ -61,181 +79,224 @@
     };
   </script>
 
+  <link rel="preconnect" href="https://rsms.me/">
+  <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js" defer></script>
   <link rel="icon" type="image/png" href="<%= baseUrl %>/ressources/logo.png">
 
   <style>
     :root {
-        --bg-page: <%= activeTheme.light.bg %>;
-        --bg-card: <%= activeTheme.light.card %>;
-        --bg-nav:  <%= activeTheme.light.navbar %>;
+        --bg-page:   <%= activeTheme.light.bg %>;
+        --bg-card:   <%= activeTheme.light.card %>;
+        --bg-nav:    <%= activeTheme.light.navbar %>;
         --text-main: <%= activeTheme.light.text %>;
-        --text-sub: <%= activeTheme.light.subtext %>;
+        --text-sub:  <%= activeTheme.light.subtext %>;
         --highlight: <%= activeTheme.light.highlight %>;
-        
-        --shadow-color: 0 0 0 rgba(0,0,0,0.05);
-        --border-color: rgba(0,0,0,0.1);
+        --border-color: rgba(0,0,0,0.08);
+    }
+    html.dark {
+        --bg-page:   <%= activeTheme.dark.bg %>;
+        --bg-card:   <%= activeTheme.dark.card %>;
+        --bg-nav:    <%= activeTheme.dark.navbar %>;
+        --text-main: <%= activeTheme.dark.text %>;
+        --text-sub:  <%= activeTheme.dark.subtext %>;
+        --highlight: <%= activeTheme.dark.highlight %>;
+        --border-color: rgba(255,255,255,0.08);
     }
 
-    html.dark {
-        --bg-page: <%= activeTheme.dark.bg %>;
-        --bg-card: <%= activeTheme.dark.card %>;
-        --bg-nav:  <%= activeTheme.dark.navbar %>;
-        --text-main: <%= activeTheme.dark.text %>;
-        --text-sub: <%= activeTheme.dark.subtext %>;
-        --highlight: <%= activeTheme.dark.highlight %>;
-        
-        --shadow-color: 0 0 20px <%= activeTheme.dark.highlight %>20;
-        --border-color: rgba(255,255,255,0.1);
+    html { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; font-feature-settings: 'cv11', 'ss01', 'ss03'; }
+    @supports (font-variation-settings: normal) {
+        html { font-family: 'Inter var', ui-sans-serif, system-ui, sans-serif; }
     }
 
     body {
         background-color: var(--bg-page) !important;
         color: var(--text-main) !important;
-    }
-
-    .nav-custom {
-        background-color: var(--bg-nav) !important;
-        border-bottom: 1px solid var(--border-color);
-        color: var(--text-main) !important;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
     }
 
     .text-primary-theme { color: var(--highlight) !important; }
     .bg-primary-theme { background-color: var(--highlight) !important; color: #fff; }
-    
+    .border-primary-theme { border-color: var(--highlight) !important; }
+    .ring-primary-theme { --tw-ring-color: var(--highlight); }
+
     .card-theme {
         background-color: var(--bg-card) !important;
         border: 1px solid var(--border-color);
         color: var(--text-main) !important;
     }
-    
-    #page-loader {
-      background-color: var(--bg-page);
-      color: var(--text-main);
+
+    .nav-custom {
+        background-color: color-mix(in srgb, var(--bg-page) 85%, transparent);
+        backdrop-filter: saturate(140%) blur(12px);
+        -webkit-backdrop-filter: saturate(140%) blur(12px);
+        border-bottom: 1px solid var(--border-color);
+        color: var(--text-main) !important;
     }
+
+    .surface-bg     { background-color: var(--bg-page); }
+    .surface-card   { background-color: var(--bg-card); }
+    .text-sub       { color: var(--text-sub); }
+
+    /* Top progress bar replaces the spinning vinyl loader */
+    #nav-progress {
+        position: fixed; top: 0; left: 0; right: 0; height: 2px;
+        background: linear-gradient(90deg, transparent, var(--highlight), transparent);
+        background-size: 200% 100%; animation: nav-progress 1.1s ease-in-out infinite;
+        opacity: 0; transition: opacity .2s ease; z-index: 9999; pointer-events: none;
+    }
+    #nav-progress.active { opacity: 1; }
+    @keyframes nav-progress {
+        0%   { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+    }
+
+    /* Hide scrollbar on horizontal scrollers */
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* Selection */
+    ::selection { background: var(--highlight); color: #fff; }
+
+    /* Focus ring */
+    :focus-visible { outline: 2px solid var(--highlight); outline-offset: 2px; border-radius: 4px; }
   </style>
 
   <link rel="manifest" href="<%= baseUrl %>/manifest.json">
-  <meta name="theme-color" content="#0f0f0f">
+  <meta name="theme-color" content="<%= activeTheme.dark.bg %>">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="DVinyl">
   <link rel="apple-touch-icon" href="<%= baseUrl %>/ressources/icone-192.png">
 </head>
 
-<body class="font-sans transition-colors duration-300">
-    
-  <div id="page-loader" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center transition-opacity duration-500">
-    <div class="relative">
-        <i class="fa-solid fa-compact-disc fa-spin text-4xl opacity-40 text-[var(--text-main)]"></i>
-    </div>
-  </div>
+<body class="font-sans antialiased">
 
-  <nav class="nav-custom transition-colors duration-300">
-      <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-      
-      <a href="<%= baseUrl || '/' %>" class="flex items-center group">
-        <span class="self-center text-lg font-bold tracking-tight text-[var(--text-main)] opacity-90 group-hover:opacity-100 transition-opacity">Collection</span>
+  <div id="nav-progress"></div>
+
+  <%
+      const currentPath = (typeof res !== 'undefined' && res.locals && res.locals.path) ? res.locals.path : '';
+  %>
+
+  <nav class="nav-custom sticky top-0 z-40">
+    <div class="max-w-screen-xl mx-auto flex items-center justify-between gap-4 px-4 md:px-6 h-14">
+
+      <a href="<%= baseUrl || '/' %>" class="group flex items-center gap-2 shrink-0">
+        <span class="w-7 h-7 rounded-md bg-primary-theme/15 text-primary-theme flex items-center justify-center">
+          <i class="fa-solid fa-clapperboard text-[12px]"></i>
+        </span>
+        <span class="text-[15px] font-black tracking-tight">DVinyl</span>
       </a>
 
-      <div class="flex items-center md:order-2 gap-4">
+      <ul id="navbar-user" class="hidden md:flex items-center gap-1">
+        <% navItems.forEach(item => { %>
+        <li>
+          <a href="<%= baseUrl + item.url %>"
+             class="nav-link relative px-3 py-1.5 text-[13px] font-medium text-sub hover:text-[var(--text-main)] transition-colors rounded-md"
+             data-url="<%= item.url %>">
+            <%= item.label %>
+          </a>
+        </li>
+        <% }) %>
+      </ul>
 
-        <button id="theme-toggle" class="p-2 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 transition text-[var(--text-main)]">
-            <i id="theme-icon" class="fa-solid fa-moon w-4 text-center"></i>
+      <div class="flex items-center gap-1">
+        <button id="theme-toggle"
+                class="w-9 h-9 inline-flex items-center justify-center rounded-md hover:bg-black/5 dark:hover:bg-white/5 text-sub hover:text-[var(--text-main)] transition"
+                aria-label="Skift tema">
+          <i id="theme-icon" class="fa-solid fa-moon text-[13px]"></i>
         </button>
 
-        <button data-collapse-toggle="navbar-user" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm opacity-70 rounded-lg md:hidden hover:bg-black/5 dark:hover:bg-white/10 focus:outline-none text-[var(--text-main)]">
-          <i class="fa-solid fa-bars text-xl"></i>
+        <button id="mobile-menu-btn"
+                class="md:hidden w-9 h-9 inline-flex items-center justify-center rounded-md hover:bg-black/5 dark:hover:bg-white/5 text-sub hover:text-[var(--text-main)] transition"
+                aria-label="Menu">
+          <i class="fa-solid fa-bars text-[14px]"></i>
         </button>
       </div>
+    </div>
 
-      <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-user">
-        <ul class="flex flex-col font-medium p-4 md:p-0 mt-4 rounded-lg md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-transparent">
-          <% 
-            const shortcutConfig = {
-                'global_home': { label: 'Forside', url: '/' },
-                'global_collection': { label: 'Samling', url: '/collection' },
-                'global_wishlist': { label: 'Ønskeliste', url: '/wishlist' },
-
-                'dvd': { label: 'Film / TV-serier', url: '/collection?type=dvd', module: 'dvd' },
-                'dvd_dvd': { label: 'DVD', url: '/collection?type=dvd&format=dvd', module: 'dvd' },
-                'dvd_bluray': { label: 'Blu-ray', url: '/collection?type=dvd&format=bluray', module: 'dvd' },
-                'dvd_4k': { label: '4K Ultra HD', url: '/collection?type=dvd&format=4k', module: 'dvd' },
-                'dvd_vhs': { label: 'VHS', url: '/collection?type=dvd&format=vhs', module: 'dvd' },
-                'dvd_laserdisc': { label: 'Laserdisc', url: '/collection?type=dvd&format=laserdisc', module: 'dvd' },
-
-                'games': { label: 'Videospil', url: '/collection?type=games', module: 'games' }
-            };
-
-            if (settings && settings.navbarShortcuts) {
-              settings.navbarShortcuts.forEach(id => {
-                const item = shortcutConfig[id];
-                if (item) {
-                  const isModuleActive = item.module ? settings.modules[item.module] : true;
-                  
-                  if (isModuleActive) { %>
-                    <li>
-                      <a href="<%= baseUrl + item.url %>" class="block py-2 px-3 md:p-0 text-[var(--text-sub)] hover:text-primary-theme transition-colors">
-                        <%= item.label %>
-                      </a>
-                    </li>
-                  <% }
-                }
-              });
-          } %>
-        </ul>
-      </div>
+    <%# Mobile drawer %>
+    <div id="mobile-menu" class="hidden md:hidden border-t border-[var(--border-color)]">
+      <ul class="flex flex-col py-2 px-2">
+        <% navItems.forEach(item => { %>
+        <li>
+          <a href="<%= baseUrl + item.url %>"
+             class="block px-3 py-2.5 text-sm font-medium text-sub hover:text-[var(--text-main)] hover:bg-black/5 dark:hover:bg-white/5 rounded-md transition">
+            <%= item.label %>
+          </a>
+        </li>
+        <% }) %>
+      </ul>
     </div>
   </nav>
 
   <script>
-    document.body.classList.add('js-ready');
-
     document.addEventListener('DOMContentLoaded', () => {
-        const themeToggleBtn = document.getElementById('theme-toggle');
-        const themeIcon = document.getElementById('theme-icon');
-        const htmlElement = document.documentElement;
+      // Theme toggle
+      const themeBtn = document.getElementById('theme-toggle');
+      const themeIcon = document.getElementById('theme-icon');
+      const html = document.documentElement;
 
-        function updateButtonVisuals() {
-            const isDark = htmlElement.classList.contains('dark');
-            if (themeIcon) {
-                themeIcon.className = isDark ? 'fa-solid fa-sun w-4 text-center' : 'fa-solid fa-moon w-4 text-center';
-            }
+      const syncIcon = () => {
+        if (!themeIcon) return;
+        themeIcon.className = html.classList.contains('dark')
+          ? 'fa-solid fa-sun text-[13px]'
+          : 'fa-solid fa-moon text-[13px]';
+      };
+      syncIcon();
+
+      themeBtn?.addEventListener('click', async () => {
+        html.classList.toggle('dark');
+        syncIcon();
+        const newTheme = html.classList.contains('dark') ? 'dark' : 'light';
+        try {
+          await fetch('<%= baseUrl %>/settings/update-theme', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ theme: newTheme })
+          });
+        } catch (e) {}
+      });
+
+      // Mobile menu
+      const mobileBtn = document.getElementById('mobile-menu-btn');
+      const mobileMenu = document.getElementById('mobile-menu');
+      mobileBtn?.addEventListener('click', () => mobileMenu?.classList.toggle('hidden'));
+
+      // Active nav link highlight (path + query aware)
+      const currentHref = window.location.pathname + window.location.search;
+      document.querySelectorAll('.nav-link').forEach(a => {
+        const href = a.getAttribute('href');
+        if (href && currentHref.startsWith(href.replace(/\/$/, '')) && href !== '<%= baseUrl %>/') {
+          a.classList.add('text-[var(--text-main)]', 'bg-black/5', 'dark:bg-white/5');
         }
-
-        updateButtonVisuals();
-
-        if (themeToggleBtn) {
-            themeToggleBtn.addEventListener('click', async () => {
-                htmlElement.classList.toggle('dark');
-                updateButtonVisuals();
-                const newTheme = htmlElement.classList.contains('dark') ? 'dark' : 'light';
-                try {
-                    await fetch('<%= baseUrl %>/settings/update-theme', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ theme: newTheme })
-                    });
-                } catch (e) {}
-            });
+        if (href === '<%= baseUrl %>/' && (window.location.pathname === '<%= baseUrl %>/' || window.location.pathname === '<%= baseUrl || "/" %>')) {
+          a.classList.add('text-[var(--text-main)]', 'bg-black/5', 'dark:bg-white/5');
         }
-    });
+      });
 
-    window.addEventListener('load', () => {
-        const loader = document.getElementById('page-loader');
-        if (loader) {
-            loader.style.opacity = '0';
-            setTimeout(() => { loader.remove(); }, 500);
-        }
+      // Top progress bar on link navigation
+      const bar = document.getElementById('nav-progress');
+      const showBar = () => bar?.classList.add('active');
+      document.addEventListener('click', e => {
+        const a = e.target.closest('a');
+        if (!a) return;
+        const url = a.getAttribute('href');
+        if (!url || url.startsWith('#') || url.startsWith('mailto:') || a.target === '_blank' || a.hasAttribute('download')) return;
+        if (a.origin && a.origin !== window.location.origin) return;
+        showBar();
+      });
+      window.addEventListener('beforeunload', showBar);
+      window.addEventListener('pageshow', () => bar?.classList.remove('active'));
     });
 
     if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('<%= baseUrl %>/sw.js')
-                .then(reg => console.log('[SW] saved', reg.scope))
-                .catch(err => console.warn('[SW] error:', err));
-        });
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('<%= baseUrl %>/sw.js').catch(() => {});
+      });
     }
   </script>
 

@@ -1,100 +1,148 @@
 <%- include('partials/header') %>
 
-<div class="max-w-screen-xl mx-auto pb-16 px-4 md:px-6 space-y-10">
+<div class="max-w-screen-xl mx-auto px-4 md:px-6 pb-20">
 
-    <section class="pt-8 pb-2">
-        <div class="flex items-end justify-between mb-1">
-            <div>
-                <h1 class="text-3xl md:text-4xl font-black tracking-tight leading-none">Collection</h1>
-                <p class="opacity-40 text-sm mt-1"><%= stats.total %> items</p>
-            </div>
-            <button onclick="toggleAddModal()" class="flex items-center gap-2 bg-primary-theme text-white text-sm font-bold px-4 py-2.5 rounded-xl hover:brightness-110 transition-all active:scale-95 shadow-lg shadow-primary-theme/20">
-                <i class="fa-solid fa-plus"></i>
-                <span class="hidden sm:inline">Add</span>
+    <%# ───────── Hero ───────── %>
+    <header class="pt-10 md:pt-14 pb-8">
+        <p class="text-[11px] font-bold uppercase tracking-[0.22em] text-sub mb-3">
+            Velkommen tilbage, <%= user.username %>
+        </p>
+        <div class="flex items-end justify-between gap-6 flex-wrap">
+            <h1 class="text-[40px] md:text-[56px] font-black leading-[0.95] tracking-tight">
+                Din samling
+            </h1>
+            <button onclick="toggleAddModal()"
+                    class="inline-flex items-center gap-2 bg-[var(--text-main)] text-[var(--bg-page)] text-[13px] font-bold px-5 py-3 rounded-full hover:opacity-90 active:scale-95 transition-all">
+                <i class="fa-solid fa-plus text-[11px]"></i>
+                Tilføj
             </button>
         </div>
 
-        <div class="flex gap-3 mt-6">
-            <% if (settings.modules.dvd) { %>
-            <a href="<%= baseUrl %>/collection?type=dvd" class="flex-1 card-theme rounded-2xl p-4 hover:border-primary-theme transition-all group text-center">
-                <i class="fa-solid fa-film text-xl opacity-50 group-hover:opacity-100 group-hover:text-primary-theme transition-all mb-2 block"></i>
-                <div class="text-2xl font-black"><%= stats.dvd_total || 0 %></div>
-                <div class="text-xs opacity-40 font-medium mt-0.5">Movies</div>
+        <%# Stats strip %>
+        <div class="mt-7 flex items-baseline gap-7 flex-wrap text-sm">
+            <span class="text-sub">
+                <span class="text-[var(--text-main)] text-[22px] md:text-[28px] font-black tabular-nums tracking-tight"><%= stats.total %></span>
+                <span class="ml-1.5 text-xs font-semibold uppercase tracking-wider">titler</span>
+            </span>
+            <% if (settings.modules.dvd && stats.dvd_total > 0) { %>
+            <a href="<%= baseUrl %>/collection?type=dvd" class="text-sub hover:text-[var(--text-main)] transition-colors group">
+                <span class="text-[var(--text-main)] text-[18px] md:text-[20px] font-bold tabular-nums"><%= stats.dvd_total %></span>
+                <span class="ml-1 text-xs font-semibold uppercase tracking-wider group-hover:text-primary-theme transition-colors">Film & TV</span>
             </a>
             <% } %>
-            <% if (settings.modules.games) { %>
-            <a href="<%= baseUrl %>/collection?type=games" class="flex-1 card-theme rounded-2xl p-4 hover:border-primary-theme transition-all group text-center">
-                <i class="fa-solid fa-gamepad text-xl opacity-50 group-hover:opacity-100 group-hover:text-primary-theme transition-all mb-2 block"></i>
-                <div class="text-2xl font-black"><%= stats.game_total || 0 %></div>
-                <div class="text-xs opacity-40 font-medium mt-0.5">Games</div>
+            <% if (settings.modules.games && stats.game_total > 0) { %>
+            <a href="<%= baseUrl %>/collection?type=games" class="text-sub hover:text-[var(--text-main)] transition-colors group">
+                <span class="text-[var(--text-main)] text-[18px] md:text-[20px] font-bold tabular-nums"><%= stats.game_total %></span>
+                <span class="ml-1 text-xs font-semibold uppercase tracking-wider group-hover:text-primary-theme transition-colors">Spil</span>
             </a>
             <% } %>
         </div>
-    </section>
+    </header>
 
+    <%# ───────── Recently added ───────── %>
     <section>
-        <h2 class="text-base font-bold opacity-50 uppercase tracking-widest mb-4">Recently Added</h2>
+        <div class="flex items-baseline justify-between mb-5">
+            <h2 class="text-[15px] font-bold uppercase tracking-[0.18em] text-sub">Senest tilføjet</h2>
+            <a href="<%= baseUrl %>/collection" class="text-[12px] font-semibold text-sub hover:text-[var(--text-main)] transition">
+                Se alt <i class="fa-solid fa-arrow-right text-[9px] ml-1"></i>
+            </a>
+        </div>
 
         <% if (recentItems && recentItems.length > 0) { %>
-        <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
-            <% recentItems.forEach(album => { %>
-            <%
-                const isDvd  = album.kind === 'Dvd' || (album.tmdb_id !== undefined && album.tmdb_id !== null);
+        <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-x-3 gap-y-6 md:gap-x-5 md:gap-y-8">
+            <% recentItems.forEach(album => {
                 const isGame = album.kind === 'Game';
-                let detailUrl = `/dvd/${album._id}`;
-                if (isGame) detailUrl = `/game/${album._id}`;
+                const detailUrl = isGame ? '/game/' + album._id : '/dvd/' + album._id;
+                const fmtLabels = { dvd: 'DVD', bluray: 'Blu-ray', '4k': '4K UHD', vhs: 'VHS', laserdisc: 'LD', physical: 'Fysisk', collector: 'Collector', limited: 'Limited', steelbook: 'Steelbook' };
+                const formatKey = (album.format || '').toLowerCase();
+                const displayFormat = isGame ? (album.platform || fmtLabels[formatKey] || 'Spil') : (fmtLabels[formatKey] || formatKey || 'Film');
+                const subtitle = isGame ? (album.developer || album.publisher || '') : (album.director || '');
             %>
-            <a href="<%= baseUrl + detailUrl %>" class="group relative">
-                <div class="aspect-[2/3] rounded-xl overflow-hidden bg-black/5 dark:bg-white/5 shadow-sm group-hover:shadow-xl group-hover:-translate-y-1 transition-all duration-300">
-                    <img src="<%= album.cover_image %>" class="absolute inset-0 w-full h-full object-cover blur-xl opacity-20 scale-110 pointer-events-none">
-                    <img src="<%= album.cover_image %>"
-                         class="relative z-10 w-full h-full object-contain p-1 transition-transform duration-500 group-hover:scale-105"
-                         loading="lazy">
+            <a href="<%= baseUrl + detailUrl %>" class="group block">
+                <div class="relative aspect-[2/3] overflow-hidden rounded-md bg-black/5 dark:bg-white/5 transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.35)]">
+                    <img src="<%= album.cover_image %>" alt="" aria-hidden="true"
+                         class="absolute inset-0 w-full h-full object-cover blur-2xl opacity-25 scale-110 pointer-events-none">
+                    <img src="<%= album.cover_image %>" alt="<%= album.title %>"
+                         loading="lazy"
+                         class="relative z-10 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]">
+                    <div class="absolute inset-0 z-20 flex items-end p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-t from-black/70 via-black/10 to-transparent">
+                        <span class="text-[10px] font-bold text-white px-2 py-0.5 rounded backdrop-blur-md bg-black/40 border border-white/15">
+                            <%= displayFormat %>
+                        </span>
+                    </div>
                 </div>
-                <p class="text-xs font-semibold truncate mt-1.5 opacity-80"><%= album.title %></p>
+                <div class="mt-2.5 px-0.5">
+                    <p class="text-[13px] font-semibold leading-tight truncate text-[var(--text-main)]" title="<%= album.title %>"><%= album.title %></p>
+                    <% if (album.year || subtitle) { %>
+                    <p class="text-[11px] text-sub truncate mt-1">
+                        <% if (album.year) { %><span class="tabular-nums"><%= album.year %></span><% } %>
+                        <% if (album.year && subtitle) { %><span class="opacity-50"> · </span><% } %>
+                        <% if (subtitle) { %><%= subtitle %><% } %>
+                    </p>
+                    <% } %>
+                </div>
             </a>
             <% }) %>
         </div>
         <% } else { %>
-        <div class="text-center py-16 card-theme rounded-2xl">
-            <i class="fa-solid fa-box-open text-4xl opacity-20 mb-3 block"></i>
-            <p class="opacity-40 text-sm">Nothing here yet. Start adding items.</p>
+        <div class="text-center py-28 border border-dashed border-[var(--border-color)] rounded-3xl">
+            <i class="fa-regular fa-folder-open text-5xl opacity-15 mb-5 block"></i>
+            <p class="font-bold text-lg mb-1.5">Tom samling</p>
+            <p class="text-sub text-sm mb-7">Start med at tilføje dit første element.</p>
+            <button onclick="toggleAddModal()"
+                    class="inline-flex items-center gap-2 bg-[var(--text-main)] text-[var(--bg-page)] text-[13px] font-bold px-5 py-3 rounded-full hover:opacity-90 transition">
+                <i class="fa-solid fa-plus text-[11px]"></i>
+                Tilføj det første
+            </button>
         </div>
         <% } %>
     </section>
 </div>
 
-<div id="addHubModal" class="fixed inset-0 z-[100] hidden bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center sm:p-4">
-    <%
-        let activeCount = 0;
-        if (settings.modules.dvd)    activeCount++;
-        if (settings.modules.games)  activeCount++;
-        let gridCols = activeCount === 1 ? 'grid-cols-1' : 'grid-cols-2';
-        let desktopGridCols = activeCount >= 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2';
-        let maxWidth = activeCount === 1 ? 'max-w-sm' : 'max-w-md';
-    %>
-    <div class="card-theme w-full <%= maxWidth %> rounded-t-3xl sm:rounded-3xl p-6 sm:p-8 shadow-2xl relative">
+<%# Add modal %>
+<div id="addHubModal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center sm:p-4">
+    <div class="surface-card w-full max-w-md rounded-t-3xl sm:rounded-3xl p-6 sm:p-8 shadow-2xl relative border border-[var(--border-color)]">
         <div class="w-10 h-1 bg-black/10 dark:bg-white/10 rounded-full mx-auto mb-6 sm:hidden"></div>
-        <button onclick="toggleAddModal()" class="absolute top-5 right-5 opacity-30 hover:opacity-80 transition-opacity hidden sm:block">
-            <i class="fa-solid fa-xmark text-xl"></i>
+        <button onclick="toggleAddModal()" aria-label="Luk"
+                class="absolute top-5 right-5 w-8 h-8 flex items-center justify-center rounded-full text-sub hover:text-[var(--text-main)] hover:bg-black/5 dark:hover:bg-white/5 transition hidden sm:flex">
+            <i class="fa-solid fa-xmark text-sm"></i>
         </button>
-        <h2 class="text-xl font-black mb-6">Add to collection</h2>
-        <div class="grid <%= gridCols %> <%= desktopGridCols %> gap-3">
+        <p class="text-[11px] font-bold uppercase tracking-[0.22em] text-sub mb-2">Tilføj til samling</p>
+        <h2 class="text-2xl font-black mb-6">Hvad har du fået?</h2>
+        <div class="grid gap-2">
             <% if (settings.modules.dvd) { %>
-            <a href="<%= baseUrl %>/add-dvd" class="group flex items-center gap-3 p-4 rounded-2xl bg-black/5 dark:bg-white/5 hover:bg-primary-theme hover:text-white transition-all">
-                <i class="fa-solid fa-film text-lg opacity-60 group-hover:opacity-100"></i>
-                <span class="font-bold text-sm">Movie / TV</span>
+            <a href="<%= baseUrl %>/add-dvd"
+               class="group flex items-center justify-between p-4 rounded-2xl bg-black/5 dark:bg-white/5 hover:bg-[var(--text-main)] hover:text-[var(--bg-page)] transition">
+                <div class="flex items-center gap-3">
+                    <span class="w-10 h-10 rounded-xl bg-[var(--bg-card)] group-hover:bg-[var(--bg-page)]/15 flex items-center justify-center transition">
+                        <i class="fa-solid fa-film text-[15px]"></i>
+                    </span>
+                    <div>
+                        <p class="font-bold text-[14px]">Film eller TV-serie</p>
+                        <p class="text-[11px] text-sub group-hover:text-[var(--bg-page)]/70 transition">DVD, Blu-ray, 4K UHD</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-arrow-right text-[12px] opacity-40 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></i>
             </a>
             <% } %>
             <% if (settings.modules.games) { %>
-            <a href="<%= baseUrl %>/add-game" class="group flex items-center gap-3 p-4 rounded-2xl bg-black/5 dark:bg-white/5 hover:bg-primary-theme hover:text-white transition-all">
-                <i class="fa-solid fa-gamepad text-lg opacity-60 group-hover:opacity-100"></i>
-                <span class="font-bold text-sm">Game</span>
+            <a href="<%= baseUrl %>/add-game"
+               class="group flex items-center justify-between p-4 rounded-2xl bg-black/5 dark:bg-white/5 hover:bg-[var(--text-main)] hover:text-[var(--bg-page)] transition">
+                <div class="flex items-center gap-3">
+                    <span class="w-10 h-10 rounded-xl bg-[var(--bg-card)] group-hover:bg-[var(--bg-page)]/15 flex items-center justify-center transition">
+                        <i class="fa-solid fa-gamepad text-[15px]"></i>
+                    </span>
+                    <div>
+                        <p class="font-bold text-[14px]">Spil</p>
+                        <p class="text-[11px] text-sub group-hover:text-[var(--bg-page)]/70 transition">Fysisk, Collector, Steelbook</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-arrow-right text-[12px] opacity-40 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></i>
             </a>
             <% } %>
         </div>
-        <button onclick="toggleAddModal()" class="w-full mt-4 py-3 bg-black/5 dark:bg-white/5 rounded-xl font-bold text-sm sm:hidden opacity-50">
-            Cancel
+        <button onclick="toggleAddModal()" class="w-full mt-4 py-3 bg-black/5 dark:bg-white/5 rounded-2xl font-bold text-[13px] text-sub sm:hidden">
+            Annullér
         </button>
     </div>
 </div>
@@ -106,6 +154,12 @@
     }
     document.getElementById('addHubModal').addEventListener('click', function(e) {
         if (e.target === this) toggleAddModal();
+    });
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+            const modal = document.getElementById('addHubModal');
+            if (!modal.classList.contains('hidden')) toggleAddModal();
+        }
     });
 </script>
 
