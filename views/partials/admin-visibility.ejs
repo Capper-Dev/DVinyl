@@ -6,10 +6,10 @@
             </div>
             <div>
                 <h2 class="text-sm font-black uppercase tracking-widest opacity-80">
-                    <%= t('admin.visibility.title') || 'Visibility Settings' %>
+                    Synlighedsindstillinger
                 </h2>
                 <p class="text-xs opacity-50">
-                    <%= t('admin.visibility.subtitle') || 'Hide elements' %>
+                    Skjul bestemte elementer fra din samling for gæster (eller dig selv).
                 </p>
             </div>
         </div>
@@ -19,10 +19,10 @@
             <label class="group flex items-center justify-between p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-transparent hover:border-primary-theme/30 has-[:checked]:bg-green-500/10 has-[:checked]:border-green-500/30 transition-all cursor-pointer">
                 <div>
                     <div class="text-sm font-bold opacity-70 group-hover:opacity-100 group-has-[:checked]:opacity-100 transition-opacity">
-                        <%= t('admin.visibility.apply_to_admin') || 'Apply to Admin' %>
+                        Anvend disse regler på Admin også
                     </div>
                     <div class="text-[10px] opacity-50">
-                        <%= t('admin.visibility.apply_to_admin_desc') || 'Hide elements for you too' %>
+                        Hvis aktiveret, vil skjulte elementer ikke være synlige, selv når du er logget ind som admin.
                     </div>
                 </div>
                 <div class="relative inline-flex items-center cursor-pointer">
@@ -33,12 +33,12 @@
 
             <!-- Types -->
             <div>
-                <h3 class="text-sm font-bold opacity-80 mb-3"><%= t('admin.visibility.hidden_types') || 'Hidden Types' %></h3>
+                <h3 class="text-sm font-bold opacity-80 mb-3">Skjulte typer</h3>
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                     <% ['Music', 'Book', 'Dvd', 'Game'].forEach(kind => { %>
                         <label class="flex items-center gap-2 p-3 rounded-xl bg-black/5 dark:bg-white/5 cursor-pointer hover:bg-black/10 dark:hover:bg-white/10 transition-colors">
                             <input type="checkbox" name="hiddenTypes" value="<%= kind %>" <%= visibilitySettings.visibility && visibilitySettings.visibility.hiddenTypes.includes(kind) ? 'checked' : '' %> class="w-4 h-4 text-primary-theme bg-white border-black/20 rounded focus:ring-primary-theme">
-                            <span class="text-xs font-bold opacity-70"><%= t('media.' + kind.toLowerCase()) || kind %></span>
+                            <span class="text-xs font-bold opacity-70"><%= ({ music: 'Musik', book: 'Bog', dvd: 'DVD', game: 'Videospil' }[kind.toLowerCase()]) || kind %></span>
                         </label>
                     <% }) %>
                 </div>
@@ -46,12 +46,12 @@
 
             <!-- Genres -->
             <div>
-                <h3 class="text-sm font-bold opacity-80 mb-3"><%= t('admin.visibility.hidden_genres') || 'Hidden Genres' %></h3>
+                <h3 class="text-sm font-bold opacity-80 mb-3">Skjulte genrer</h3>
                 <div class="max-h-60 overflow-y-auto p-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 space-y-4">
                     <% Object.keys(allGenres).forEach(kind => { %>
                         <div>
                             <div class="text-[10px] font-black uppercase tracking-widest opacity-50 mb-2 border-b border-black/5 dark:border-white/5 pb-1">
-                                <%= t('media.' + kind.toLowerCase()) || kind %>
+                                <%= ({ music: 'Musik', book: 'Bog', dvd: 'DVD', game: 'Videospil' }[kind.toLowerCase()]) || kind %>
                             </div>
                             <div class="flex flex-wrap gap-2">
                                 <% allGenres[kind].forEach(genre => { %>
@@ -68,16 +68,16 @@
                     <% }) %>
                     
                     <% if (Object.keys(allGenres).length === 0) { %>
-                        <p class="text-xs opacity-50 italic"><%= t('admin.visibility.no_genres') || 'No genres found in collection.' %></p>
+                        <p class="text-xs opacity-50 italic">Ingen genrer fundet i samlingen.</p>
                     <% } %>
                 </div>
             </div>
 
             <!-- Specific Items -->
             <div>
-                <h3 class="text-sm font-bold opacity-80 mb-3"><%= t('admin.visibility.hidden_items') || 'Hidden Items' %></h3>
+                <h3 class="text-sm font-bold opacity-80 mb-3">Skjulte elementer</h3>
                 <div class="relative">
-                    <input type="text" id="itemSearch" class="w-full bg-black/5 dark:bg-white/5 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary-theme/30" placeholder="<%= t('admin.visibility.search_placeholder') || 'Search item...' %>" autocomplete="off">
+                    <input type="text" id="itemSearch" class="w-full bg-black/5 dark:bg-white/5 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary-theme/30" placeholder="Titel, kunstner..." autocomplete="off">
                     <div id="itemSearchResults" class="absolute z-10 w-full mt-1 bg-white dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 rounded-xl shadow-xl max-h-60 overflow-y-auto hidden"></div>
                 </div>
                 
@@ -96,7 +96,7 @@
                                         <div class="text-[10px] opacity-50 truncate">
                                             <%= item.artist || item.author || item.director %>
                                             <% let fmt = item.format || item.media_type || item.platform || item.format_type; %>
-                                            <% if (fmt) { %> • <%= t('media.' + fmt.toLowerCase()) || fmt %><% } %>
+                                            <% if (fmt) { %> • <%= ({ vinyl: 'Vinyl', cd: 'CD', cassette: 'Kassette', dvd: 'DVD', bluray: 'Blu-ray', '4k': '4K Ultra HD', vhs: 'VHS', laserdisc: 'Laserdisc', paperback: 'Paperback', hardcover: 'Hardback', manga: 'Manga', comic: 'Tegneserie' }[fmt.toLowerCase()]) || fmt %><% } %>
                                         </div>
                                     </div>
                                 </div>
@@ -106,7 +106,7 @@
                             </div>
                         <% }) %>
                     <% } else { %>
-                        <p id="noHiddenItemsMsg" class="text-xs opacity-50 italic"><%= t('admin.visibility.no_hidden_items') || 'No items hidden.' %></p>
+                        <p id="noHiddenItemsMsg" class="text-xs opacity-50 italic">Ingen individuelle elementer skjult.</p>
                     <% } %>
                 </div>
             </div>
@@ -114,7 +114,7 @@
             <div class="flex justify-end pt-2 border-t border-black/5 dark:border-white/5">
                 <button type="submit" class="w-full sm:w-auto bg-primary-theme text-white text-xs font-black uppercase tracking-widest px-10 py-4 rounded-2xl hover:brightness-110 active:scale-95 transition-all shadow-lg shadow-primary-theme/20 flex items-center justify-center gap-3">
                     <i class="fa-solid fa-save"></i>
-                    <%= t('admin.visibility.save_btn') || 'Save Visibility' %>
+                    Gem synlighed
                 </button>
             </div>
         </form>
@@ -128,14 +128,14 @@
         const fmt = item.format || item.media_type || item.platform || item.format_type || '';
         if (!fmt) return '';
         const map = {
-            'vinyl': 'Vinyle',
+            'vinyl': 'Vinyl',
             'cd': 'CD',
-            'cassette': 'Cassette',
+            'cassette': 'Kassette',
             'dvd': 'DVD',
             'bluray': 'Blu-ray',
-            '4k': '4K',
-            'paperback': 'Broché',
-            'hardcover': 'Relié'
+            '4k': '4K Ultra HD',
+            'paperback': 'Paperback',
+            'hardcover': 'Hardback'
         };
         return ' • ' + (map[fmt.toLowerCase()] || fmt.charAt(0).toUpperCase() + fmt.slice(1));
     };
@@ -155,7 +155,7 @@
             
             resultsBox.innerHTML = '';
             if (items.length === 0) {
-                resultsBox.innerHTML = `<div class="p-4 text-xs opacity-50 text-center"><%= t('common.no_results') || 'No results' %></div>`;
+                resultsBox.innerHTML = `<div class="p-4 text-xs opacity-50 text-center">Ingen resultater fundet.</div>`;
             } else {
                 items.forEach(item => {
                     const isAlreadyHidden = hiddenItemsArr.includes(item._id.toString());

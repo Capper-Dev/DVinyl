@@ -6,6 +6,7 @@ const Item = require('../models/Item');
 const User = require('../models/User');
 const Collection = require('../models/Collection');
 const { requireAuth, requireAdmin } = require('../middleware/authMiddleware');
+const { lookupBarcode, saveManualMatch } = require('../utils/barcodeLookup');
 
 async function getAdminId() {
     const admin = await User.findOne({ isAdmin: true }).select('_id');
@@ -31,107 +32,49 @@ router.get('/add-dvd', requireAuth, requireAdmin, (req, res) => {
 });
 
 router.post('/search-dvds', requireAuth, requireAdmin, async (req, res) => {
-    let query = req.body.query.trim();
-    let searchQuery = query;
-    let barcodeScanned = '';
-    let barcodeYear = '';
+    const query = req.body.query.trim();
+    const cleanQuery = query.replace(/[- ]/g, '');
+    const isBarcode = /^\d{12,13}$/.test(cleanQuery);
 
     try {
         const tmdbApiKey = process.env.TMDB_API_KEY;
         if (!tmdbApiKey) throw new Error("TMDB_API_KEY missing");
 
-        const isBarcode = /^\d{12,13}$/.test(query.replace(/[- ]/g, ''));
-
         if (isBarcode) {
-            barcodeScanned = query.replace(/[- ]/g, '');
-            let resolvedFromBarcode = false;
+            const result = await lookupBarcode(cleanQuery);
 
-            try {
-                const upcResponse = await axios.get(`https://api.upcitemdb.com/prod/trial/lookup?upc=${barcodeScanned}`);
-                if (upcResponse.data.items && upcResponse.data.items.length > 0) {
-                    const upcItem = upcResponse.data.items[0];
-                    searchQuery = upcItem.title
-                        .replace(/\b(DVD|Blu-?ray|4K|UHD|Ultra HD|Coffret|Edition|Steelbook|Combo|Pack)\b/gi, '')
-                        .replace(/[\[\(].*?[\]\)]/g, '')
-                        .replace(/\s{2,}/g, ' ')
-                        .trim();
-                    const yearMatch = (upcItem.title + ' ' + (upcItem.description || '')).match(/\b(19|20)\d{2}\b/);
-                    if (yearMatch) barcodeYear = yearMatch[0];
-                    resolvedFromBarcode = true;
-                }
-            } catch (upcErr) {
-                console.error("[ERR] UPC Lookup:", upcErr.message);
+            if (result.status === 'found') {
+                return res.redirect(`/confirm-dvd/${result.media_type}/${result.tmdb_id}?barcode=${result.ean}`);
             }
 
-            if (!resolvedFromBarcode) {
-                try {
-                    const eanResponse = await axios.get(
-                        `https://api.themoviedb.org/3/find/${barcodeScanned}?api_key=${tmdbApiKey}&external_source=ean_id&language=da-DK`
-                    );
-                    const eanResults = [
-                        ...(eanResponse.data.movie_results || []),
-                        ...(eanResponse.data.tv_results || [])
-                    ];
-                    if (eanResults.length > 0) {
-                        const hit = eanResults[0];
-                        const filteredDirect = eanResults.map(item => ({
-                            ...formatTMDBItem({ ...item, media_type: item.title ? 'movie' : 'tv' })
-                        }));
-                        res.render('add-dvd', {
-                            results: filteredDirect,
-                            scanned_barcode: barcodeScanned,
-                            user: res.locals.user,
-                            currentType: 'add-dvd'
-                        });
-                        return;
-                    }
-                } catch (eanErr) {
-                    console.error("[ERR] TMDB EAN Lookup:", eanErr.message);
-                }
-            }
+            return res.render('add-dvd', {
+                results: null,
+                scanned_barcode: cleanQuery,
+                barcode_no_results: true,
+                barcode_error: result.status === 'error',
+                user: res.locals.user,
+                currentType: 'add-dvd'
+            });
         }
 
-        let results;
-
-        if (barcodeScanned) {
-            // Barcode resolved to a title — discs are movies. Use the
-            // movie-only endpoint with the release year to avoid the
-            // wall of sequels/spin-offs that search/multi returns.
-            const yearParam = barcodeYear ? `&primary_release_year=${barcodeYear}` : '';
-            const movieRes = await axios.get(
-                `https://api.themoviedb.org/3/search/movie?api_key=${tmdbApiKey}&query=${encodeURIComponent(searchQuery)}&language=da-DK&page=1${yearParam}`
-            );
-            results = (movieRes.data.results || [])
-                .map(item => formatTMDBItem({ ...item, media_type: 'movie' }));
-        } else {
-            const [page1, page2] = await Promise.all([
-                axios.get(`https://api.themoviedb.org/3/search/multi?api_key=${tmdbApiKey}&query=${encodeURIComponent(searchQuery)}&language=da-DK&page=1`),
-                axios.get(`https://api.themoviedb.org/3/search/multi?api_key=${tmdbApiKey}&query=${encodeURIComponent(searchQuery)}&language=da-DK&page=2`),
-            ]);
-            results = [...(page1.data.results || []), ...(page2.data.results || [])]
-                .filter(item => item.media_type === 'movie' || item.media_type === 'tv')
-                .map(formatTMDBItem);
-        }
-
-        // Barcode + year is a precise identifier — if it pins down a single
-        // movie, skip the results grid and go straight to confirmation.
-        if (barcodeScanned && barcodeYear && results.length === 1) {
-            return res.redirect(`/confirm-dvd/movie/${results[0].tmdb_id}?barcode=${barcodeScanned}`);
-        }
-
-        const barcodeNoResults = barcodeScanned && results.length === 0;
+        const [page1, page2] = await Promise.all([
+            axios.get(`https://api.themoviedb.org/3/search/multi?api_key=${tmdbApiKey}&query=${encodeURIComponent(query)}&language=da-DK&page=1`),
+            axios.get(`https://api.themoviedb.org/3/search/multi?api_key=${tmdbApiKey}&query=${encodeURIComponent(query)}&language=da-DK&page=2`),
+        ]);
+        const results = [...(page1.data.results || []), ...(page2.data.results || [])]
+            .filter(item => item.media_type === 'movie' || item.media_type === 'tv')
+            .map(item => formatTMDBItem(item));
 
         res.render('add-dvd', {
-            results: barcodeNoResults ? null : results,
-            scanned_barcode: barcodeScanned,
-            barcode_no_results: barcodeNoResults,
+            results,
+            scanned_barcode: '',
             user: res.locals.user,
             currentType: 'add-dvd'
         });
 
     } catch (err) {
-        console.error("[ERR] DVD seaarch :", err);
-        res.render('add-dvd', { results: [], scanned_barcode: '', error: req.t('errors.api_error'), user: res.locals.user, currentType: 'add-dvd' });
+        console.error("[ERR] DVD search:", err);
+        res.render('add-dvd', { results: [], scanned_barcode: '', error: 'Kunne ikke forbinde til Discogs.', user: res.locals.user, currentType: 'add-dvd' });
     }
 });
 
@@ -186,7 +129,7 @@ router.get('/confirm-dvd/:media_type/:tmdb_id', requireAuth, requireAdmin, async
         });
     } catch (err) {
         console.error("[ERR] DVD retrieval:", err);
-        res.status(500).send(req.t('errors.generic_server_error'));
+        res.status(500).send('Intern serverfejl.');
     }
 });
 
@@ -256,6 +199,17 @@ router.post('/save-dvd', requireAuth, requireAdmin, async (req, res) => {
             });
         }
 
+        const ean = req.body.barcode;
+        if (ean && /^\d{12,13}$/.test(ean.replace(/[- ]/g, ''))) {
+            saveManualMatch(ean, {
+                tmdb_id: req.body.tmdb_id,
+                media_type: req.body.media_type,
+                title: req.body.title,
+                year: req.body.year,
+                cover_image: req.body.cover_image
+            }).catch(err => console.error('[ERR] cache save on confirm:', err));
+        }
+
         if (isWishlist) {
             res.redirect('/wishlist');
         } else {
@@ -264,7 +218,7 @@ router.post('/save-dvd', requireAuth, requireAdmin, async (req, res) => {
 
     } catch (err) {
         console.error("[ERR] DVD save:", err);
-        res.status(500).send(req.t('errors.generic_server_error'));
+        res.status(500).send('Intern serverfejl.');
     }
 });
 
@@ -311,7 +265,7 @@ router.delete('/api/dvd/:id', requireAuth, requireAdmin, async (req, res) => {
 
     } catch (err) {
         console.error(err);
-        res.status(500).send(req.t('errors.generic_server_error'));
+        res.status(500).send('Intern serverfejl.');
     }
 });
 

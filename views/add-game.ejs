@@ -6,8 +6,8 @@
         <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary-theme/10 text-primary-theme mb-4">
             <i class="fa-solid fa-gamepad text-3xl"></i>
         </div>
-        <h1 class="text-3xl md:text-4xl font-black"><%= t('add_game.title') %></h1>
-        <p class="opacity-60 mt-2"><%= t('add_game.desc') %></p>
+        <h1 class="text-3xl md:text-4xl font-black">Tilføj et Videospil</h1>
+        <p class="opacity-60 mt-2">Søg efter titel eller scan stregkoden.</p>
     </div>
 
     <form action="<%= baseUrl %>/search-games" method="POST" class="max-w-2xl mx-auto mb-10">
@@ -18,17 +18,17 @@
                 </div>
                 <input type="text" name="query" id="searchInput"
                     class="block w-full p-4 pl-12 text-base bg-black/5 dark:bg-white/5 border border-transparent focus:border-primary-theme rounded-2xl focus:ring-2 focus:ring-primary-theme/50 placeholder-opacity-50 transition-all outline-none"
-                    placeholder="<%= t('add_game.search_placeholder') %>" autofocus required>
+                    placeholder="Spillets titel..." autofocus required>
             </div>
             <button type="submit"
                 class="bg-primary-theme hover:brightness-110 text-white font-bold px-8 py-4 rounded-2xl shadow-lg shadow-primary-theme/20 transition-all active:scale-95 flex items-center justify-center gap-2 whitespace-nowrap">
                 <i class="fa-solid fa-search"></i>
-                <%= t('common.search') %>
+                Søg
             </button>
         </div>
 
         <div class="flex items-center gap-3 mt-4 justify-center">
-            <span class="text-xs font-bold uppercase opacity-30"><%= t('add_dvd.separator_or') %></span>
+            <span class="text-xs font-bold uppercase opacity-30">ELLER</span>
         </div>
 
         <div class="flex justify-center mt-3">
@@ -36,18 +36,18 @@
                 class="bg-black/5 dark:bg-white/5 hover:bg-primary-theme hover:text-white px-6 py-3 rounded-xl font-bold text-sm transition-all flex items-center gap-2"
                 onclick="startBarcodeScanner()">
                 <i class="fa-solid fa-barcode"></i>
-                <%= t('add_game.btn_scan') %>
+                Scan en stregkode
             </button>
         </div>
 
         <div id="scannerContainer" class="hidden mt-6 rounded-2xl overflow-hidden shadow-lg border border-black/10 dark:border-white/10">
             <div class="bg-amber-500/10 text-amber-500 text-[10px] font-bold px-4 py-2 flex items-center gap-2 border-b border-black/5 dark:border-white/5">
                 <i class="fa-solid fa-triangle-exclamation"></i>
-                <span><%= t('add_game.barcode_warning') %></span>
+                <span>Stregkodescanneren er stadig eksperimentel og virker muligvis ikke på alle enheder.</span>
             </div>
             <div id="reader" class="w-full"></div>
             <p id="scanStatus" class="text-center py-3 text-xs font-bold opacity-60 bg-black/5 dark:bg-white/5">
-                <%= t('add_game.scan_init') %>
+                Initialiserer...
             </p>
         </div>
     </form>
@@ -56,7 +56,7 @@
         <% if (results.length > 0) { %>
             <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
                 <i class="fa-solid fa-list text-primary-theme"></i>
-                <%= t('add_game.results_title') %>
+                Søgeresultater
                 <span class="text-sm opacity-50 font-normal">(<%= results.length %>)</span>
             </h2>
 
@@ -91,7 +91,7 @@
         <% } else { %>
             <div class="text-center py-16 border-2 border-dashed border-black/10 dark:border-white/10 rounded-3xl">
                 <i class="fa-solid fa-gamepad text-5xl opacity-10 mb-4 block"></i>
-                <p class="opacity-50 font-bold"><%= t('add_game.no_results') %></p>
+                <p class="opacity-50 font-bold">Ingen spil fundet.</p>
             </div>
         <% } %>
     <% } %>
@@ -109,13 +109,13 @@
             await html5QrCode.stop();
             html5QrCode = null;
             container.classList.add('hidden');
-            btnScan.innerHTML = '<i class="fa-solid fa-barcode"></i> <%= t("add_game.btn_scan") %>';
+            btnScan.innerHTML = '<i class="fa-solid fa-barcode"></i> Scan en stregkode';
             return;
         }
 
         container.classList.remove('hidden');
-        btnScan.innerHTML = '<i class="fa-solid fa-stop"></i> <%= t("add_game.scan_stop") %>';
-        status.textContent = '<%= t("add_game.scan_init") %>';
+        btnScan.innerHTML = '<i class="fa-solid fa-stop"></i> Stop scan';
+        status.textContent = 'Initialiserer...';
 
         try {
             if (!window.Html5Qrcode) {
@@ -130,18 +130,18 @@
                 { facingMode: "environment" },
                 { fps: 10, qrbox: { width: 250, height: 100 } },
                 (decodedText) => {
-                    status.textContent = '<%= t("add_game.scan_found") %> ' + decodedText;
+                    status.textContent = 'Fundet! ' + decodedText;
                     document.getElementById('searchInput').value = decodedText;
                     html5QrCode.stop().then(() => {
                         html5QrCode = null;
                         container.classList.add('hidden');
-                        btnScan.innerHTML = '<i class="fa-solid fa-barcode"></i> <%= t("add_game.btn_scan") %>';
+                        btnScan.innerHTML = '<i class="fa-solid fa-barcode"></i> Scan en stregkode';
                         document.querySelector('form').submit();
                     });
                 }
             );
         } catch (err) {
-            status.textContent = '<%= t("add_game.scan_error") %>';
+            status.textContent = 'Kamerafejl (Tilladelser?)';
             console.error(err);
         }
     }

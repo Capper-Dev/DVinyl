@@ -12,13 +12,13 @@
                 <a href="<%= baseUrl %>/wishlist"
                     class="hover:opacity-100 hover:text-primary-theme transition-colors flex items-center gap-2">
                     <i class="fa-solid fa-arrow-left"></i>
-                    <%= t('detail.back_to_wishlist') %>
+                    Tilbage til ønskeliste
                 </a>
                 <% } else { %>
                     <a href="<%= baseUrl %>/collection?type=dvd"
                         class="hover:opacity-100 hover:text-primary-theme transition-colors flex items-center gap-2">
                         <i class="fa-solid fa-arrow-left"></i>
-                        <%= t('detail.back_to_collection') %>
+                        Tilbage til samlingen
                     </a>
                     <% } %>
         </nav>
@@ -32,7 +32,7 @@
                         <div
                             class="absolute top-4 left-4 bg-pink-500 text-white text-[10px] font-bold px-2 py-1 rounded shadow-md z-10 flex items-center gap-1">
                             <i class="fa-solid fa-gift"></i>
-                            <%= t('index.section_wishlist') %>
+                            Ønskeliste
                         </div>
                         <% } %>
 
@@ -42,27 +42,25 @@
 
                             <span
                                 class="absolute top-4 right-4 bg-white/90 dark:bg-black/60 backdrop-blur-md text-neutral-900 dark:text-white text-xs px-3 py-1 rounded-full border border-black/5 dark:border-white/10 shadow-sm">
-                                <%= t('detail.official_cover') %>
+                                Officielt cover
                             </span>
                 </div>
 
                 <div class="w-full mt-6 grid grid-cols-2 gap-4">
                     <div class="card-theme p-4 rounded-xl text-center shadow-sm">
                         <span class="block text-[10px] uppercase font-bold opacity-50 mb-1">
-                            <%= t('confirm_book.field_status') %>
+                            Status
                         </span>
                         <% let statusColor='text-gray-500' ; if(dvd.watchStatus==='watching' )
                             statusColor='text-blue-500' ; else if(dvd.watchStatus==='watched' )
                             statusColor='text-green-500' ; %>
                             <span class="text-sm font-bold <%= statusColor %>">
-                                <%= dvd.watchStatus==='watching' ? (t('confirm_dvd.status_watching')) :
-                                    (dvd.watchStatus==='watched' ? (t('confirm_dvd.status_watched')) :
-                                    (t('confirm_dvd.status_to_watch'))) %>
+                                <%= dvd.watchStatus==='watching' ? 'Ser' : (dvd.watchStatus==='watched' ? 'Set' : 'Ikke set') %>
                             </span>
                     </div>
                     <div class="card-theme p-4 rounded-xl text-center shadow-sm">
                         <span class="block text-[10px] uppercase font-bold opacity-50 mb-1">
-                            <%= t('confirm_book.field_rating') || 'Note' %>
+                            Bedømmelse
                         </span>
                         <div class="flex justify-center text-yellow-500 text-xs">
                             <% for(let i=1; i <=5; i++) { %>
@@ -79,8 +77,8 @@
                     <p
                         class="text-primary-theme font-bold text-sm mb-1 uppercase tracking-wider flex items-center gap-2">
                         <i class="fa-solid fa-film"></i>
-                        <%= dvd.media_type==='tv' ? t('dvd_detail.series') : t('dvd_detail.movie') %>
-                            <% if(dvd.is_boxset) { %> - <%= t('dvd_detail.boxset') %>
+                        <%= dvd.media_type==='tv' ? 'Serie' : 'Film' %>
+                            <% if(dvd.is_boxset) { %> - Boksæt
                                     <% } %>
                     </p>
 
@@ -127,7 +125,7 @@
 
                                                     <span
                                                         class="px-3 py-1 bg-black/5 dark:bg-white/10 border border-transparent rounded-full text-xs opacity-80 transition-colors">
-                                                        <%= t('confirm_dvd.field_quantity') %> : <%= dvd.quantity || 1
+                                                        Antal : <%= dvd.quantity || 1
                                                                 %>
                                                     </span>
                     </div>
@@ -136,11 +134,11 @@
                 <div class="flex flex-col gap-6 ml-2">
                     <div class="flex flex-col">
                         <span class="text-[10px] uppercase tracking-widest opacity-50 font-bold mb-2">
-                            <%= t('common.location') %>
+                            Placering
                         </span>
                         <span class="text-sm font-medium">
                             <i class="fa-solid fa-box-archive mr-2 opacity-50"></i>
-                            <%= dvd.location || t('common.not_specified') %>
+                            <%= dvd.location || 'Ikke angivet' %>
                         </span>
                     </div>
 
@@ -149,7 +147,7 @@
                             <% if (dvd.genres && dvd.genres.length > 0) { %>
                                 <div class="flex flex-col">
                                     <span class="text-[10px] uppercase tracking-widest opacity-50 font-bold mb-2">
-                                        <%= t('confirm_vinyl.field_genres') %>
+                                        Genrer
                                     </span>
                                     <div class="flex flex-wrap gap-2">
                                         <% dvd.genres.forEach(genre => { %>
@@ -165,7 +163,7 @@
                             <% if (dvd.styles && dvd.styles.length > 0) { %>
                                 <div class="flex flex-col">
                                     <span class="text-[10px] uppercase tracking-widest opacity-50 font-bold mb-2">
-                                        <%= t('confirm_vinyl.field_styles') %>
+                                        Stilarter
                                     </span>
                                     <div class="flex flex-wrap gap-2">
                                         <% dvd.styles.forEach(style => { %>
@@ -185,7 +183,7 @@
                             </span>
                             <span class="text-sm font-medium">
                                 <i class="fa-solid fa-film mr-2 opacity-50"></i>
-                                <%= dvd.genre || t('common.not_specified') %>
+                                <%= dvd.genre || 'Ikke angivet' %>
                             </span>
                         </div>
                     <% } %>
@@ -194,7 +192,7 @@
                 <div class="card-theme rounded-xl p-6 grid grid-cols-2 gap-y-6 gap-x-4 transition-colors shadow-sm">
                     <div>
                         <span class="block text-xs opacity-50 uppercase font-bold mb-1">
-                            <%= t('confirm_dvd.field_studio') %>
+                            Studie
                         </span>
                         <span class="font-medium transition-colors">
                             <%= dvd.studio || 'N/A' %>
@@ -202,18 +200,18 @@
                     </div>
                     <div>
                         <span class="block text-xs opacity-50 uppercase font-bold mb-1">
-                            <%= t('dvd_detail.barcode_label') %>
+                            Stregkode
                         </span>
                         <span class="inline-flex items-center gap-1.5 font-mono text-sm bg-black/5 dark:bg-white/5 px-2 py-1 rounded transition-colors">
                             <%= dvd.barcode || 'N/A' %>
                             <% if (dvd.barcode_locked) { %>
-                                <i class="fa-solid fa-lock text-[10px] text-primary-theme opacity-70" title="<%= t('confirm_vinyl.barcode_locked') %>"></i>
+                                <i class="fa-solid fa-lock text-[10px] text-primary-theme opacity-70" title="Lås stregkode"></i>
                             <% } %>
                         </span>
                     </div>
                     <div>
                         <span class="block text-xs opacity-50 uppercase font-bold mb-1">
-                            <%= t('dvd_detail.duration_label') %>
+                            Varighed
                         </span>
                         <span class="transition-colors">
                             <%= dvd.duration || 'N/A' %>
@@ -221,15 +219,15 @@
                     </div>
                     <div>
                         <span class="block text-xs opacity-50 uppercase font-bold mb-1">
-                            <%= t('detail.added_at') %>
+                            Tilføjet den
                         </span>
                         <span class="transition-colors">
-                            <%= new Date(dvd.added_at).toLocaleDateString(currentLng==='fr' ? 'fr-FR' : 'en-US' ) %>
+                            <%= new Date(dvd.added_at).toLocaleDateString('da-DK') %>
                         </span>
                     </div>
                     <div class="col-span-2 border-t border-black/10 dark:border-white/10 mt-2 pt-4 transition-colors">
                         <span class="block text-xs opacity-50 uppercase font-bold mb-1">
-                            <%= t('detail.source') %>
+                            Kilde
                         </span>
                         <a href="https://www.themoviedb.org/<%= dvd.media_type %>/<%= dvd.tmdb_id %>" target="_blank"
                             class="text-primary-theme hover:underline text-sm inline-flex items-center gap-1 transition-colors">
@@ -246,7 +244,7 @@
                         </div>
                         <h3 class="text-xs uppercase font-bold opacity-50 mb-3 flex items-center gap-2 relative z-10">
                             <i class="fa-regular fa-comment-dots"></i>
-                            <%= t('detail.personal_notes') %>
+                            Personlige noter
                         </h3>
                         <p class="text-sm leading-relaxed whitespace-pre-line relative z-10 transition-colors">
                             <%= dvd.comments %>
@@ -263,19 +261,19 @@
                                             onclick="refreshMetadata('<%= dvd._id %>')"
                                             class="opacity-60 hover:opacity-100 px-4 py-2 text-sm transition-colors border border-black/10 dark:border-white/10 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 flex items-center gap-2">
                                             <i class="fa-solid fa-arrows-rotate" id="refreshInfoIcon"></i>
-                                            <%= t('collection.refresh_metadata_btn') %>
+                                            Opdater info
                                         </button>
                                     <% } %>
                                 </div>
                                 <a href="<%= baseUrl %>/dvd/edit/<%= dvd._id %>"
                                     class="opacity-70 hover:opacity-100 hover:text-primary-theme px-4 py-2 text-sm transition-colors border border-black/10 dark:border-white/10 rounded-lg hover:bg-black/5 dark:hover:bg-white/5">
                                     <i class="fa-solid fa-pen-to-square mr-2"></i>
-                                    <%= t('common.edit') %>
+                                    Rediger
                                 </a>
                                 <button onclick="confirmDelete('<%= dvd._id %>')"
                                     class="text-red-600 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400 bg-red-100 dark:bg-red-500/10 hover:bg-red-200 dark:hover:bg-red-500/20 px-4 py-2 rounded-lg text-sm transition-colors">
                                     <i class="fa-solid fa-trash mr-2"></i>
-                                    <%= t('admin.tooltips.delete') %>
+                                    Slet
                                 </button>
                             </div>
                             <% } %>
@@ -285,8 +283,8 @@
 
     <script>
         const translations = {
-            confirm_delete: "<%= t('detail.confirm_delete') %>",
-            error_server: "<%= t('messages.generic_error') %>"
+            confirm_delete: "Er du sikker på, at du vil slette dette eksemplar fra din samling?",
+            error_server: "Der opstod en fejl."
         };
 
         async function confirmDelete(id) {
@@ -329,13 +327,13 @@
                 if (response.ok && data.success) {
                     window.location.reload();
                 } else {
-                    alert("<%= t('detail.refresh_info_error') || 'Refresh failed' %>");
+                    alert("Fejl ved opdatering af metadata.");
                     btn.disabled = false;
                     icon.classList.remove('fa-spin');
                 }
             } catch (err) {
                 console.error(err);
-                alert("<%= t('detail.refresh_info_error') || 'Refresh failed' %>");
+                alert("Fejl ved opdatering af metadata.");
                 btn.disabled = false;
                 icon.classList.remove('fa-spin');
             }

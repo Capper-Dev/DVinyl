@@ -19,8 +19,6 @@
     "express": "^5.1.0",
     "express-session": "^1.18.1",
     "geoip-lite": "^1.4.10",
-    "i18next": "^25.8.0",
-    "i18next-http-middleware": "^3.9.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.14.1",
     "multer": "^2.1.1",

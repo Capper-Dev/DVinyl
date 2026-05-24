@@ -56,7 +56,7 @@ router.post('/', async (req, res) => {
         res.redirect('/'); 
     } catch (err) {
         console.error(err);
-        res.render('setup', { error: req.t('errors.setup_error') });    
+        res.render('setup', { error: 'Opsætningsfejl opstod.' });
     }
 });
 

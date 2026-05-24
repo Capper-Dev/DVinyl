@@ -5,7 +5,7 @@
         <nav class="flex mb-6 text-sm opacity-60 transition-colors">
             <a href="<%= baseUrl %>/game/<%= game._id %>" class="hover:opacity-100 transition-opacity flex items-center py-2">
                 <i class="fa-solid fa-arrow-left mr-2"></i>
-                <%= t('common.cancel_back') %>
+                Annuller
             </a>
         </nav>
 
@@ -19,7 +19,7 @@
                             class="w-full h-full object-contain transition-all duration-500 p-2">
                         <div class="absolute inset-0 bg-black/40 hidden group-hover:flex items-center justify-center text-white text-xs font-bold backdrop-blur-sm cursor-pointer"
                             onclick="document.getElementById('checkEditCover').click()">
-                            <%= t('confirm_game.replace_cover') %>
+                            Erstat cover
                         </div>
                     </div>
                     <h2 class="text-xl font-bold mb-1 leading-tight">
@@ -36,7 +36,7 @@
 
                     <h1 class="text-2xl font-bold mb-6 flex items-center gap-2">
                         <i class="fa-solid fa-pen-to-square text-primary-theme"></i>
-                        <%= t('edit_game.title') %>
+                        Rediger spil
                     </h1>
 
                     <form action="<%= baseUrl %>/save-game" method="POST" class="space-y-6">
@@ -46,7 +46,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">
-                                    <%= t('confirm_game.field_title') %>
+                                    Titel
                                 </label>
                                 <input type="text" name="title" value="<%= game.title %>"
                                     class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-primary-theme focus:border-primary-theme block w-full p-3 transition-colors outline-none"
@@ -54,7 +54,7 @@
                             </div>
                             <div>
                                 <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">
-                                    <%= t('confirm_game.field_developer') %>
+                                    Udvikler
                                 </label>
                                 <input type="text" name="developer" value="<%= game.developer %>"
                                     class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-primary-theme block w-full p-3 transition-colors outline-none">
@@ -64,14 +64,14 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">
-                                    <%= t('confirm_game.field_publisher') %>
+                                    Udgiver
                                 </label>
                                 <input type="text" name="publisher" value="<%= game.publisher %>"
                                     class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-primary-theme block w-full p-3 transition-colors outline-none">
                             </div>
                             <div>
                                 <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">
-                                    <%= t('confirm_game.field_year') %>
+                                    År
                                 </label>
                                 <input type="text" name="year" value="<%= game.year %>"
                                     class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-primary-theme block w-full p-3 transition-colors outline-none">
@@ -83,7 +83,7 @@
                                 <label
                                     class="block mb-2 text-sm font-bold uppercase tracking-widest text-primary-theme opacity-80">
                                     <i class="fa-solid fa-gamepad mr-1"></i>
-                                    <%= t('confirm_game.field_platform') %>
+                                    Platform
                                 </label>
                                 <input type="text" name="platform" value="<%= game.platform %>"
                                     class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-primary-theme block w-full p-3 transition-colors outline-none">
@@ -91,29 +91,29 @@
                             <div>
                                 <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">
                                     <i class="fa-solid fa-globe mr-1"></i>
-                                    <%= t('confirm_game.field_region') %>
+                                    Region
                                 </label>
                                 <input type="text" name="region" value="<%= game.region || '' %>"
-                                    placeholder="<%= t('confirm_game.region_placeholder') %>"
+                                    placeholder="PAL / NTSC / NTSC-J..."
                                     class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-primary-theme block w-full p-3 transition-colors outline-none">
                             </div>
                             <div>
                                 <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">
-                                    <%= t('confirm_game.field_format') %>
+                                    Format
                                 </label>
                                 <select name="format"
                                     class="bg-black/5 dark:bg-white/5 border border-transparent text-gray-900 dark:text-white text-sm rounded-lg focus:ring-primary-theme block w-full p-3 transition-colors outline-none cursor-pointer">
                                     <option value="physical" class="bg-white dark:bg-[#1a1a1a]"
-                                        <%=game.format==='physical' ? 'selected' : '' %>><%= t('media.physical') %>
+                                        <%=game.format==='physical' ? 'selected' : '' %>>Fysisk
                                     </option>
                                     <option value="collector" class="bg-white dark:bg-[#1a1a1a]"
-                                        <%=game.format==='collector' ? 'selected' : '' %>><%= t('media.collector') %>
+                                        <%=game.format==='collector' ? 'selected' : '' %>>Samler
                                     </option>
                                     <option value="limited" class="bg-white dark:bg-[#1a1a1a]"
-                                        <%=game.format==='limited' ? 'selected' : '' %>><%= t('media.limited') %>
+                                        <%=game.format==='limited' ? 'selected' : '' %>>Begrænset udgave
                                     </option>
                                     <option value="steelbook" class="bg-white dark:bg-[#1a1a1a]"
-                                        <%=game.format==='steelbook' ? 'selected' : '' %>><%= t('media.steelbook') %>
+                                        <%=game.format==='steelbook' ? 'selected' : '' %>>Steelbook
                                     </option>
                                 </select>
                             </div>
@@ -122,8 +122,8 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60 flex items-center gap-2">
-                                <%= t('confirm_game.field_barcode') %>
-                                <label class="cursor-pointer flex items-center ml-auto" title="<%= t('confirm_vinyl.barcode_locked') %>">
+                                Stregkode
+                                <label class="cursor-pointer flex items-center ml-auto" title="Lås stregkode">
                                     <input type="checkbox" name="barcode_locked" class="hidden peer" <%= game.barcode_locked ? 'checked' : '' %>>
                                     <i class="fa-solid fa-unlock opacity-30 peer-checked:hidden"></i>
                                     <i class="fa-solid fa-lock text-primary-theme hidden peer-checked:block"></i>
@@ -133,7 +133,7 @@
                         </div>
                             <div>
                                 <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">
-                                    <%= t('confirm_game.field_quantity') %>
+                                    Antal
                                 </label>
                                 <input type="number" name="quantity" value="<%= game.quantity || 1 %>" min="1"
                                     class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-primary-theme block w-full p-3 transition-colors outline-none">
@@ -144,32 +144,29 @@
 
                         <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
                             <i class="fa-solid fa-trophy text-primary-theme"></i>
-                            <%= t('confirm_game.play_tracking') %>
+                            Spilsporing
                         </h2>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                             <div>
                                 <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">
-                                    <%= t('confirm_game.field_status') %>
+                                    Status
                                 </label>
                                 <select name="playStatus"
                                     class="bg-black/5 dark:bg-white/5 border border-transparent text-sm rounded-lg focus:ring-primary-theme block w-full p-3 transition-colors outline-none cursor-pointer">
                                     <option value="to_play" class="bg-white dark:bg-[#1a1a1a]"
-                                        <%=game.playStatus==='to_play' ? 'selected' : '' %>><%=
-                                            t('confirm_game.status_to_play') %>
+                                        <%=game.playStatus==='to_play' ? 'selected' : '' %>>Ikke spillet
                                     </option>
                                     <option value="playing" class="bg-white dark:bg-[#1a1a1a]"
-                                        <%=game.playStatus==='playing' ? 'selected' : '' %>><%=
-                                            t('confirm_game.status_playing') %>
+                                        <%=game.playStatus==='playing' ? 'selected' : '' %>>Spiller
                                     </option>
                                     <option value="played" class="bg-white dark:bg-[#1a1a1a]"
-                                        <%=game.playStatus==='played' ? 'selected' : '' %>><%=
-                                            t('confirm_game.status_played') %>
+                                        <%=game.playStatus==='played' ? 'selected' : '' %>>Spillet
                                     </option>
                                 </select>
                             </div>
                             <div>
                                 <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">
-                                    <%= t('confirm_game.field_rating') %>
+                                    Bedømmelse
                                 </label>
                                 <input type="number" name="user_rating" min="0" max="5" step="0.5"
                                     value="<%= game.user_rating || 0 %>"
@@ -185,7 +182,7 @@
                                     class="w-4 h-4 text-emerald-500 bg-black/5 dark:bg-white/10 border-transparent rounded focus:ring-primary-theme focus:ring-2 cursor-pointer transition-colors">
                                 <label for="checkEditCover"
                                     class="ml-2 text-sm font-bold cursor-pointer opacity-80 hover:opacity-100 transition-opacity">
-                                    <%= t('confirm_game.replace_cover') %>
+                                    Erstat cover
                                 </label>
                             </div>
 
@@ -198,17 +195,17 @@
                                     <button type="button" onclick="setImgTab('local')" id="tab-local"
                                         class="flex-1 py-2 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all bg-primary-theme text-white">
                                         <i class="fa-solid fa-upload mr-1"></i>
-                                        <%= t('confirm_vinyl.source_local') %>
+                                        Lokal
                                     </button>
                                     <button type="button" onclick="setImgTab('url')" id="tab-url"
                                         class="flex-1 py-2 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all opacity-50">
                                         <i class="fa-solid fa-link mr-1"></i>
-                                        <%= t('confirm_vinyl.source_url') %>
+                                        URL
                                     </button>
                                     <button type="button" onclick="setImgTab('search')" id="tab-search"
                                         class="flex-1 py-2 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all opacity-50">
                                         <i class="fa-solid fa-search mr-1"></i>
-                                        <%= t('confirm_vinyl.source_search') %>
+                                        Søg
                                     </button>
                                 </div>
 
@@ -217,7 +214,7 @@
                                         class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-black/10 dark:border-white/10 rounded-2xl cursor-pointer hover:bg-black/5 transition-all">
                                         <i class="fa-solid fa-cloud-arrow-up text-2xl opacity-20 mb-2"></i>
                                         <p class="text-xs font-bold opacity-50 italic">
-                                            <%= t('confirm_vinyl.browse_files') %>
+                                            Gennemse filer
                                         </p>
                                         <input type="file" id="fileInputCover" class="hidden" accept="image/*">
                                     </label>
@@ -245,7 +242,7 @@
 
                         <div>
                             <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">
-                                <%= t('confirm_game.field_comments') %>
+                                Noter / kommentarer
                             </label>
                             <textarea name="comments" rows="3"
                                 class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg focus:ring-primary-theme block w-full p-3 transition-colors outline-none"><%= game.comments || '' %></textarea>
@@ -255,10 +252,10 @@
                             <div>
                                 <label class="block text-xs font-bold uppercase tracking-wider opacity-60 mb-2">
                                     <i class="fa-solid fa-box-archive mr-1"></i>
-                                    <%= t('common.location') %>
+                                    Placering
                                 </label>
                                 <input type="text" name="location" list="locationList"
-                                    value="<%= game.location || '' %>" placeholder="<%= t('placeholders.location') %>"
+                                    value="<%= game.location || '' %>" placeholder="Hylde, kasse..."
                                     class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary-theme outline-none transition-all">
                                 <datalist id="locationList">
                                     <% locations.forEach(loc=> { %>
@@ -269,7 +266,7 @@
                             <div>
                                 <label class="block text-xs font-bold uppercase tracking-wider opacity-60 mb-2">
                                     <i class="fa-solid fa-tags mr-1"></i>
-                                    <%= t('confirm_vinyl.field_genres') %>
+                                    Genrer
                                 </label>
                                 <input type="text" name="genres" placeholder="Action, RPG..."
                                     value="<%= game.genres ? game.genres.join(', ') : '' %>"
@@ -281,7 +278,7 @@
                             <button type="submit" name="in_wishlist" value="<%= game.in_wishlist %>"
                                 class="text-white bg-primary-theme hover:brightness-110 font-bold rounded-lg text-lg px-5 py-4 transition-transform hover:scale-[1.01] flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 md:col-span-2">
                                 <i class="fa-solid fa-check"></i>
-                                <%= t('common.save_changes') %>
+                                Gem ændringer
                             </button>
                         </div>
                     </form>
@@ -292,7 +289,7 @@
 
     <script>
         const translations = {
-            compressAlert: "<%= t('image_source.compress_alert') %>"
+            compressAlert: "Billedet er for stort (maks. 5 MB). Det vil blive komprimeret automatisk."
         };
 
         const checkCover = document.getElementById('checkEditCover');

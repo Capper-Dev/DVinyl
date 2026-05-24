@@ -62,7 +62,7 @@ module.exports.login_post = async (req, res) => {
   if (loginAttempts[email] && loginAttempts[email].blockedUntil && now < loginAttempts[email].blockedUntil) {
     const secondsLeft = Math.ceil((loginAttempts[email].blockedUntil - now) / 1000);
     return res.status(429).json({
-      errors: { login: req.t('errors.too_many_attempts_timed', { seconds: secondsLeft }) }
+      errors: { login: `For mange forsøg. Prøv igen om ${secondsLeft} sekunder.` }
     });
   }
 
@@ -78,7 +78,7 @@ module.exports.login_post = async (req, res) => {
       email: user.email,
       ip: clientIp,
       country: geo.country || 'XX',
-      city: geo.city || req.t('common.unknown'),
+      city: geo.city || 'Ukendt',
       userAgent: req.headers['user-agent'],
       status: 'success'
     });
@@ -106,16 +106,16 @@ module.exports.login_post = async (req, res) => {
     if (loginAttempts[email].count >= MAX_ATTEMPTS) {
       loginAttempts[email].blockedUntil = now + BLOCK_TIME;
       return res.status(429).json({
-        errors: { login: req.t('errors.too_many_attempts_blocked') }
+        errors: { login: 'For mange forsøg. Prøv igen om 5 minutter.' }
       });
     }
 
-    // Retrieve the error key from handleErrors.
     const errorKeys = handleErrors(err);
-    
-    // Translate the key returned by the model using the current request language.
+    const authErrorMap = {
+      'errors.invalid_credentials': 'Ugyldige loginoplysninger'
+    };
     res.status(400).json({
-      errors: { login: req.t(errorKeys.login) }
+      errors: { login: authErrorMap[errorKeys.login] || errorKeys.login }
     });
   }
 };

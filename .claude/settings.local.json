@@ -4,7 +4,9 @@
       "Bash(git -C F:/MainProjects/DVinyl add routes/collectionRoutes.js)",
       "Bash(git -C F:/MainProjects/DVinyl commit -m \"fix: add error handling to collection routes\")",
       "WebSearch",
-      "WebFetch(domain:c.mymovies.dk)"
+      "WebFetch(domain:c.mymovies.dk)",
+      "WebFetch(domain:imusic.dk)",
+      "Bash(rm -f docs/superpowers/plans/.danish-translations.md)"
     ]
   }
 }

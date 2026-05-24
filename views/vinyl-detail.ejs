@@ -12,13 +12,13 @@
                 <a href="<%= baseUrl %>/wishlist"
                     class="hover:opacity-100 hover:text-primary-theme transition-colors flex items-center gap-2">
                     <i class="fa-solid fa-arrow-left"></i>
-                    <%= t('detail.back_to_wishlist') %>
+                    Tilbage til ønskelisten
                 </a>
                 <% } else { %>
                     <a href="<%= baseUrl %>/collection?type=music"
                         class="hover:opacity-100 hover:text-primary-theme transition-colors flex items-center gap-2">
                         <i class="fa-solid fa-arrow-left"></i>
-                        <%= t('detail.back_to_collection') %>
+                        Tilbage til samlingen
                     </a>
                     <% } %>
         </nav>
@@ -35,13 +35,13 @@
 
                     <span id="imageBadge"
                         class="absolute top-4 right-4 bg-white/90 dark:bg-black/60 backdrop-blur-md text-neutral-900 dark:text-white text-xs px-3 py-1 rounded-full border border-black/5 dark:border-white/10 shadow-sm transition-colors">
-                        <%= album.user_image ? t('detail.additional_image') : t('detail.official_cover') %>
+                        <%= album.user_image ? 'Ekstra billede' : 'Officielt cover' %>
                     </span>
                 </div>
 
                 <div class="flex gap-4 mt-6 overflow-x-auto pb-2 w-full max-w-lg justify-center">
                     <% if (album.user_image) { %>
-                        <button onclick="switchImage('<%= album.user_image %>', translations.additional_image)"
+                        <button onclick="switchImage('<%= album.user_image %>', 'Ekstra billede')"
                             class="thumb-btn w-20 h-20 rounded-lg border-2 border-primary-theme overflow-hidden relative transition-all hover:opacity-100 focus:outline-none shadow-md">
                             <img src="<%= album.user_image %>" class="w-full h-full object-cover">
                             <div class="absolute inset-0 bg-black/10 dark:bg-black/20"></div>
@@ -49,7 +49,7 @@
                         <% } %>
 
                             <button
-                                onclick="switchImage('<%= album.cover_image %>', translations.official_cover)"
+                                onclick="switchImage('<%= album.cover_image %>', 'Officielt cover')"
                                 class="thumb-btn w-20 h-20 rounded-lg border-2 border-transparent hover:border-black/20 dark:hover:border-white/20 overflow-hidden relative transition-all opacity-70 hover:opacity-100 focus:outline-none shadow-sm">
                                 <img src="<%= album.cover_image %>" class="w-full h-full object-cover">
                             </button>
@@ -66,10 +66,10 @@
                     </h2>
 
                     <div class="flex flex-wrap gap-2">
-                        <% 
-                            let badgeText = t('media.vinyl');
-                            if (album.media_type === 'cd') { badgeText = t('media.cd'); } 
-                            else if (album.media_type === 'cassette') { badgeText = t('media.cassette'); } 
+                        <%
+                            let badgeText = 'Vinyl';
+                            if (album.media_type === 'cd') { badgeText = 'CD'; }
+                            else if (album.media_type === 'cassette') { badgeText = 'Kassette'; }
                         %>
                             <span
                                 class="px-3 py-1 rounded-full text-xs font-bold tracking-wider bg-primary-theme text-white shadow-sm">
@@ -95,7 +95,7 @@
                                         <% } %>
                                             <span
                                                 class="px-3 py-1 bg-black/5 dark:bg-white/10 border border-transparent rounded-full text-xs opacity-80 transition-colors">
-                                                <%= t('confirm_vinyl.field_quantity') %> : <%= album.quantity || 1 %>
+                                                Antal : <%= album.quantity || 1 %>
                                             </span>
                     </div>
                 </div>
@@ -103,11 +103,11 @@
                 <div class="flex flex-col gap-6 ml-2">
                     <div class="flex flex-col">
                         <span class="text-[10px] uppercase tracking-widest opacity-50 font-bold mb-2">
-                            <%= t('common.location') %>
+                            Placering
                         </span>
                         <span class="text-sm font-medium">
                             <i class="fa-solid fa-box-archive mr-2 opacity-50"></i>
-                            <%= album.location || t('common.not_specified') %>
+                            <%= album.location || 'Ikke angivet' %>
                         </span>
                     </div>
 
@@ -116,7 +116,7 @@
                             <% if (album.genres && album.genres.length> 0) { %>
                                 <div class="flex flex-col">
                                     <span class="text-[10px] uppercase tracking-widest opacity-50 font-bold mb-2">
-                                        <%= t('confirm_vinyl.field_genres') %>
+                                        Genrer
                                     </span>
                                     <div class="flex flex-wrap gap-2">
                                         <% album.genres.forEach(genre=> { %>
@@ -133,7 +133,7 @@
                                         <div class="flex flex-col">
                                             <span
                                                 class="text-[10px] uppercase tracking-widest opacity-50 font-bold mb-2">
-                                                <%= t('confirm_vinyl.field_styles') %>
+                                                Stilarter
                                             </span>
                                             <div class="flex flex-wrap gap-2">
                                                 <% album.styles.forEach(style=> { %>
@@ -153,7 +153,7 @@
                                 </span>
                                 <span class="text-sm font-medium">
                                     <i class="fa-solid fa-compact-disc mr-2 opacity-50"></i>
-                                    <%= album.genre || t('common.not_specified') %>
+                                    <%= album.genre || 'Ikke angivet' %>
                                 </span>
                             </div>
                             <% } %>
@@ -163,7 +163,7 @@
                 <div class="card-theme rounded-xl p-6 grid grid-cols-2 gap-y-6 gap-x-4 transition-colors shadow-sm">
                     <div>
                         <span class="block text-xs opacity-50 uppercase font-bold mb-1">
-                            <%= t('confirm_vinyl.label_label') %>
+                            Pladeselskab
                         </span>
                         <span class="font-medium transition-colors">
                             <%= album.label || 'N/A' %>
@@ -171,7 +171,7 @@
                     </div>
                     <div>
                         <span class="block text-xs opacity-50 uppercase font-bold mb-1">
-                            <%= t('confirm_vinyl.catalog_label') %>
+                            Katalog
                         </span>
                         <span class="font-mono text-sm bg-black/5 dark:bg-white/5 px-2 py-1 rounded transition-colors">
                             <%= album.catalog_number || 'N/A' %>
@@ -180,7 +180,7 @@
                     <% if(album.barcode) { %>
                     <div>
                         <span class="block text-xs opacity-50 uppercase font-bold mb-1">
-                            <%= t('confirm_vinyl.barcode_label') %>
+                            Stregkode
                         </span>
                         <span class="font-mono text-sm bg-black/5 dark:bg-white/5 px-2 py-1 rounded transition-colors inline-flex items-center gap-2">
                             <%= album.barcode %>
@@ -192,7 +192,7 @@
                     <% } %>
                     <div>
                         <span class="block text-xs opacity-50 uppercase font-bold mb-1">
-                            <%= t('confirm_vinyl.year_label') %>
+                            År
                         </span>
                         <span class="font-mono text-sm bg-black/5 dark:bg-white/5 px-2 py-1 rounded transition-colors">
                             <%= album.year || 'N/A' %>
@@ -200,7 +200,7 @@
                     </div>
                     <div>
                         <span class="block text-xs opacity-50 uppercase font-bold mb-1">
-                            <%= t('confirm_vinyl.country') %>
+                            Land
                         </span>
                         <span class="font-medium transition-colors">
                             <%= album.country || 'N/A' %>
@@ -208,15 +208,15 @@
                     </div>
                     <div>
                         <span class="block text-xs opacity-50 uppercase font-bold mb-1">
-                            <%= t('detail.added_at') %>
+                            Tilføjet
                         </span>
                         <span class="transition-colors">
-                            <%= new Date(album.added_at).toLocaleDateString(currentLng==='fr' ? 'fr-FR' : 'en-US' ) %>
+                            <%= new Date(album.added_at).toLocaleDateString('da-DK') %>
                         </span>
                     </div>
                     <div>
                         <span class="block text-xs opacity-50 uppercase font-bold mb-1">
-                            <%= t('detail.source') %>
+                            Kilde
                         </span>
                         <a href="https://www.discogs.com/release/<%= album.discogs_id %>" target="_blank"
                             class="text-primary-theme hover:underline text-sm inline-flex items-center gap-1 transition-colors">
@@ -227,19 +227,19 @@
                     <div class="col-span-2 border-t border-black/10 dark:border-white/10 mt-2 pt-4 transition-colors">
                         <div class="flex justify-between items-center mb-2">
                             <span class="text-xs opacity-50 uppercase font-bold">
-                                <%= t('detail.estimation_title') %>
+                                Vurdering (Discogs)
                             </span>
                             <button id="btnEstimate"
                                 onclick="fetchEstimation('<%= album.discogs_id %>', '<%= album.quantity || 1 %>')"
                                 class="text-xs bg-black/5 dark:bg-white/5 hover:bg-primary-theme hover:text-white px-2 py-1 rounded transition-colors flex items-center gap-1 border border-transparent">
                                 <i class="fa-solid fa-calculator"></i>
-                                <%= t('detail.calculate_btn') %>
+                                Beregn
                             </button>
                         </div>
                         <div id="priceResult" class="hidden text-sm"></div>
                         <div id="priceLoader" class="hidden text-center py-2 opacity-50 text-xs italic">
                             <i class="fa-solid fa-circle-notch fa-spin"></i>
-                            <%= t('detail.market_analysis') %>
+                            Analyserer marked...
                         </div>
                     </div>
                 </div>
@@ -252,7 +252,7 @@
                         </div>
                         <h3 class="text-xs uppercase font-bold opacity-50 mb-3 flex items-center gap-2 relative z-10">
                             <i class="fa-regular fa-comment-dots"></i>
-                            <%= t('detail.personal_notes') %>
+                            Personlige noter
                         </h3>
                         <p class="text-sm leading-relaxed whitespace-pre-line relative z-10 transition-colors">
                             <%= album.comments %>
@@ -263,7 +263,7 @@
                         <div>
                             <h3 class="text-lg font-bold mb-4 flex items-center gap-2 transition-colors">
                                 <i class="fa-solid fa-list-ul opacity-50"></i>
-                                <%= t('detail.tracklist_title') %>
+                                Tracklist
                             </h3>
 
                             <div class="card-theme rounded-xl overflow-hidden shadow-sm transition-colors">
@@ -275,11 +275,10 @@
                                                 <tr>
                                                     <th class="px-4 py-3 w-14 text-center">#</th>
                                                     <th class="px-4 py-3">
-                                                        <%= t('confirm_vinyl.field_title') %>
+                                                        Titel
                                                     </th>
                                                     <th class="px-4 py-3 text-right">
-                                                        <%= t('confirm_vinyl.year_label')==='Année' ? 'Durée'
-                                                            : 'Duration' %>
+                                                        Varighed
                                                     </th>
                                                 </tr>
                                             </thead>
@@ -307,7 +306,7 @@
                                         <div class="flex flex-col items-center justify-center py-12 opacity-40">
                                             <i class="fa-solid fa-music text-4xl mb-4 opacity-50"></i>
                                             <p class="text-sm italic mb-4">
-                                                <%= t('detail.no_tracklist') %>
+                                                Ingen tracklist tilgængelig.
                                             </p>
 
                                             <% if (user && user.isAdmin) { %>
@@ -316,13 +315,13 @@
                                                     class="bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20 px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 active:scale-95 shadow-sm">
                                                     <i class="fa-solid fa-file-import"></i>
                                                     <span id="importBtnText">
-                                                        <%= t('detail.import_tracklist_btn') %>
+                                                        Importér tracklist
                                                     </span>
                                                 </button>
                                                 <p id="importError"
                                                     class="hidden text-red-500 text-[10px] mt-2 font-bold uppercase tracking-tighter">
                                                     <i class="fa-solid fa-circle-exclamation mr-1"></i>
-                                                    <%= t('detail.tracklist_not_found') %>
+                                                    Tracklist ikke fundet på Discogs
                                                 </p>
                                                 <% } %>
                                         </div>
@@ -339,19 +338,19 @@
                                             onclick="refreshMetadata('<%= album._id %>', '<%= album.discogs_id %>')"
                                             class="opacity-60 hover:opacity-100 px-4 py-2 text-sm transition-colors border border-black/10 dark:border-white/10 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 flex items-center gap-2">
                                             <i class="fa-solid fa-arrows-rotate" id="refreshInfoIcon"></i>
-                                            <%= t('collection.refresh_metadata_btn') %>
+                                            Opdater fra Discogs
                                         </button>
                                     <% } %>
                                 </div>
                                 <a href="<%= baseUrl %>/album/edit/<%= album._id %>"
                                     class="opacity-70 hover:opacity-100 hover:text-primary-theme px-4 py-2 text-sm transition-colors border border-black/10 dark:border-white/10 rounded-lg hover:bg-black/5 dark:hover:bg-white/5">
                                     <i class="fa-solid fa-pen-to-square mr-2"></i>
-                                    <%= t('common.edit') %>
+                                    Rediger
                                 </a>
                                 <button onclick="confirmDelete('<%= album._id %>')"
                                     class="text-red-600 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400 bg-red-100 dark:bg-red-500/10 hover:bg-red-200 dark:hover:bg-red-500/20 px-4 py-2 rounded-lg text-sm transition-colors">
                                     <i class="fa-solid fa-trash mr-2"></i>
-                                    <%= t('admin.tooltips.delete') %>
+                                    Slet
                                 </button>
                             </div>
                             <% } %>
@@ -361,19 +360,19 @@
 
     <script>
         const translations = {
-            official_cover: "<%= t('detail.official_cover') %>",
-            additional_image: "<%= t('detail.additional_image') %>",
-            confirm_delete: "<%= t('detail.confirm_delete') %>",
-            market_price: "<%= t('detail.market_price') %>",
-            historical_estimate: "<%= t('detail.historical_estimate') %>",
-            shipping_hint: "<%= t('detail.shipping_hint') %>",
-            view_discogs: "<%= t('detail.view_discogs') %>",
-            unavailable_data: "<%= t('detail.unavailable_data') %>",
-            analyzing: "<%= t('detail.market_analysis') %>",
-            error_server: "<%= t('messages.generic_error') %>"
+            official_cover: "Officielt cover",
+            additional_image: "Ekstra billede",
+            confirm_delete: "Er du sikker på, du vil slette dette album fra din samling? Denne handling er uigenkaldelig.",
+            market_price: "Aktuel markedspris",
+            historical_estimate: "Historisk vurdering (VG+)",
+            shipping_hint: "*Ekskl. forsendelse",
+            view_discogs: "Vis på Discogs",
+            unavailable_data: "Data utilgængelig",
+            analyzing: "Analyserer marked...",
+            error_server: "Der opstod en fejl."
         };
 
-        const currentLocale = '<%= currentLng === "fr" ? "fr-FR" : "en-US" %>';
+        const currentLocale = 'da-DK';
 
         function switchImage(url, text) {
             const mainImg = document.getElementById('mainImage');
@@ -503,7 +502,7 @@
 
             btn.disabled = true;
             errorMsg.classList.add('hidden');
-            btnText.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> <%= t('detail.importing') %>`;
+            btnText.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Importerer...`;
 
             try {
                 const response = await fetch(`<%= baseUrl %>/api/album/${albumId}/import-tracklist`, {
@@ -521,7 +520,7 @@
                 }
             } catch (err) {
                 btn.disabled = false;
-                btnText.innerText = "<%= t('detail.import_tracklist_btn') %>";
+                btnText.innerText = "Importér tracklist";
                 errorMsg.classList.remove('hidden');
             }
         }
@@ -547,13 +546,13 @@
                 if (response.ok && data.success) {
                     window.location.reload();
                 } else {
-                    alert("<%= t('detail.refresh_info_error') %>");
+                    alert("Fejl ved opdatering af metadata.");
                     btn.disabled = false;
                     icon.classList.remove('fa-spin');
                 }
             } catch (err) {
                 console.error(err);
-                alert("<%= t('detail.refresh_info_error') %>");
+                alert("Fejl ved opdatering af metadata.");
                 btn.disabled = false;
                 icon.classList.remove('fa-spin');
             }

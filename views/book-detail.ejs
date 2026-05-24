@@ -12,13 +12,13 @@
                 <a href="<%= baseUrl %>/wishlist"
                     class="hover:opacity-100 hover:text-primary-theme transition-colors flex items-center gap-2">
                     <i class="fa-solid fa-arrow-left"></i>
-                    <%= t('detail.back_to_wishlist') %>
+                    Tilbage til ønskeliste
                 </a>
                 <% } else { %>
                     <a href="<%= baseUrl %>/collection?type=books"
                         class="hover:opacity-100 hover:text-primary-theme transition-colors flex items-center gap-2">
                         <i class="fa-solid fa-arrow-left"></i>
-                        <%= t('detail.back_to_collection') %>
+                        Tilbage til samlingen
                     </a>
                     <% } %>
         </nav>
@@ -32,7 +32,7 @@
                         <div
                             class="absolute top-4 left-4 bg-pink-500 text-white text-[10px] font-bold px-2 py-1 rounded shadow-md z-10 flex items-center gap-1">
                             <i class="fa-solid fa-gift"></i>
-                            <%= t('index.section_wishlist') %>
+                            Ønskeliste
                         </div>
                         <% } %>
 
@@ -42,26 +42,25 @@
 
                             <span
                                 class="absolute top-4 right-4 bg-white/90 dark:bg-black/60 backdrop-blur-md text-neutral-900 dark:text-white text-xs px-3 py-1 rounded-full border border-black/5 dark:border-white/10 shadow-sm">
-                                <%= t('detail.official_cover') %>
+                                Officielt cover
                             </span>
                 </div>
 
                 <div class="w-full mt-6 grid grid-cols-2 gap-4">
                     <div class="card-theme p-4 rounded-xl text-center shadow-sm">
                         <span class="block text-[10px] uppercase font-bold opacity-50 mb-1">
-                            <%= t('confirm_book.field_status') %>
+                            Status
                         </span>
                         <% let statusColor='text-gray-500' ; if(book.readingStatus==='reading' )
                             statusColor='text-blue-500' ; else if(book.readingStatus==='read' )
                             statusColor='text-green-500' ; %>
                             <span class="text-sm font-bold <%= statusColor %>">
-                                <%= book.readingStatus==='reading' ? t('status.reading') : (book.readingStatus==='read'
-                                    ? t('status.read') : t('status.to_read')) %>
+                                <%= book.readingStatus==='reading' ? 'Læser' : (book.readingStatus==='read' ? 'Læst' : 'Ikke læst') %>
                             </span>
                     </div>
                     <div class="card-theme p-4 rounded-xl text-center shadow-sm">
                         <span class="block text-[10px] uppercase font-bold opacity-50 mb-1">
-                            <%= t('confirm_book.field_rating') %>
+                            Bedømmelse
                         </span>
                         <div class="flex justify-center text-yellow-500 text-xs">
                             <% for(let i=1; i <=5; i++) { %>
@@ -80,7 +79,7 @@
                             class="text-primary-theme font-bold text-sm mb-1 uppercase tracking-wider flex items-center gap-2">
                             <i class="fa-solid fa-swatchbook"></i>
                             <%= book.series %>
-                                <% if(book.volume) { %> - <%= t('book_detail.volume') %>
+                                <% if(book.volume) { %> - Bind
                                         <%= book.volume %>
                                             <% } %>
                         </p>
@@ -100,7 +99,7 @@
                                     || 'bg-gray-600 text-white' ; %>
                                     <span
                                         class="px-3 py-1 rounded-full text-xs font-bold tracking-wider <%= badgeColor %> shadow-sm">
-                                        <%= t('media.' + book.format) %>
+                                        <%= ({ paperback: 'Paperback', hardcover: 'Hardback', manga: 'Manga', comic: 'Tegneserie', graphic_novel: 'Graphic Novel' }[book.format]) || 'Format' %>
                                     </span>
 
                                     <% if (book.year) { %>
@@ -117,7 +116,7 @@
 
                                             <span
                                                 class="px-3 py-1 bg-black/5 dark:bg-white/10 border border-transparent rounded-full text-xs opacity-80 transition-colors">
-                                                <%= t('confirm_vinyl.field_quantity') %> : <%= book.quantity || 1 %>
+                                                Antal : <%= book.quantity || 1 %>
                                             </span>
                             </div>
                 </div>
@@ -125,11 +124,11 @@
                 <div class="flex flex-col gap-6 ml-2">
                     <div class="flex flex-col">
                         <span class="text-[10px] uppercase tracking-widest opacity-50 font-bold mb-2">
-                            <%= t('common.location') %>
+                            Placering
                         </span>
                         <span class="text-sm font-medium">
                             <i class="fa-solid fa-box-archive mr-2 opacity-50"></i>
-                            <%= book.location || t('common.not_specified') %>
+                            <%= book.location || 'Ikke angivet' %>
                         </span>
                     </div>
 
@@ -138,7 +137,7 @@
                             <% if (book.genres && book.genres.length > 0) { %>
                                 <div class="flex flex-col">
                                     <span class="text-[10px] uppercase tracking-widest opacity-50 font-bold mb-2">
-                                        <%= t('confirm_vinyl.field_genres') %>
+                                        Genrer
                                     </span>
                                     <div class="flex flex-wrap gap-2">
                                         <% book.genres.forEach(genre => { %>
@@ -154,7 +153,7 @@
                             <% if (book.styles && book.styles.length > 0) { %>
                                 <div class="flex flex-col">
                                     <span class="text-[10px] uppercase tracking-widest opacity-50 font-bold mb-2">
-                                        <%= t('confirm_vinyl.field_styles') %>
+                                        Stilarter
                                     </span>
                                     <div class="flex flex-wrap gap-2">
                                         <% book.styles.forEach(style => { %>
@@ -174,7 +173,7 @@
                             </span>
                             <span class="text-sm font-medium">
                                 <i class="fa-solid fa-book-open mr-2 opacity-50"></i>
-                                <%= book.genre || t('common.not_specified') %>
+                                <%= book.genre || 'Ikke angivet' %>
                             </span>
                         </div>
                     <% } %>
@@ -183,7 +182,7 @@
                 <div class="card-theme rounded-xl p-6 grid grid-cols-2 gap-y-6 gap-x-4 transition-colors shadow-sm">
                     <div>
                         <span class="block text-xs opacity-50 uppercase font-bold mb-1">
-                            <%= t('confirm_book.field_publisher') %>
+                            Udgiver
                         </span>
                         <span class="font-medium transition-colors">
                             <%= book.publisher || 'N/A' %>
@@ -194,13 +193,13 @@
                         <span class="inline-flex items-center gap-1.5 font-mono text-sm bg-black/5 dark:bg-white/5 px-2 py-1 rounded transition-colors">
                             <%= book.barcode || book.isbn || 'N/A' %>
                             <% if (book.barcode_locked) { %>
-                                <i class="fa-solid fa-lock text-[10px] text-primary-theme opacity-70" title="<%= t('confirm_vinyl.barcode_locked') %>"></i>
+                                <i class="fa-solid fa-lock text-[10px] text-primary-theme opacity-70" title="Lås stregkode"></i>
                             <% } %>
                         </span>
                     </div>
                     <div>
                         <span class="block text-xs opacity-50 uppercase font-bold mb-1">
-                            <%= t('confirm_book.field_pages') %>
+                            Sider
                         </span>
                         <span class="transition-colors">
                             <%= book.pages ? book.pages + ' p.' : 'N/A' %>
@@ -208,28 +207,28 @@
                     </div>
                     <div>
                         <span class="block text-xs opacity-50 uppercase font-bold mb-1">
-                            <%= t('detail.added_at') %>
+                            Tilføjet den
                         </span>
                         <span class="transition-colors">
-                            <%= new Date(book.added_at).toLocaleDateString(currentLng==='fr' ? 'fr-FR' : 'en-US' ) %>
+                            <%= new Date(book.added_at).toLocaleDateString('da-DK') %>
                         </span>
                     </div>
                     <div class="col-span-2 border-t border-black/10 dark:border-white/10 mt-2 pt-4 transition-colors">
                         <span class="block text-xs opacity-50 uppercase font-bold mb-1">
-                            <%= t('detail.source') %>
+                            Kilde
                         </span>
                         <% if (book.source==='hardcover' && book.hardcover_slug) { %>
                             <a href="https://hardcover.app/books/<%= book.hardcover_slug %>" target="_blank"
                                 class="text-primary-theme hover:underline text-sm inline-flex items-center gap-1">
                                 <i class="fa-solid fa-book"></i>
-                                <%= t('book.source_hardcover') %>
+                                Se på Hardcover
                             </a>
                             <% } else if (book.source==='goodreads' ) { %>
                                 <a href="https://www.goodreads.com/search?q=<%= encodeURIComponent(book.isbn || book.title) %>"
                                     target="_blank"
                                     class="text-[#553B08] dark:text-yellow-600 hover:underline text-sm inline-flex items-center gap-1">
                                     <i class="fa-solid fa-book-open"></i>
-                                    <%= t('book.source_goodreads') %>
+                                    Se på GoodReads
                                 </a>
                                 <% } %>
                     </div>
@@ -243,7 +242,7 @@
                         </div>
                         <h3 class="text-xs uppercase font-bold opacity-50 mb-3 flex items-center gap-2 relative z-10">
                             <i class="fa-regular fa-comment-dots"></i>
-                            <%= t('detail.personal_notes') %>
+                            Personlige noter
                         </h3>
                         <p class="text-sm leading-relaxed whitespace-pre-line relative z-10 transition-colors">
                             <%= book.comments %>
@@ -260,19 +259,19 @@
                                             onclick="refreshMetadata('<%= book._id %>')"
                                             class="opacity-60 hover:opacity-100 px-4 py-2 text-sm transition-colors border border-black/10 dark:border-white/10 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 flex items-center gap-2">
                                             <i class="fa-solid fa-arrows-rotate" id="refreshInfoIcon"></i>
-                                            <%= t('collection.refresh_metadata_btn') %>
+                                            Opdater info
                                         </button>
                                     <% } %>
                                 </div>
                                 <a href="<%= baseUrl %>/book/edit/<%= book._id %>"
                                     class="opacity-70 hover:opacity-100 hover:text-primary-theme px-4 py-2 text-sm transition-colors border border-black/10 dark:border-white/10 rounded-lg hover:bg-black/5 dark:hover:bg-white/5">
                                     <i class="fa-solid fa-pen-to-square mr-2"></i>
-                                    <%= t('common.edit') %>
+                                    Rediger
                                 </a>
                                 <button onclick="confirmDelete('<%= book._id %>')"
                                     class="text-red-600 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400 bg-red-100 dark:bg-red-500/10 hover:bg-red-200 dark:hover:bg-red-500/20 px-4 py-2 rounded-lg text-sm transition-colors">
                                     <i class="fa-solid fa-trash mr-2"></i>
-                                    <%= t('admin.tooltips.delete') %>
+                                    Slet
                                 </button>
                             </div>
                             <% } %>
@@ -282,11 +281,11 @@
 
     <script>
         const translations = {
-            official_cover: "<%= t('detail.official_cover') %>",
-            additional_image: "<%= t('detail.additional_image') %>",
-            confirm_delete: "<%= t('detail.confirm_delete') %>",
-            unavailable_data: "<%= t('detail.unavailable_data') %>",
-            error_server: "<%= t('messages.generic_error') %>"
+            official_cover: "Officielt cover",
+            additional_image: "Ekstra billede",
+            confirm_delete: "Er du sikker på, at du vil slette denne bog fra din samling? Denne handling kan ikke fortrydes.",
+            unavailable_data: "Data utilgængelig",
+            error_server: "Der opstod en fejl."
         };
 
         async function confirmDelete(id) {
@@ -328,13 +327,13 @@
                 if (response.ok && data.success) {
                     window.location.reload();
                 } else {
-                    alert("<%= t('detail.refresh_info_error') || 'Refresh failed' %>");
+                    alert("Fejl ved opdatering af metadata.");
                     btn.disabled = false;
                     icon.classList.remove('fa-spin');
                 }
             } catch (err) {
                 console.error(err);
-                alert("<%= t('detail.refresh_info_error') || 'Refresh failed' %>");
+                alert("Fejl ved opdatering af metadata.");
                 btn.disabled = false;
                 icon.classList.remove('fa-spin');
             }

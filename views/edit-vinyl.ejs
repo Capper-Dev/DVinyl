@@ -3,7 +3,7 @@
 <div class="max-w-screen-xl mx-auto pb-20 px-4 md:px-0">
     <nav class="flex mb-6 text-sm opacity-60 transition-colors">
         <a href="<%= baseUrl %>/album/<%= vinyl._id %>" class="hover:opacity-100 transition-opacity flex items-center py-2">
-            <i class="fa-solid fa-arrow-left mr-2"></i> <%= t('common.cancel_back') %>
+            <i class="fa-solid fa-arrow-left mr-2"></i> Annullér og tilbage
         </a>
     </nav>
 
@@ -21,34 +21,34 @@
         <div class="lg:col-span-8">
             <div class="card-theme rounded-xl p-6 md:p-8 transition-colors shadow-sm">
                 <h1 class="text-2xl font-bold mb-6 flex items-center gap-2">
-                    <i class="fa-solid fa-pen-to-square text-primary-theme"></i> <%= t('edit_vinyl.title') %>
+                    <i class="fa-solid fa-pen-to-square text-primary-theme"></i> Redigér album
                 </h1>
 
                 <form action="<%= baseUrl %>/save-vinyl" method="POST" class="space-y-6">
                     <div class="bg-yellow-50 dark:bg-yellow-900/10 border border-yellow-200 dark:border-yellow-700/30 p-4 rounded-lg transition-colors">
-                        <label class="block mb-2 text-sm font-bold text-yellow-700 dark:text-yellow-500"><%= t('edit_vinyl.discogs_id_label') %></label>
-                        <div class="text-xs text-yellow-800/80 dark:text-yellow-200/60 mb-2"><%= t('edit_vinyl.discogs_id_hint') %></div>
+                        <label class="block mb-2 text-sm font-bold text-yellow-700 dark:text-yellow-500">Discogs ID (prisreference)</label>
+                        <div class="text-xs text-yellow-800/80 dark:text-yellow-200/60 mb-2">Hvis prisvurderingen er forkert, erstat dette ID med den sjældne versions ID fra Discogs.</div>
                         <input type="number" name="discogs_id" value="<%= vinyl.discogs_id %>" class="bg-white dark:bg-black/20 border border-yellow-300 dark:border-yellow-600/50 text-sm rounded-lg focus:ring-yellow-500 block w-full p-2.5 font-mono outline-none">
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60"><%= t('confirm_vinyl.field_title') %></label>
+                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">Titel</label>
                             <input type="text" name="title" value="<%= vinyl.title %>" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-primary-theme block w-full p-3 outline-none">
                         </div>
                         <div>
-                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60"><%= t('confirm_vinyl.field_artist') %></label>
+                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">Kunstner</label>
                             <input type="text" name="artist" value="<%= vinyl.artist %>" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-primary-theme block w-full p-3 outline-none">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60"><%= t('confirm_vinyl.field_format') %></label>
+                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">Format</label>
                             <input type="text" name="format_type" value="<%= vinyl.format_type %>" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-primary-theme block w-full p-3 outline-none">
                         </div>
                         <div>
-                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest text-primary-theme"><%= t('confirm_vinyl.field_edition') %></label>
+                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest text-primary-theme">Farve / udgave</label>
                             <input type="text" name="variant_color" value="<%= vinyl.variant_color %>" class="bg-black/5 dark:bg-white/5 border border-primary-theme/30 text-sm rounded-lg focus:ring-primary-theme block w-full p-3 outline-none">
                         </div>
                     </div>
@@ -56,8 +56,8 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60 flex items-center gap-2">
-                                <%= t('confirm_vinyl.barcode_label') %>
-                                <label class="cursor-pointer flex items-center ml-auto" title="<%= t('confirm_vinyl.barcode_locked') %>">
+                                Stregkode
+                                <label class="cursor-pointer flex items-center ml-auto" title="Lås stregkode">
                                     <input type="checkbox" name="barcode_locked" class="hidden peer" <%= vinyl.barcode_locked ? 'checked' : '' %>>
                                     <i class="fa-solid fa-unlock opacity-30 peer-checked:hidden"></i>
                                     <i class="fa-solid fa-lock text-primary-theme hidden peer-checked:block"></i>
@@ -66,18 +66,18 @@
                             <input type="text" name="barcode" value="<%= vinyl.barcode %>" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-primary-theme block w-full p-3 outline-none font-mono" placeholder="Code-barres...">
                         </div>
                         <div>
-                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60"><%= t('confirm_vinyl.year_label') %></label>
+                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">År</label>
                             <input type="text" name="year" value="<%= vinyl.year %>" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-primary-theme block w-full p-3 outline-none" placeholder="Ex: 1994">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60"><%= t('confirm_vinyl.country') %></label>
+                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">Land</label>
                             <input type="text" name="country" value="<%= vinyl.country %>" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-primary-theme block w-full p-3 outline-none" placeholder="US, Europe...">
                         </div>
                         <div>
-                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60"><%= t('confirm_vinyl.field_quantity') %></label>
+                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">Antal</label>
                             <input type="number" name="quantity" value="<%= vinyl.quantity || 1 %>" min="1" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-primary-theme block w-full p-3 outline-none">
                         </div>
                     </div>
@@ -88,7 +88,7 @@
                         <div class="flex items-center">
                             <input id="checkEditCover" type="checkbox" class="w-4 h-4 text-primary-theme bg-black/5 dark:bg-white/10 border-transparent rounded focus:ring-primary-theme focus:ring-2 cursor-pointer transition-colors">
                             <label for="checkEditCover" class="ml-2 text-sm font-bold cursor-pointer opacity-80 hover:opacity-100 transition-opacity">
-                                <%= t('edit_vinyl.change_cover') %>
+                                Skift hovedcover
                             </label>
                         </div>
                         <input type="hidden" name="cover_image" id="inputCoverImage" value="<%= vinyl.cover_image %>">
@@ -96,20 +96,20 @@
                         <div id="boxEditCover" class="hidden p-4 card-theme rounded-2xl border border-black/10 dark:border-white/10 shadow-inner">
                             <div class="flex gap-1 mb-6 p-1 bg-black/5 dark:bg-white/5 rounded-xl">
                                 <button type="button" onclick="setImgTab('cover', 'local')" id="tab-cover-local" class="flex-1 py-2 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all bg-primary-theme text-white">
-                                    <i class="fa-solid fa-upload mr-1"></i> <%= t('confirm_vinyl.source_local') %>
+                                    <i class="fa-solid fa-upload mr-1"></i> Lokal
                                 </button>
                                 <button type="button" onclick="setImgTab('cover', 'url')" id="tab-cover-url" class="flex-1 py-2 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all opacity-50">
-                                    <i class="fa-solid fa-link mr-1"></i> <%= t('confirm_vinyl.source_url') %>
+                                    <i class="fa-solid fa-link mr-1"></i> URL
                                 </button>
                                 <button type="button" onclick="setImgTab('cover', 'search')" id="tab-cover-search" class="flex-1 py-2 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all opacity-50">
-                                    <i class="fa-solid fa-search mr-1"></i> <%= t('confirm_vinyl.source_search') %>
+                                    <i class="fa-solid fa-search mr-1"></i> Søg
                                 </button>
                             </div>
 
                             <div id="pane-cover-local" class="img-pane-cover">
                                 <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-black/10 dark:border-white/10 rounded-2xl cursor-pointer hover:bg-black/5 transition-all">
                                     <i class="fa-solid fa-cloud-arrow-up text-2xl opacity-20 mb-2"></i>
-                                    <p class="text-xs font-bold opacity-50 italic"><%= t('confirm_vinyl.browse_files') %></p>
+                                    <p class="text-xs font-bold opacity-50 italic">Gennemse filer</p>
                                     <input type="file" id="fileInputCover" class="hidden" accept="image/*">
                                 </label>
                             </div>
@@ -130,7 +130,7 @@
                         <div class="flex items-center">
                             <input id="checkEditDisc" type="checkbox" <%= vinyl.user_image ? 'checked' : '' %> class="w-4 h-4 text-primary-theme bg-black/5 dark:bg-white/10 border-transparent rounded focus:ring-primary-theme focus:ring-2 cursor-pointer transition-colors">
                             <label for="checkEditDisc" class="ml-2 text-sm font-bold cursor-pointer opacity-80 hover:opacity-100 transition-opacity">
-                                <%= t('edit_vinyl.edit_secondary_visual') %>
+                                Redigér sekundært visual (plade)
                             </label>
                         </div>
                         <input type="hidden" name="user_image" id="inputUserImage" value="<%= vinyl.user_image %>">
@@ -138,20 +138,20 @@
                         <div id="boxEditDisc" class="hidden p-4 card-theme rounded-2xl border border-primary-theme/30 shadow-inner">
                             <div class="flex gap-1 mb-6 p-1 bg-black/5 dark:bg-white/5 rounded-xl">
                                 <button type="button" onclick="setImgTab('disc', 'local')" id="tab-disc-local" class="flex-1 py-2 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all bg-primary-theme text-white">
-                                    <i class="fa-solid fa-upload mr-1"></i> <%= t('confirm_vinyl.source_local') %>
+                                    <i class="fa-solid fa-upload mr-1"></i> Lokal
                                 </button>
                                 <button type="button" onclick="setImgTab('disc', 'url')" id="tab-disc-url" class="flex-1 py-2 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all opacity-50">
-                                    <i class="fa-solid fa-link mr-1"></i> <%= t('confirm_vinyl.source_url') %>
+                                    <i class="fa-solid fa-link mr-1"></i> URL
                                 </button>
                                 <button type="button" onclick="setImgTab('disc', 'search')" id="tab-disc-search" class="flex-1 py-2 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all opacity-50">
-                                    <i class="fa-solid fa-search mr-1"></i> <%= t('confirm_vinyl.source_search') %>
+                                    <i class="fa-solid fa-search mr-1"></i> Søg
                                 </button>
                             </div>
 
                             <div id="pane-disc-local" class="img-pane-disc">
                                 <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-black/10 dark:border-white/10 rounded-2xl cursor-pointer hover:bg-black/5 transition-all">
                                     <i class="fa-solid fa-compact-disc text-2xl opacity-20 mb-2"></i>
-                                    <p class="text-xs font-bold opacity-50 italic"><%= t('confirm_vinyl.browse_files') %></p>
+                                    <p class="text-xs font-bold opacity-50 italic">Gennemse filer</p>
                                     <input type="file" id="fileInputDisc" class="hidden" accept="image/*">
                                 </label>
                             </div>
@@ -173,9 +173,9 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-xs font-bold uppercase tracking-wider opacity-60 mb-2">
-                                <i class="fa-solid fa-box-archive mr-1"></i> <%= t('common.location') %>
+                                <i class="fa-solid fa-box-archive mr-1"></i> Placering
                             </label>
-                            <input type="text" name="location" list="locationList" value="<%= vinyl.location || '' %>" placeholder="<%= t('placeholders.location') %>" class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary-theme outline-none">
+                            <input type="text" name="location" list="locationList" value="<%= vinyl.location || '' %>" placeholder="Eks: Hylde A - Kasse 3" class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary-theme outline-none">
                             <datalist id="locationList">
                                 <% locations.forEach(loc => { %> <option value="<%= loc %>"> <% }) %>
                             </datalist>
@@ -184,38 +184,38 @@
                     <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-xs font-bold uppercase tracking-wider opacity-60 mb-2">
-                                <i class="fa-solid fa-compact-disc mr-1"></i> <%= t('confirm_vinyl.field_genres') %>
+                                <i class="fa-solid fa-compact-disc mr-1"></i> Genrer
                             </label>
                             <input type="text" name="genres" value="<%= vinyl.genres ? vinyl.genres.join(', ') : '' %>" placeholder="Rock, Pop..." class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary-theme outline-none">
                         </div>
                         <div>
                             <label class="block text-xs font-bold uppercase tracking-wider opacity-60 mb-2">
-                                <i class="fa-solid fa-tags mr-1"></i> <%= t('confirm_vinyl.field_styles') %>
+                                <i class="fa-solid fa-tags mr-1"></i> Stilarter
                             </label>
                             <input type="text" name="styles" value="<%= vinyl.styles ? vinyl.styles.join(', ') : '' %>" placeholder="Prog Rock..." class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary-theme outline-none">
                         </div>
                     </div>
                     <div class="mt-6">
-                        <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60"><%= t('confirm_vinyl.field_comments') %></label>
+                        <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">Noter / kommentarer</label>
                         <textarea name="comments" rows="2" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg focus:ring-primary-theme block w-full p-3 outline-none"><%= vinyl.comments %></textarea>
                     </div>
 
                     <div class="mt-8 pt-6 border-t border-black/10 dark:border-white/10">
-                        <label class="block mb-4 text-sm font-bold uppercase tracking-widest opacity-60"><%= t('confirm_vinyl.field_media_type') %></label>
+                        <label class="block mb-4 text-sm font-bold uppercase tracking-widest opacity-60">Medietype / format</label>
                         <div class="grid grid-cols-3 gap-3">
                             <label class="cursor-pointer">
                                 <input type="radio" name="media_type" value="vinyl" class="peer sr-only" <%= (vinyl.media_type === 'vinyl') ? 'checked' : '' %>>
                                 <div class="p-3 rounded-xl border border-transparent bg-black/5 dark:bg-white/5 text-center transition-all peer-checked:bg-primary-theme peer-checked:text-white hover:bg-black/10 dark:hover:bg-white/10 opacity-70 peer-checked:opacity-100">
                                     <i class="fa-solid fa-record-vinyl block mb-1"></i>
-                                    <span class="text-xs font-bold"><%= t('media.vinyl') %></span>
+                                    <span class="text-xs font-bold">Vinyl</span>
                                 </div>
                             </label>
-                            
+
                             <label class="cursor-pointer">
                                 <input type="radio" name="media_type" value="cd" class="peer sr-only" <%= (vinyl.media_type === 'cd') ? 'checked' : '' %>>
                                 <div class="p-3 rounded-xl border border-transparent bg-black/5 dark:bg-white/5 text-center transition-all peer-checked:bg-primary-theme peer-checked:text-white hover:bg-black/10 dark:hover:bg-white/10 opacity-70 peer-checked:opacity-100">
                                     <i class="fa-solid fa-compact-disc block mb-1"></i>
-                                    <span class="text-xs font-bold"><%= t('media.cd') %></span>
+                                    <span class="text-xs font-bold">CD</span>
                                 </div>
                             </label>
 
@@ -223,7 +223,7 @@
                                 <input type="radio" name="media_type" value="cassette" class="peer sr-only" <%= (vinyl.media_type === 'cassette') ? 'checked' : '' %>>
                                 <div class="p-3 rounded-xl border border-transparent bg-black/5 dark:bg-white/5 text-center transition-all peer-checked:bg-primary-theme peer-checked:text-white hover:bg-black/10 dark:hover:bg-white/10 opacity-70 peer-checked:opacity-100">
                                     <i class="fa-solid fa-tape block mb-1"></i>
-                                    <span class="text-xs font-bold"><%= t('media.cassette') %></span>
+                                    <span class="text-xs font-bold">Kassette</span>
                                 </div>
                             </label>
                         </div>
@@ -232,7 +232,7 @@
                     <input type="hidden" name="mongo_id" value="<%= vinyl._id %>">
                     
                     <button type="submit" class="w-full text-white bg-primary-theme hover:brightness-110 font-bold rounded-xl text-lg px-5 py-4 transition-transform hover:scale-[1.01] flex items-center justify-center gap-2 shadow-lg shadow-primary-theme/20">
-                        <i class="fa-solid fa-save"></i> <%= t('common.save_changes') %>
+                        <i class="fa-solid fa-save"></i> Gem ændringer
                     </button>
                 </form>
             </div>
@@ -242,9 +242,9 @@
 
 <script>
     const translations = {
-        noResults: "<%= t('confirm_vinyl.no_results') %>",
-        networkError: "<%= t('confirm_vinyl.network_error') %>",
-        compressAlert: "<%= t('image_source.compress_alert') %>",
+        noResults: "Ingen visuals fundet.",
+        networkError: "Netværksfejl.",
+        compressAlert: "Billedet er for stort (maks. 5 MB). Det vil blive komprimeret.",
         loadingHtml: '<div class="col-span-full py-8 text-center opacity-50"><i class="fa-solid fa-spinner fa-spin text-xl"></i></div>'
     };
 

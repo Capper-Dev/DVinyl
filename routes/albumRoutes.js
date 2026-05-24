@@ -87,7 +87,7 @@ router.get('/', requireAuth, async (req, res) => {
 
         const getTop = (items, field) => {
             const map = {};
-            let topName = req.t('common.not_available');
+            let topName = 'Ikke tilgængelig';
             let topCount = 0;
             items.forEach(item => {
                 const name = item[field];
@@ -129,7 +129,7 @@ router.get('/', requireAuth, async (req, res) => {
         });
     } catch (err) {
         console.error("Dashboard error:", err);
-        res.status(500).send(req.t('errors.generic_server_error'));
+        res.status(500).send('Intern serverfejl.');
     }
 });
 
@@ -280,26 +280,26 @@ router.get('/collection', requireAuth, async (req, res) => {
 
         const filterMap = {
             music: [
-                { id: 'vinyl', label: req.t('media.vinyl') },
-                { id: 'cd', label: req.t('media.cd') },
-                { id: 'cassette', label: req.t('media.cassette') }
+                { id: 'vinyl', label: 'Vinyl' },
+                { id: 'cd', label: 'CD' },
+                { id: 'cassette', label: 'Kassette' }
             ],
             books: [
-                { id: 'manga', label: req.t('media.manga') },
-                { id: 'comic', label: req.t('media.comic') },
-                { id: 'hardcover', label: req.t('media.hardcover') },
-                { id: 'paperback', label: req.t('media.paperback') }
+                { id: 'manga', label: 'Manga' },
+                { id: 'comic', label: 'Tegneserie' },
+                { id: 'hardcover', label: 'Hardback' },
+                { id: 'paperback', label: 'Paperback' }
             ],
             dvd: [
-                { id: 'dvd', label: req.t('media.dvd') },
-                { id: 'bluray', label: req.t('media.bluray') },
-                { id: '4k', label: req.t('media.4k') }
+                { id: 'dvd', label: 'DVD' },
+                { id: 'bluray', label: 'Blu-ray' },
+                { id: '4k', label: '4K Ultra HD' }
             ],
             games: [
-                { id: 'physical', label: req.t('media.physical') },
-                { id: 'collector', label: req.t('media.collector') },
-                { id: 'limited', label: req.t('media.limited') },
-                { id: 'steelbook', label: req.t('media.steelbook') }
+                { id: 'physical', label: 'Fysisk' },
+                { id: 'collector', label: 'Samler' },
+                { id: 'limited', label: 'Begrænset udgave' },
+                { id: 'steelbook', label: 'Steelbook' }
             ]
         };
 
@@ -362,7 +362,7 @@ router.get('/collection', requireAuth, async (req, res) => {
 
     } catch (err) {
         console.error(err);
-        res.status(500).send(req.t('errors.generic_server_error'));
+        res.status(500).send('Intern serverfejl.');
     }
 });
 
@@ -510,7 +510,7 @@ router.post('/search-discogs', requireAuth, requireAdmin, async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    res.render('add-vinyl', { results: [], error: req.t('errors.api_error'), searchType: type, user: res.locals.user, currentType: 'add-vinyl' });
+    res.render('add-vinyl', { results: [], error: 'Kunne ikke forbinde til Discogs.', searchType: type, user: res.locals.user, currentType: 'add-vinyl' });
   }
 });
 
@@ -611,7 +611,7 @@ router.get('/confirm-vinyl/:id', requireAuth, async (req, res) => {
         res.render('confirm-vinyl', { vinyl, user: res.locals.user, locations, genres, currentType: 'music' });
     } catch (err) {
         console.error(err);
-        res.status(500).send(req.t('errors.generic_server_error'));
+        res.status(500).send('Intern serverfejl.');
     } 
 });
 
@@ -719,7 +719,7 @@ router.post('/save-vinyl', requireAuth, requireAdmin, async (req, res) => {
 
     } catch (err) {
         console.error("Save error:", err);
-        res.status(500).send(req.t('errors.generic_server_error'));
+        res.status(500).send('Intern serverfejl.');
     }
 });
 
@@ -729,7 +729,7 @@ router.post('/api/album/:id/move-to-collection', requireAuth, requireAdmin, asyn
         await Item.findByIdAndUpdate(req.params.id, { in_wishlist: false, added_at: new Date() });
         res.json({ success: true });
     } catch (err) {
-        res.status(500).send(req.t('errors.generic_server_error'));
+        res.status(500).send('Intern serverfejl.');
     }
 });
 
@@ -748,7 +748,7 @@ router.get('/api/collection/ids', requireAuth, async (req, res) => {
 
     } catch (err) {
         console.error("API Collection IDs error:", err);
-        res.status(500).send(req.t('errors.generic_server_error'));
+        res.status(500).send('Intern serverfejl.');
     }
 });
 
@@ -769,7 +769,7 @@ router.get('/wishlist', requireAuth, async (req, res) => {
         });
     } catch (err) {
         console.error(err);
-        res.status(500).send(req.t('errors.generic_server_error'));
+        res.status(500).send('Intern serverfejl.');
     }
 });
 
@@ -807,7 +807,7 @@ router.delete('/api/album/:id', requireAuth, requireAdmin, async (req, res) => {
 
     } catch (err) {
         console.error(err);
-        res.status(500).send(req.t('errors.generic_server_error'));
+        res.status(500).send('Intern serverfejl.');
     }
 });
 
@@ -1089,7 +1089,7 @@ router.post('/api/album/:id/refresh-info', requireAuth, requireAdmin, async (req
         res.json({ success: true, genres: updateData.genres, styles: updateData.styles });
     } catch (err) {
         console.error("Refresh info error:", err);
-        res.status(500).json({ success: false, error: req.t('detail.refresh_info_error') });
+        res.status(500).json({ success: false, error: 'Fejl ved opdatering af metadata.' });
     }
 });
 

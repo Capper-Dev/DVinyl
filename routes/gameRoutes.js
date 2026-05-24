@@ -99,7 +99,7 @@ router.post('/search-games', requireAuth, requireAdmin, async (req, res) => {
 
     } catch (err) {
         console.error("[ERR] Game search:", err.message);
-        res.render('add-game', { results: [], scanned_barcode: '', error: req.t('errors.api_error'), user: res.locals.user, currentType: 'add-game' });
+        res.render('add-game', { results: [], scanned_barcode: '', error: 'Kunne ikke forbinde til Discogs.', user: res.locals.user, currentType: 'add-game' });
     }
 });
 
@@ -117,7 +117,7 @@ router.get('/confirm-game/:igdb_id', requireAuth, requireAdmin, async (req, res)
         );
 
         if (!results || results.length === 0) {
-            return res.status(404).send(req.t('errors.generic_server_error'));
+            return res.status(404).send('Intern serverfejl.');
         }
 
         const gameData = formatIGDBResult(results[0]);
@@ -138,7 +138,7 @@ router.get('/confirm-game/:igdb_id', requireAuth, requireAdmin, async (req, res)
         });
     } catch (err) {
         console.error("[ERR] Game detail:", err);
-        res.status(500).send(req.t('errors.generic_server_error'));
+        res.status(500).send('Intern serverfejl.');
     }
 });
 
@@ -215,7 +215,7 @@ router.post('/save-game', requireAuth, requireAdmin, async (req, res) => {
 
     } catch (err) {
         console.error("[ERR] Game save:", err);
-        res.status(500).send(req.t('errors.generic_server_error'));
+        res.status(500).send('Intern serverfejl.');
     }
 });
 
@@ -265,7 +265,7 @@ router.delete('/api/game/:id', requireAuth, requireAdmin, async (req, res) => {
 
     } catch (err) {
         console.error(err);
-        res.status(500).send(req.t('errors.generic_server_error'));
+        res.status(500).send('Intern serverfejl.');
     }
 });
 

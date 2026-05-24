@@ -10,15 +10,15 @@
 
     <div class="card-theme p-8 rounded-3xl shadow-xl max-w-md w-full transition-colors border border-theme-highlight/10">
         <h1 class="text-2xl font-bold mb-4">
-            <%= t('errors.404_title') %>
+            Ups! Sporet blev ikke fundet.
         </h1>
         <p class="text-theme-subtext mb-8 transition-colors">
-            <%= t('errors.404_desc') %>
+            Siden du leder efter ser ud til at være ridset ud af samlingen, eller det tilknyttede modul er deaktiveret.
         </p>
-        
+
         <a href="<%= baseUrl || '/' %>" class="inline-flex items-center justify-center gap-2 w-full py-4 bg-theme-highlight text-white font-bold rounded-2xl hover:brightness-110 transition-all shadow-lg shadow-theme-highlight/20">
             <i class="fa-solid fa-house"></i>
-            <%= t('common.back_home') %>
+            Tilbage til forsiden
         </a>
     </div>
 </div>

@@ -34,7 +34,6 @@ module.exports = async (req, res, next) => {
 
         res.locals.settings = settings;
 
-        res.locals.currentLng = 'en';
         res.locals.isDark = res.locals.user ? (res.locals.user.theme === 'dark') : true;
 
         const fullPath = req.path.toLowerCase();
@@ -80,7 +79,6 @@ module.exports = async (req, res, next) => {
     } catch (err) {
         console.error("[ERR] SettingsMiddleware:", err);
         res.locals.isDark = true;
-        res.locals.currentLng = 'en';
         res.locals.settings = { theme: { home: { preset: 'default' } } };
         next();
     }

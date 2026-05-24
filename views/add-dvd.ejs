@@ -7,8 +7,8 @@
         <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary-theme/10 text-primary-theme mb-4">
             <i class="fa-solid fa-film text-3xl"></i>
         </div>
-        <h1 class="text-3xl md:text-4xl font-black"><%= t('add_dvd.title') %></h1>
-        <p class="opacity-60 mt-2"><%= t('add_dvd.desc') %></p>
+        <h1 class="text-3xl md:text-4xl font-black">Tilføj en DVD / Serie</h1>
+        <p class="opacity-60 mt-2">Søg efter titel, instruktør eller scan stregkoden.</p>
     </div>
 
     <form action="<%= baseUrl %>/search-dvds" method="POST" class="max-w-2xl mx-auto mb-10">
@@ -19,24 +19,24 @@
                 </div>
                 <input type="text" name="query" value="<%= locals.scanned_barcode || '' %>"
                     class="block w-full p-4 pl-12 text-base bg-black/5 dark:bg-white/5 border border-transparent focus:border-primary-theme rounded-2xl focus:ring-2 focus:ring-primary-theme/50 placeholder-opacity-50 transition-all outline-none"
-                    placeholder="<%= t('add_dvd.search_placeholder') || 'Titre, Réalisateur ou Code-barres...' %>" autofocus required>
+                    placeholder="Titel, Instruktør eller Stregkode..." autofocus required>
             </div>
             <button type="submit"
                 class="bg-primary-theme hover:brightness-110 text-white font-bold px-8 py-4 rounded-2xl shadow-lg shadow-primary-theme/20 transition-all active:scale-95 flex items-center justify-center gap-2 whitespace-nowrap">
                 <i class="fa-solid fa-search"></i>
-                <%= t('common.search') %>
+                Søg
             </button>
         </div>
 
         <div class="flex items-center gap-3 mt-4 justify-center">
-            <span class="text-xs font-bold uppercase opacity-30"><%= t('add_dvd.separator_or') %></span>
+            <span class="text-xs font-bold uppercase opacity-30">ELLER</span>
         </div>
 
         <div class="flex justify-center mt-3">
             <button type="button" id="scan-trigger"
                 class="bg-black/5 dark:bg-white/5 hover:bg-primary-theme hover:text-white px-6 py-3 rounded-xl font-bold text-sm transition-all flex items-center gap-2 active:scale-95 disabled:opacity-50">
                 <i class="fa-solid fa-camera"></i>
-                <span><%= t('add_dvd.btn_scan') %></span>
+                <span>Scan en stregkode</span>
             </button>
             <input type="file" id="scan-file" accept="image/*" capture="environment" class="hidden">
         </div>
@@ -49,22 +49,28 @@
         <div class="max-w-2xl mx-auto mb-8 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-start gap-3">
             <i class="fa-solid fa-triangle-exclamation text-amber-500 mt-0.5"></i>
             <div>
-                <p class="font-semibold text-sm">Barcode not found in database</p>
-                <p class="text-xs opacity-60 mt-0.5">The barcode <code class="font-mono"><%= locals.scanned_barcode %></code> didn't match any movie. Search by title instead — the search box is pre-filled with the barcode, just replace it with the movie title.</p>
+                <% if (locals.barcode_error) { %>
+                    <p class="font-semibold text-sm">Stregkode-opslag fejlede</p>
+                    <p class="text-xs opacity-60 mt-0.5">Prøv igen, eller søg manuelt på titlen — søgefeltet er klar til brug.</p>
+                <% } else { %>
+                    <p class="font-semibold text-sm">Stregkoden blev ikke fundet</p>
+                    <p class="text-xs opacity-60 mt-0.5">Stregkoden <code class="font-mono"><%= locals.scanned_barcode %></code> matchede ingen film. Søg på titlen i stedet — søgefeltet er forudfyldt med stregkoden, erstat den blot med filmens titel.</p>
+                <% } %>
+                <p class="text-xs opacity-50 mt-1">Når du har valgt den rigtige film fra resultaterne, gemmes stregkoden automatisk til cachen.</p>
             </div>
         </div>
     <% } %>
 
     <% if (locals.results) { %>
         <div class="mb-4 flex items-center justify-between">
-            <h2 class="text-xl font-bold transition-colors"><%= t('add_dvd.results_title') %></h2>
+            <h2 class="text-xl font-bold transition-colors">Resultater</h2>
             <span class="bg-black/10 dark:bg-white/10 text-xs font-mono px-2 py-1 rounded opacity-70 transition-colors"><%= results.length %></span>
         </div>
 
         <% if (results.length === 0) { %>
             <div class="text-center py-12 card-theme bg-opacity-50 rounded-xl border-dashed opacity-70 transition-colors">
                 <i class="fa-solid fa-ghost text-4xl mb-3 opacity-50"></i>
-                <p><%= t('add_dvd.no_results') %></p>
+                <p>Ingen film eller serier fundet.</p>
             </div>
         <% } else { %>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -81,8 +87,8 @@
                             
                            <div class="absolute top-2 right-2 bg-black/70 text-white text-[9px] font-bold px-1.5 py-0.5 rounded backdrop-blur-sm uppercase">
                                 <%= item.media_type === 'tv' 
-                                    ? t('add_dvd.tv_show') 
-                                    : t('add_dvd.movie') %>
+                                    ? 'Serie'
+                                    : 'Film' %>
                             </div>
                         </div>
 

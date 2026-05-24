@@ -5,16 +5,16 @@
         <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
             <div>
                 <h1 class="text-3xl font-black transition-colors">
-                    <%= t('perso.title') %>
+                    Personalisering
                 </h1>
                 <p class="opacity-60 mt-1 transition-colors">
-                    <%= t('perso.subtitle', { siteName: settings.siteName }) %>
+                    Tilpas udseendet af din DVinyl-grænseflade.
                 </p>
             </div>
             <a href="<%= baseUrl || '/' %>"
                 class="w-fit px-4 py-2 bg-black/5 dark:bg-white/10 rounded-lg text-sm font-bold hover:bg-black/10 dark:hover:bg-white/20 transition-all flex items-center">
                 <i class="fa-solid fa-arrow-left mr-2"></i>
-                <%= t('perso.backHome') %>
+                Tilbage til forsiden
             </a>
         </div>
 
@@ -26,7 +26,7 @@
                         class="w-10 h-10 rounded-full bg-primary-theme/10 text-primary-theme flex items-center justify-center">
                         <i class="fa-solid fa-palette"></i>
                     </div>
-                    <%= t('perso.themes.title') %>
+                    Temaer & farver
                 </h2>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -34,7 +34,7 @@
                     <div class="space-y-2">
                         <label class="block text-xs font-bold uppercase tracking-widest opacity-60">
                             <i class="fa-solid fa-house mr-1"></i>
-                            <%= t('perso.themes.home') %>
+                            Forside
                         </label>
                         <select name="homePreset"
                             class="w-full bg-black/5 dark:bg-black/20 border border-transparent focus:border-primary-theme rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary-theme/20 outline-none transition-all">
@@ -47,10 +47,10 @@
                         </select>
                     </div>
 
-                    <% const themeCats=[ {key: 'music' , label: t('perso.themes.music'), icon: 'fa-music' },
-                        {key: 'books' , label: t('perso.themes.books'), icon: 'fa-book' }, {key: 'dvd' , label:
-                        t('perso.themes.dvd'), icon: 'fa-film' }, {key: 'games' , label:
-                        t('perso.themes.games'), icon: 'fa-gamepad' } ] %>
+                    <% const themeCats=[ {key: 'music' , label: 'Musik', icon: 'fa-music' },
+                        {key: 'books' , label: 'Bøger', icon: 'fa-book' }, {key: 'dvd' , label:
+                        'Film / DVD', icon: 'fa-film' }, {key: 'games' , label:
+                        'Videospil', icon: 'fa-gamepad' } ] %>
 
                         <% themeCats.forEach((tTheme)=> { %>
                             <div class="space-y-2">
@@ -80,31 +80,31 @@
                         class="w-10 h-10 rounded-full bg-primary-theme/10 text-primary-theme flex items-center justify-center">
                         <i class="fa-solid fa-list-check"></i>
                     </div>
-                    <%= t('perso.nav_title') %>
+                    Navigationskonfiguration
                 </h2>
                 <p class="text-sm opacity-60 mb-6">
-                    <%= t('perso.nav_desc') %>
+                    Vælg op til 6 genveje til navigationsbjælken.
                 </p>
 
                 <div class="space-y-6">
-                    <% const shortcutGroups=[ { label: t('perso.modules.global'), active: true, options: [ {
-                        id: 'global_home' , label: t('nav.home') }, { id: 'global_collection' , label:
-                        t('nav.collection') }, { id: 'global_wishlist' , label: t('nav.wishlist') } ] }, { label:
-                        t('perso.modules.music'), active: settings.modules.music, options: [ { id: 'music' , label:
-                        t('media.music') }, { id: 'music_vinyl' , label: t('media.vinyls') }, { id: 'music_cd' , label:
-                        t('media.cds') }, { id: 'music_cassette' , label: t('media.cassettes') } ] }, { label:
-                        t('perso.modules.books'), active: settings.modules.books, options: [ { id: 'books' , label:
-                        t('media.books') }, { id: 'book_hardcover' , label: t('media.hardcover') }, {
-                        id: 'book_paperback' , label: t('media.paperback') }, { id: 'book_manga' , label:
-                        t('media.manga') }, { id: 'book_comic' , label: t('media.comic') }, { id: 'book_graphic_novel' ,
-                        label: t('media.graphic_novel') } ] }, { label: t('perso.modules.dvd'), active:
-                        settings.modules.dvd, options: [ { id: 'dvd' , label: t('media.dvd_gen') }, { id: 'dvd_dvd' ,
-                        label: t('media.dvd') }, { id: 'dvd_bluray' , label: t('media.bluray') }, { id: 'dvd_4k' ,
-                        label: t('media.4k') }, { id: 'dvd_vhs' , label: t('media.vhs') }, { id: 'dvd_laserdisc' ,
-                        label: t('media.laserdisc') } ] }, { label: t('perso.modules.games'), active:
-                        settings.modules.games, options: [ { id: 'games' , label: t('media.games') }, { id: 'game_physical' ,
-                        label: t('media.physical') }, { id: 'game_collector' , label: t('media.collector') }, { id: 'game_limited' ,
-                        label: t('media.limited') }, { id: 'game_steelbook' , label: t('media.steelbook') } ] } ] %>
+                    <% const shortcutGroups=[ { label: 'Generelt', active: true, options: [ {
+                        id: 'global_home' , label: 'Forside' }, { id: 'global_collection' , label:
+                        'Samling' }, { id: 'global_wishlist' , label: 'Ønskeliste' } ] }, { label:
+                        'Musik', active: settings.modules.music, options: [ { id: 'music' , label:
+                        'Musik' }, { id: 'music_vinyl' , label: 'Vinyler' }, { id: 'music_cd' , label:
+                        "CD'er" }, { id: 'music_cassette' , label: 'Kassetter' } ] }, { label:
+                        'Bøger', active: settings.modules.books, options: [ { id: 'books' , label:
+                        'Bøger' }, { id: 'book_hardcover' , label: 'Hardcover' }, {
+                        id: 'book_paperback' , label: 'Paperback' }, { id: 'book_manga' , label:
+                        'Manga' }, { id: 'book_comic' , label: 'Tegneserie' }, { id: 'book_graphic_novel' ,
+                        label: 'Grafisk roman' } ] }, { label: "DVD'er", active:
+                        settings.modules.dvd, options: [ { id: 'dvd' , label: 'Film / TV-serier' }, { id: 'dvd_dvd' ,
+                        label: 'DVD' }, { id: 'dvd_bluray' , label: 'Blu-ray' }, { id: 'dvd_4k' ,
+                        label: '4K Ultra HD' }, { id: 'dvd_vhs' , label: 'VHS' }, { id: 'dvd_laserdisc' ,
+                        label: 'Laserdisc' } ] }, { label: 'Videospil', active:
+                        settings.modules.games, options: [ { id: 'games' , label: 'Videospil' }, { id: 'game_physical' ,
+                        label: 'Fysisk' }, { id: 'game_collector' , label: 'Collector' }, { id: 'game_limited' ,
+                        label: 'Limited' }, { id: 'game_steelbook' , label: 'Steelbook' } ] } ] %>
 
                         <div class="flex gap-2 overflow-x-auto pb-2 scrollbar-hide flex-nowrap">
                             <% shortcutGroups.forEach((group, idx)=> { %>
@@ -157,24 +157,24 @@
                         class="w-10 h-10 rounded-full bg-primary-theme/10 text-primary-theme flex items-center justify-center">
                         <i class="fa-solid fa-bolt"></i>
                     </div>
-                    <%= t('perso.fastAdd_title') %>
+                    Hurtig tilføjelse
                 </h2>
                 <p class="text-sm opacity-60 mb-6">
-                    <%= t('perso.fastAdd_desc') %>
+                    Hvis aktiveret, fører "Tilføj et element"-knappen direkte til den valgte formular og springer valgmenuen over.
                 </p>
 
                 <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-                    <% const fastAddOptions=[ { value: '' , label: t('perso.fastAdd_disabled'), icon: 'fa-xmark' ,
+                    <% const fastAddOptions=[ { value: '' , label: 'Deaktiveret (modal)', icon: 'fa-xmark' ,
                         color: 'peer-checked:bg-gray-500' }, ]; if (settings.modules.music) { fastAddOptions.push( {
-                        value: 'vinyl' , label: t('media.vinyls'), icon: 'fa-record-vinyl' ,
-                        color: 'peer-checked:bg-green-600' }, { value: 'cd' , label: t('media.cds'),
+                        value: 'vinyl' , label: 'Vinyler', icon: 'fa-record-vinyl' ,
+                        color: 'peer-checked:bg-green-600' }, { value: 'cd' , label: "CD'er",
                         icon: 'fa-compact-disc' , color: 'peer-checked:bg-blue-600' }, { value: 'cassette' , label:
-                        t('media.cassettes'), icon: 'fa-tape' , color: 'peer-checked:bg-orange-600' } ); } if
-                        (settings.modules.books) { fastAddOptions.push( { value: 'book' , label: t('media.books'),
+                        'Kassetter', icon: 'fa-tape' , color: 'peer-checked:bg-orange-600' } ); } if
+                        (settings.modules.books) { fastAddOptions.push( { value: 'book' , label: 'Bøger',
                         icon: 'fa-book' , color: 'peer-checked:bg-amber-600' } ); } if (settings.modules.dvd) {
-                        fastAddOptions.push( { value: 'dvd' , label: t('media.dvd_gen'), icon: 'fa-film' ,
+                        fastAddOptions.push( { value: 'dvd' , label: 'Film / TV-serier', icon: 'fa-film' ,
                         color: 'peer-checked:bg-red-600' } ); } if (settings.modules.games) {
-                        fastAddOptions.push( { value: 'game' , label: t('media.games'), icon: 'fa-gamepad' ,
+                        fastAddOptions.push( { value: 'game' , label: 'Videospil', icon: 'fa-gamepad' ,
                         color: 'peer-checked:bg-emerald-600' } ); } %>
                         <% fastAddOptions.forEach(opt=> { %>
                             <label class="cursor-pointer relative group">
@@ -200,72 +200,72 @@
                         class="w-10 h-10 rounded-full bg-primary-theme/10 text-primary-theme flex items-center justify-center">
                         <i class="fa-solid fa-chart-simple"></i>
                     </div>
-                    <%= t('perso.widgets_title') %>
+                    Statistik-widgets
                 </h2>
                 <p class="text-sm opacity-60 mb-6">
-                    <%= t('perso.widgets_desc') %>
+                    Vælg de statistikker, du vil se på dit dashboard
                 </p>
 
                 <div class="space-y-6">
-                    <% const statOptions=[ 
-                        { 
-                            group: t('perso.modules.global'), 
-                            active: true, 
-                            options: [ 
-                                { id: 'total' , label: t('stats.total_label') } 
-                            ] 
-                        }, 
-                        { 
-                            group: t('perso.modules.music'), 
-                            active: settings.modules.music, 
-                            options: [ 
-                                { id: 'vinyl' , label: t('media.vinyls') }, 
-                                { id: 'cd' , label: t('media.cds') }, 
-                                { id: 'cassette' , label: t('media.cassettes') }, 
-                                { id: 'artist' , label: t('stats.top_artist_label') },
-                                { id: 'music_genre', label: t('stats.top_genre_label') },
-                                { id: 'label', label: t('stats.top_label_label') }
-                            ] 
-                        }, 
-                        { 
-                            group: t('perso.modules.books'), 
-                            active: settings.modules.books, 
-                            options: [ 
-                                { id: 'book_total' , label: t('stats.books_total_label') }, 
-                                { id: 'book_hardcover' , label: t('media.hardcover_pl') }, 
-                                { id: 'book_paperback' , label: t('media.paperback_pl') }, 
-                                { id: 'book_manga' , label: t('media.mangas') }, 
-                                { id: 'book_comic' , label: t('media.comics') }, 
-                                { id: 'author' , label: t('stats.top_author_label') },
-                                { id: 'publisher', label: t('stats.top_publisher_label') }
-                            ] 
-                        }, 
-                        { 
-                            group: t('perso.modules.dvd'), 
-                            active: settings.modules.dvd, 
-                            options: [ 
-                                { id: 'dvd_total' , label: t('stats.dvd_total_label') }, 
-                                { id: 'dvd_bluray' , label: t('media.blurays') }, 
-                                { id: 'dvd_4k' , label: t('media.4k_pl') }, 
-                                { id: 'dvd_vhs' , label: t('media.vhss') }, 
-                                { id: 'dvd_laserdisc' , label: t('media.laserdiscs') }, 
-                                { id: 'director' , label: t('stats.top_director_label') },
-                                { id: 'studio', label: t('stats.top_studio_label') }
-                            ] 
+                    <% const statOptions=[
+                        {
+                            group: 'Generelt',
+                            active: true,
+                            options: [
+                                { id: 'total' , label: 'Samlet samling' }
+                            ]
                         },
-                        { 
-                            group: t('perso.modules.games'), 
-                            active: settings.modules.games, 
-                            options: [ 
-                                { id: 'game_total' , label: t('stats.games_total_label') }, 
-                                { id: 'game_physical' , label: t('media.physical') }, 
-                                { id: 'game_collector' , label: t('media.collector') }, 
-                                { id: 'game_limited' , label: t('media.limited') }, 
-                                { id: 'game_steelbook' , label: t('media.steelbook') }, 
-                                { id: 'game_developer' , label: t('stats.top_developer_label') },
-                                { id: 'game_publisher', label: t('stats.top_game_publisher_label') }
-                            ] 
-                        } 
+                        {
+                            group: 'Musik',
+                            active: settings.modules.music,
+                            options: [
+                                { id: 'vinyl' , label: 'Vinyler' },
+                                { id: 'cd' , label: "CD'er" },
+                                { id: 'cassette' , label: 'Kassetter' },
+                                { id: 'artist' , label: 'Yndlingskunstner' },
+                                { id: 'music_genre', label: 'Top genre' },
+                                { id: 'label', label: 'Top pladeselskab' }
+                            ]
+                        },
+                        {
+                            group: 'Bøger',
+                            active: settings.modules.books,
+                            options: [
+                                { id: 'book_total' , label: 'Bøger i alt' },
+                                { id: 'book_hardcover' , label: 'Hardcovers' },
+                                { id: 'book_paperback' , label: 'Paperbacks' },
+                                { id: 'book_manga' , label: 'Mangas' },
+                                { id: 'book_comic' , label: 'Tegneserier' },
+                                { id: 'author' , label: 'Yndlingsforfatter' },
+                                { id: 'publisher', label: 'Top forlag' }
+                            ]
+                        },
+                        {
+                            group: "DVD'er",
+                            active: settings.modules.dvd,
+                            options: [
+                                { id: 'dvd_total' , label: 'Videoer i alt' },
+                                { id: 'dvd_bluray' , label: 'Blu-rays' },
+                                { id: 'dvd_4k' , label: '4K Ultra HD' },
+                                { id: 'dvd_vhs' , label: 'VHS' },
+                                { id: 'dvd_laserdisc' , label: 'Laserdiscs' },
+                                { id: 'director' , label: 'Yndlingsinstruktør' },
+                                { id: 'studio', label: 'Top studie' }
+                            ]
+                        },
+                        {
+                            group: 'Videospil',
+                            active: settings.modules.games,
+                            options: [
+                                { id: 'game_total' , label: 'Videospil i alt' },
+                                { id: 'game_physical' , label: 'Fysisk' },
+                                { id: 'game_collector' , label: 'Collector' },
+                                { id: 'game_limited' , label: 'Limited' },
+                                { id: 'game_steelbook' , label: 'Steelbook' },
+                                { id: 'game_developer' , label: 'Top udvikler' },
+                                { id: 'game_publisher', label: 'Top udgiver (spil)' }
+                            ]
+                        }
                     ] %>
 
                         <div class="flex gap-2 overflow-x-auto pb-2 scrollbar-hide flex-nowrap">
@@ -317,7 +317,7 @@
                 <button type="submit"
                     class="w-full md:w-auto px-10 py-4 bg-primary-theme text-white font-black rounded-2xl hover:brightness-110 active:scale-95 transition-all shadow-lg shadow-primary-theme/20 flex items-center justify-center gap-3">
                     <i class="fa-solid fa-save"></i>
-                    <%= t('perso.save') %>
+                    Gem præferencer
                 </button>
             </div>
         </form>
@@ -366,7 +366,7 @@
                 const checkedCount = document.querySelectorAll('input[name="navbarShortcuts"]:checked').length;
                 if (checkedCount > maxAllowed) {
                     cb.checked = false;
-                    alert("<%= t('perso.nav_max') %>");
+                    alert("Du kan ikke vælge mere end 6 genveje.");
                 }
             });
         });

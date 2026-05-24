@@ -4,7 +4,7 @@
     
     <nav class="flex mb-6 text-sm opacity-60 transition-colors">
         <a href="<%= baseUrl %>/book/<%= book._id %>" class="hover:opacity-100 transition-opacity flex items-center py-2">
-            <i class="fa-solid fa-arrow-left mr-2"></i> <%= t('common.cancel') %>
+            <i class="fa-solid fa-arrow-left mr-2"></i> Annuller
         </a>
     </nav>
 
@@ -16,7 +16,7 @@
                 <div class="aspect-[2/3] rounded-lg overflow-hidden mb-4 shadow-lg relative group bg-black/5 dark:bg-white/5">
                     <img id="livePreview" src="<%= book.cover_image %>" class="w-full h-full object-cover transition-all duration-500">
                     <div class="absolute inset-0 bg-black/40 hidden group-hover:flex items-center justify-center text-white text-xs font-bold backdrop-blur-sm">
-                        <%= t('confirm_vinyl.cover_preview') %>
+                        Forside forhåndsvisning
                     </div>
                 </div>
                 
@@ -28,7 +28,7 @@
         <div class="lg:col-span-8">
             <div class="card-theme rounded-xl p-6 md:p-8 transition-colors shadow-sm">
                 <h1 class="text-2xl font-bold mb-6 flex items-center gap-2">
-                    <i class="fa-solid fa-pen-to-square text-primary-theme"></i> <%= t('edit_book.title') %>
+                    <i class="fa-solid fa-pen-to-square text-primary-theme"></i> Rediger bog
                 </h1>
 
                 <form action="<%= baseUrl %>/save-book" method="POST" class="space-y-6">
@@ -38,28 +38,28 @@
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60"><%= t('confirm_book.field_title') %></label>
+                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">Titel</label>
                             <input type="text" name="title" value="<%= book.title %>" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-primary-theme focus:border-primary-theme block w-full p-3 transition-colors outline-none" required>
                         </div>
                         <div>
-                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60"><%= t('confirm_book.field_author') %></label>
+                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">Forfatter(e)</label>
                             <input type="text" name="author" value="<%= book.author %>" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-primary-theme focus:border-primary-theme block w-full p-3 transition-colors outline-none" required>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div>
-                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60"><%= t('confirm_book.field_publisher') %></label>
+                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">Udgiver</label>
                             <input type="text" name="publisher" value="<%= book.publisher %>" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-primary-theme block w-full p-3 transition-colors outline-none">
                         </div>
                         <div>
-                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60"><%= t('confirm_book.field_year') %></label>
+                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">År</label>
                             <input type="text" name="year" value="<%= book.year %>" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-primary-theme block w-full p-3 transition-colors outline-none">
                         </div>
                         <div>
                             <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60 flex items-center gap-2">
-                                <%= t('confirm_book.field_isbn') || 'ISBN' %>
-                                <label class="cursor-pointer flex items-center ml-auto" title="<%= t('confirm_vinyl.barcode_locked') %>">
+                                ISBN
+                                <label class="cursor-pointer flex items-center ml-auto" title="Lås stregkode">
                                     <input type="checkbox" name="barcode_locked" class="hidden peer" <%= book.barcode_locked ? 'checked' : '' %>>
                                     <i class="fa-solid fa-unlock opacity-30 peer-checked:hidden"></i>
                                     <i class="fa-solid fa-lock text-primary-theme hidden peer-checked:block"></i>
@@ -72,33 +72,23 @@
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                         <div class="md:col-span-2">
                             <label class="block mb-2 text-sm font-bold uppercase tracking-widest text-primary-theme opacity-60">
-                                <%= t('confirm_book.field_format') %>
+                                Format
                             </label>
                             <select name="format" 
                                     class="bg-black/5 dark:bg-white/5 border border-transparent text-gray-900 dark:text-white text-sm rounded-lg focus:ring-primary-theme focus:border-primary-theme block w-full p-3 transition-colors outline-none cursor-pointer">
                                 
-                                <option value="paperback" class="bg-white dark:bg-[#1a1a1a]" <%= book.format === 'paperback' ? 'selected' : '' %>>
-                                    <%= t('format.paperback') %>
-                                </option>
-                                <option value="hardcover" class="bg-white dark:bg-[#1a1a1a]" <%= book.format === 'hardcover' ? 'selected' : '' %>>
-                                    <%= t('format.hardcover') %>
-                                </option>
-                                <option value="manga" class="bg-white dark:bg-[#1a1a1a]" <%= book.format === 'manga' ? 'selected' : '' %>>
-                                    <%= t('format.manga') %>
-                                </option>
-                                <option value="comic" class="bg-white dark:bg-[#1a1a1a]" <%= book.format === 'comic' ? 'selected' : '' %>>
-                                    <%= t('format.comic') %>
-                                </option>
-                                <option value="graphic_novel" class="bg-white dark:bg-[#1a1a1a]" <%= book.format === 'graphic_novel' ? 'selected' : '' %>>
-                                    <%= t('format.graphic_novel') %>
-                                </option>
+                                <option value="paperback" class="bg-white dark:bg-[#1a1a1a]" <%= book.format === 'paperback' ? 'selected' : '' %>>Paperback</option>
+                                <option value="hardcover" class="bg-white dark:bg-[#1a1a1a]" <%= book.format === 'hardcover' ? 'selected' : '' %>>Hardback</option>
+                                <option value="manga" class="bg-white dark:bg-[#1a1a1a]" <%= book.format === 'manga' ? 'selected' : '' %>>Manga</option>
+                                <option value="comic" class="bg-white dark:bg-[#1a1a1a]" <%= book.format === 'comic' ? 'selected' : '' %>>Tegneserie</option>
+                                <option value="graphic_novel" class="bg-white dark:bg-[#1a1a1a]" <%= book.format === 'graphic_novel' ? 'selected' : '' %>>Graphic Novel</option>
                             </select>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">
-                                    <%= t('confirm_vinyl.field_quantity') %>
+                                    Antal
                                 </label>
                                 <input type="number" name="quantity" value="<%= book.quantity || 1 %>" min="1" 
                                     class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-primary-theme focus:border-primary-theme block w-full p-2.5 transition-colors outline-none">
@@ -106,22 +96,22 @@
                         </div>
 
                         <div>
-                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest text-primary-theme"><%= t('confirm_book.field_pages') %></label>
+                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest text-primary-theme">Sider</label>
                             <input type="number" name="pages" value="<%= book.pages %>" class="bg-black/5 dark:bg-white/5 border border-primary-theme/30 text-sm rounded-lg focus:ring-primary-theme block w-full p-3 transition-colors outline-none">
                         </div>
                         <div>
-                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest text-primary-theme"><%= t('confirm_book.field_language') %></label>
+                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest text-primary-theme">Sprog</label>
                             <input type="text" name="language" value="<%= book.language %>" class="bg-black/5 dark:bg-white/5 border border-primary-theme/30 text-sm rounded-lg focus:ring-primary-theme block w-full p-3 transition-colors outline-none">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-black/5 dark:bg-white/5 p-4 rounded-lg border border-black/10 dark:border-white/10">
                         <div>
-                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60"><%= t('confirm_book.field_series') %></label>
+                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">Serie / Saga</label>
                             <input type="text" name="series" value="<%= book.series || '' %>" class="bg-white dark:bg-black/20 border border-transparent rounded-lg text-sm focus:ring-primary-theme block w-full p-3 transition-colors outline-none" placeholder="Ex: Harry Potter">
                         </div>
                         <div>
-                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60"><%= t('confirm_book.field_volume') %></label>
+                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">Bind / Volumen</label>
                             <input type="number" name="volume" value="<%= book.volume || '' %>" class="bg-white dark:bg-black/20 border border-transparent rounded-lg text-sm focus:ring-primary-theme block w-full p-3 transition-colors outline-none" placeholder="Numéro">
                         </div>
                     </div>
@@ -129,19 +119,19 @@
                     <hr class="border-black/10 dark:border-white/10 my-6 transition-colors">
 
                     <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-bookmark text-primary-theme"></i> <%= t('confirm_book.reading_tracking') %>
+                        <i class="fa-solid fa-bookmark text-primary-theme"></i> Læsesporing
                     </h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div>
-                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60"><%= t('confirm_book.field_status') %></label>
+                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">Status</label>
                             <select name="readingStatus" class="bg-black/5 dark:bg-white/5 border border-transparent text-sm rounded-lg focus:ring-primary-theme block w-full p-3 transition-colors outline-none cursor-pointer">
-                                <option value="to_read" <%= book.readingStatus === 'to_read' ? 'selected' : '' %>><%= t('status.to_read') %></option>
-                                <option value="reading" <%= book.readingStatus === 'reading' ? 'selected' : '' %>><%= t('status.reading') %></option>
-                                <option value="read" <%= book.readingStatus === 'read' ? 'selected' : '' %>><%= t('status.read') %></option>
+                                <option value="to_read" <%= book.readingStatus === 'to_read' ? 'selected' : '' %>>Ikke læst</option>
+                                <option value="reading" <%= book.readingStatus === 'reading' ? 'selected' : '' %>>Læser</option>
+                                <option value="read" <%= book.readingStatus === 'read' ? 'selected' : '' %>>Læst</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60"><%= t('confirm_book.field_rating') %></label>
+                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">Bedømmelse (ud af 5)</label>
                             <input type="number" name="rating" min="0" max="5" step="0.5" value="<%= book.rating || 0 %>" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-primary-theme block w-full p-3 transition-colors outline-none">
                         </div>
                     </div>
@@ -152,7 +142,7 @@
                         <div class="flex items-center">
                             <input id="checkEditCover" type="checkbox" class="w-4 h-4 text-primary-theme bg-black/5 dark:bg-white/10 border-transparent rounded focus:ring-primary-theme focus:ring-2 cursor-pointer transition-colors">
                             <label for="checkEditCover" class="ml-2 text-sm font-bold cursor-pointer opacity-80 hover:opacity-100 transition-opacity">
-                                <%= t('confirm_vinyl.replace_cover') %>
+                                Erstat hovedcover
                             </label>
                         </div>
 
@@ -162,13 +152,13 @@
                             
                             <div class="flex gap-1 mb-6 p-1 bg-black/5 dark:bg-white/5 rounded-xl">
                                 <button type="button" onclick="setImgTab('local')" id="tab-local" class="flex-1 py-2 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all bg-primary-theme text-white">
-                                    <i class="fa-solid fa-upload mr-1"></i> <%= t('image_source.local') %>
+                                    <i class="fa-solid fa-upload mr-1"></i> Lokal
                                 </button>
                                 <button type="button" onclick="setImgTab('url')" id="tab-url" class="flex-1 py-2 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all opacity-50">
-                                    <i class="fa-solid fa-link mr-1"></i> <%= t('image_source.url') %>
+                                    <i class="fa-solid fa-link mr-1"></i> URL
                                 </button>
                                 <button type="button" onclick="setImgTab('search')" id="tab-search" class="flex-1 py-2 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all opacity-50">
-                                    <i class="fa-solid fa-search mr-1"></i> <%= t('image_source.search') %>
+                                    <i class="fa-solid fa-search mr-1"></i> Søg
                                 </button>
                             </div>
 
@@ -176,14 +166,14 @@
                                 <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-black/10 dark:border-white/10 rounded-2xl cursor-pointer hover:bg-black/5 transition-all">
                                     <div class="flex flex-col items-center justify-center py-4">
                                         <i class="fa-solid fa-cloud-arrow-up text-2xl opacity-20 mb-2"></i>
-                                        <p class="text-xs font-bold opacity-50 italic"><%= t('image_source.hint') %></p>
+                                        <p class="text-xs font-bold opacity-50 italic">Klik for at gennemse filer</p>
                                     </div>
                                     <input type="file" id="fileInput" class="hidden" accept="image/*">
                                 </label>
                             </div>
 
                             <div id="pane-url" class="img-pane hidden">
-                                <label class="block mb-2 text-[10px] font-black uppercase opacity-40"><%= t('image_source.url_label') %></label>
+                                <label class="block mb-2 text-[10px] font-black uppercase opacity-40">Direkte link til billedet</label>
                                 <input type="url" id="urlInput" placeholder="https://site.com/couverture.jpg" class="w-full bg-white dark:bg-black/20 border-transparent rounded-lg p-3 text-sm outline-none focus:ring-2 focus:ring-primary-theme">
                             </div>
 
@@ -202,7 +192,7 @@
 
                     <div>
                         <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">
-                            <%= t('confirm_vinyl.field_comments') %>
+                            Noter / kommentarer
                         </label>
                         <textarea name="comments" rows="3" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg focus:ring-primary-theme focus:border-primary-theme block w-full p-3 placeholder-opacity-50 transition-colors outline-none"><%= book.comments || '' %></textarea>
                     </div>
@@ -210,7 +200,7 @@
                     <div class="mb-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-xs font-bold uppercase tracking-wider opacity-60 mb-2">
-                                <i class="fa-solid fa-box-archive mr-1"></i> <%= t('common.location') %>
+                                <i class="fa-solid fa-box-archive mr-1"></i> Placering
                             </label>
                             <input type="text" name="location" list="locationList" value="<%= book.location || '' %>"
                                 class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary-theme outline-none transition-all">
@@ -223,7 +213,7 @@
                         </div>
                         <div>
                             <label class="block text-xs font-bold uppercase tracking-wider opacity-60 mb-2">
-                                <i class="fa-solid fa-book-open mr-1"></i> <%= t('confirm_vinyl.field_genres') %>
+                                <i class="fa-solid fa-book-open mr-1"></i> Genrer
                             </label>
                             <input type="text" name="genres" 
                                 placeholder="Fantasy, Thriller..."
@@ -232,7 +222,7 @@
                         </div>
                         <div>
                             <label class="block text-xs font-bold uppercase tracking-wider opacity-60 mb-2">
-                                <i class="fa-solid fa-tags mr-1"></i> <%= t('confirm_vinyl.field_styles') %>
+                                <i class="fa-solid fa-tags mr-1"></i> Stilarter
                             </label>
                             <input type="text" name="styles" 
                                 placeholder="Hard Magic, Cyberpunk..."
@@ -243,7 +233,7 @@
 
                     <div class="pt-6">
                         <button type="submit" class="w-full text-white bg-primary-theme hover:brightness-110 font-bold rounded-lg text-lg px-5 py-4 transition-transform hover:scale-[1.01] flex items-center justify-center gap-2 shadow-lg shadow-primary-theme/20">
-                            <i class="fa-solid fa-save"></i> <%= t('common.save') %>
+                            <i class="fa-solid fa-save"></i> Gem
                         </button>
                     </div>
                 </form>
@@ -254,7 +244,7 @@
 
 <script>
     const translations = {
-        compressAlert: "<%= t('image_source.compress_alert') %>"
+        compressAlert: "Billedet er for stort (maks 5 MB). Det vil blive komprimeret."
     };
 
     const checkCover = document.getElementById('checkEditCover');

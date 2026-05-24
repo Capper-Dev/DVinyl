@@ -5,10 +5,10 @@
         <div class="mb-8">
             <h1 class="text-3xl font-bold flex items-center gap-3 transition-colors">
                 <i class="fas fa-cog text-primary-theme animate-spin-slow"></i>
-                <%= t('settings.page_title') %>
+                Kontoindstillinger
             </h1>
             <p class="opacity-60 mt-2 transition-colors">
-                <%= t('settings.page_desc') %>
+                Administrér dine personlige oplysninger og sikkerhed.
             </p>
         </div>
 
@@ -38,7 +38,7 @@
 
                         <button onclick="openModal('avatar-modal')"
                             class="mt-4 text-sm text-primary-theme font-medium hover:underline transition-colors">
-                            <%= t('settings.edit_photo') %>
+                            Opdater billede
                         </button>
                     </div>
                 </div>
@@ -50,12 +50,12 @@
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-lg font-bold flex items-center gap-2 transition-colors">
                             <i class="fas fa-user-circle opacity-50"></i>
-                            <%= t('settings.identity_title') %>
+                            Identitet
                         </h2>
                         <button onclick="openModal('username-modal')"
                             class="text-sm bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 px-3 py-1.5 rounded-lg transition-colors border border-transparent">
                             <i class="fas fa-pen mr-1"></i>
-                            <%= t('common.edit') %>
+                            Rediger
                         </button>
                     </div>
 
@@ -63,7 +63,7 @@
                         <div
                             class="flex flex-col sm:flex-row sm:justify-between p-4 bg-black/5 dark:bg-white/5 rounded-xl border border-transparent transition-colors">
                             <span class="opacity-60 text-sm">
-                                <%= t('settings.username_label') %>
+                                Brugernavn
                             </span>
                             <span class="font-medium transition-colors">
                                 <%= user.username %>
@@ -72,7 +72,7 @@
                         <div
                             class="flex flex-col sm:flex-row sm:justify-between p-4 bg-black/5 dark:bg-white/5 rounded-xl border border-transparent transition-colors">
                             <span class="opacity-60 text-sm">
-                                <%= t('settings.email_label') %>
+                                E-mailadresse
                             </span>
                             <span class="font-medium transition-colors">
                                 <%= user.email %>
@@ -83,52 +83,14 @@
 
                 <div class="card-theme rounded-2xl p-6 transition-colors shadow-sm">
                     <h2 class="text-lg font-bold flex items-center gap-2 mb-6 transition-colors">
-                        <i class="fas fa-globe opacity-50"></i>
-                        <%= t('settings.preferences_title') %>
-                    </h2>
-                    <div
-                        class="flex items-center justify-between p-4 bg-black/5 dark:bg-white/5 rounded-xl border border-transparent transition-colors">
-                        <span class="opacity-60 text-sm">
-                            <%= t('settings.language_label') %>
-                        </span>
-                        <form action="<%= baseUrl %>/settings/update-language" method="POST" class="flex items-center">
-                            <select name="language" onchange="this.form.submit()"
-                                class="bg-black/5 dark:bg-white/5 border border-transparent text-gray-900 dark:text-white text-sm rounded-lg focus:ring-primary-theme focus:border-primary-theme block w-full p-3 transition-colors outline-none cursor-pointer">
-                                <option value="fr" class="bg-white dark:bg-[#1a1a1a]" <%=currentLng==='fr' ? 'selected'
-                                    : '' %>>
-                                    Français
-                                </option>
-                                <option value="en" class="bg-white dark:bg-[#1a1a1a]" <%=currentLng==='en' ? 'selected'
-                                    : '' %>>
-                                    English
-                                </option>
-                                <option value="de" class="bg-white dark:bg-[#1a1a1a]" <%=currentLng==='de' ? 'selected'
-                                    : '' %>>
-                                    Deutsch
-                                </option>
-                                <option value="es" class="bg-white dark:bg-[#1a1a1a]" <%=currentLng==='es' ? 'selected'
-                                    : '' %>>
-                                    Español
-                                </option>
-                                <option value="it" class="bg-white dark:bg-[#1a1a1a]" <%=currentLng==='it' ? 'selected'
-                                    : '' %>>
-                                    Italiano
-                                </option>
-                            </select>
-                        </form>
-                    </div>
-                </div>
-
-                <div class="card-theme rounded-2xl p-6 transition-colors shadow-sm mt-6">
-                    <h2 class="text-lg font-bold flex items-center gap-2 mb-6 transition-colors">
                         <i class="fas fa-coins opacity-50"></i>
-                        <%= t('settings.currency_title') %>
+                        Valuta
                     </h2>
 
                     <div
                         class="flex items-center justify-between p-4 bg-black/5 dark:bg-white/5 rounded-xl border border-transparent transition-colors">
                         <span class="opacity-60 text-sm">
-                            <%= t('settings.currency_label') %>
+                            Foretrukken valuta
                         </span>
 
                         <form action="<%= baseUrl %>/settings/update-currency" method="POST" class="flex items-center">
@@ -136,17 +98,17 @@
                                 class="bg-black/5 dark:bg-white/5 border border-transparent text-gray-900 dark:text-white text-sm rounded-lg focus:ring-primary-theme focus:border-primary-theme block w-full p-3 transition-colors outline-none cursor-pointer">
                                 <option value="EUR" class="bg-white dark:bg-[#1a1a1a]" <%=user.currency==='EUR'
                                     ? 'selected' : '' %>>
-                                    <%= t('settings.currency_eur') %>
+                                    Euro (€)
                                 </option>
 
                                 <option value="USD" class="bg-white dark:bg-[#1a1a1a]" <%=user.currency==='USD'
                                     ? 'selected' : '' %>>
-                                    <%= t('settings.currency_usd') %>
+                                    US Dollar ($)
                                 </option>
 
                                 <option value="GBP" class="bg-white dark:bg-[#1a1a1a]" <%=user.currency==='GBP'
                                     ? 'selected' : '' %>>
-                                    <%= t('settings.currency_gbp') %>
+                                    Britiske Pund (£)
                                 </option>
                             </select>
                         </form>
@@ -157,7 +119,7 @@
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-lg font-bold flex items-center gap-2 transition-colors">
                             <i class="fas fa-shield-alt opacity-50"></i>
-                            <%= t('settings.security_title') %>
+                            Sikkerhed
                         </h2>
                     </div>
 
@@ -165,17 +127,15 @@
                         class="flex items-center justify-between p-4 bg-black/5 dark:bg-white/5 rounded-xl border border-transparent transition-colors">
                         <div>
                             <p class="font-medium transition-colors">
-                                <%= t('settings.password_label') %>
+                                Adgangskode
                             </p>
                             <p class="opacity-50 text-xs mt-1 transition-colors">
-                                <%= t('settings.last_change') %> : <%= new
-                                        Date(user.lastChange).toLocaleDateString(currentLng==='fr' ? 'fr-FR' : 'en-US' )
-                                        %>
+                                Sidst opdateret : <%= new Date(user.lastChange).toLocaleDateString('da-DK') %>
                             </p>
                         </div>
                         <button onclick="openModal('password-modal')"
                             class="text-sm bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 px-3 py-1.5 rounded-lg transition-colors border border-transparent">
-                            <%= t('common.edit') %>
+                            Rediger
                         </button>
                     </div>
                 </div>
@@ -191,13 +151,13 @@
                 class="absolute top-4 right-4 opacity-50 hover:opacity-100 transition-colors"><i
                     class="fas fa-times"></i></button>
             <h3 class="text-xl font-bold mb-4 transition-colors">
-                <%= t('settings.modal_username_title') %>
+                Skift brugernavn
             </h3>
 
             <form action="<%= baseUrl %>/settings/update-username" method="POST">
                 <div class="mb-4">
                     <label class="block text-sm opacity-60 mb-2 transition-colors">
-                        <%= t('settings.new_username_label') %>
+                        Nyt brugernavn
                     </label>
                     <input type="text" name="username" id="username-input"
                         class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg p-3 focus:border-primary-theme focus:ring-1 focus:ring-primary-theme focus:outline-none transition-colors"
@@ -206,7 +166,7 @@
                 </div>
                 <button type="submit" id="save-username-btn" disabled
                     class="w-full bg-primary-theme hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3 rounded-xl transition-colors shadow-lg shadow-primary-theme/20">
-                    <%= t('common.save') %>
+                    Gem
                 </button>
             </form>
         </div>
@@ -219,7 +179,7 @@
                 class="absolute top-4 right-4 opacity-50 hover:opacity-100 transition-colors"><i
                     class="fas fa-times"></i></button>
             <h3 class="text-xl font-bold mb-6 transition-colors">
-                <%= t('settings.modal_avatar_title') %>
+                Nyt profilbillede
             </h3>
 
             <form id="avatar-form">
@@ -233,15 +193,15 @@
                 <div class="grid grid-cols-2 gap-3">
                     <button type="button" onclick="document.getElementById('avatar-upload').click()"
                         class="bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 font-medium py-3 rounded-xl transition-colors border border-transparent">
-                        <%= t('common.choose') %>
+                        Vælg
                     </button>
                     <button type="submit"
                         class="bg-primary-theme hover:brightness-110 text-white font-bold py-3 rounded-xl transition-colors shadow-lg shadow-primary-theme/20">
-                        <%= t('common.validate') %>
+                        Bekræft
                     </button>
                 </div>
                 <p class="text-center opacity-50 text-xs mt-4">
-                    <%= t('settings.avatar_hint') %>
+                    Maks. 5 MB. JPG, PNG, GIF, WEBP.
                 </p>
             </form>
         </div>
@@ -254,33 +214,33 @@
                 class="absolute top-4 right-4 opacity-50 hover:opacity-100 transition-colors"><i
                     class="fas fa-times"></i></button>
             <h3 class="text-xl font-bold mb-4 transition-colors">
-                <%= t('settings.modal_password_title') %>
+                Adgangskode
             </h3>
 
             <div
                 class="bg-orange-50 dark:bg-orange-500/10 border border-orange-200 dark:border-orange-500/20 text-orange-600 dark:text-orange-400 p-3 rounded-lg text-xs mb-4 transition-colors">
                 <i class="fas fa-triangle-exclamation mr-1"></i>
-                <%= t('settings.password_warning') %>
+                Du bliver logget ud efter ændringen.
             </div>
 
             <form id="password-form" class="space-y-4">
                 <div>
                     <label class="block text-sm opacity-60 mb-1 transition-colors">
-                        <%= t('settings.current_password_label') %>
+                        Nuværende adgangskode
                     </label>
                     <input type="password" name="currentPassword"
                         class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg p-3 focus:border-primary-theme focus:ring-1 focus:ring-primary-theme focus:outline-none transition-colors">
                 </div>
                 <div>
                     <label class="block text-sm opacity-60 mb-1 transition-colors">
-                        <%= t('settings.new_password_label') %>
+                        Ny adgangskode
                     </label>
                     <input type="password" name="newPassword" id="new-password"
                         class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg p-3 focus:border-primary-theme focus:ring-1 focus:ring-primary-theme focus:outline-none transition-colors">
                 </div>
                 <div>
                     <label class="block text-sm opacity-60 mb-1 transition-colors">
-                        <%= t('settings.confirm_password_label') %>
+                        Bekræft ny adgangskode
                     </label>
                     <input type="password" name="confirmPassword" id="confirm-password"
                         class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg p-3 focus:border-primary-theme focus:ring-1 focus:ring-primary-theme focus:outline-none transition-colors">
@@ -289,7 +249,7 @@
 
                 <button type="submit" id="save-password-btn"
                     class="w-full bg-primary-theme hover:brightness-110 text-white font-bold py-3 rounded-xl transition-colors mt-2 shadow-lg shadow-primary-theme/20">
-                    <%= t('common.update') %>
+                    Opdater
                 </button>
             </form>
         </div>
@@ -308,12 +268,13 @@
         const saveUsernameBtn = document.getElementById('save-username-btn');
 
         const translations = {
-            avatarSuccess: "<%= t('messages.avatar_success') %>",
-            avatarError: "<%= t('messages.avatar_error') %>",
-            passwordSuccess: "<%= t('messages.password_success') %>",
-            passwordMismatch: "<%= t('messages.password_mismatch') %>",
-            usernameAvailable: "<%= t('messages.username_available') %>",
-            genericError: "<%= t('messages.generic_error') %>"
+            avatarSuccess: "Profilbillede opdateret!",
+            avatarError: "Fejl ved upload af billede.",
+            passwordSuccess: "Adgangskode opdateret.",
+            passwordError: "Fejl ved opdatering af adgangskode.",
+            passwordMismatch: "Adgangskoderne stemmer ikke overens.",
+            usernameAvailable: "Brugernavn tilgængeligt!",
+            genericError: "Der opstod en fejl."
         };
 
 
@@ -395,10 +356,10 @@
         if (confPass) {
             confPass.addEventListener('input', function () {
                 if (this.value !== newPass.value) {
-                    passFeed.textContent = "Ne correspond pas";
+                    passFeed.textContent = "Stemmer ikke overens";
                     passFeed.className = "text-xs mt-1 text-red-500";
                 } else {
-                    passFeed.textContent = "Correspond";
+                    passFeed.textContent = "Stemmer overens";
                     passFeed.className = "text-xs mt-1 text-green-500";
                 }
             });

@@ -94,11 +94,19 @@ router.get('/', requireAuth, requireAdmin, async (req, res) => {
 
         // Read optional message key from query and translate in the view.
         const msgKey = req.query.msg;
+        const messageMap = {
+            user_created: 'Bruger oprettet!',
+            user_deleted: 'Bruger slettet.',
+            ip_blocked: 'IP-adresse blokeret.',
+            ip_unblocked: 'IP-adresse afblokeret.',
+            password_updated: 'Adgangskode opdateret.',
+            avatar_updated: 'Profilbillede opdateret!'
+        };
 
         res.render('admin', {
             ...data,
             user: res.locals.user,
-            successMessage: msgKey ? req.t(`messages.${msgKey}`) : null,
+            successMessage: msgKey ? (messageMap[msgKey] || null) : null,
             newPassword: null,
             hasHardcoverKey: !!process.env.HARDCOVER_API_KEY,
             hasTmdbKey: !!process.env.TMDB_API_KEY,
@@ -106,7 +114,7 @@ router.get('/', requireAuth, requireAdmin, async (req, res) => {
         });
     } catch (err) {
         console.error(err);
-        res.status(500).send(req.t('errors.generic_server_error'));
+        res.status(500).send('Intern serverfejl.');
     }
 });
 
@@ -167,7 +175,7 @@ router.post('/reset-password', requireAuth, requireAdmin, async (req, res) => {
             res.render('admin', {
                 ...data,
                 user: res.locals.user,
-                successMessage: req.t('messages.password_reset_success', { name: userToUpdate.username }),
+                successMessage: `Adgangskode nulstillet for ${userToUpdate.username}.`,
                 newPassword: password
             });
         } else {

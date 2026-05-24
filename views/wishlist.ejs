@@ -8,13 +8,13 @@
                 <span class="flex items-center gap-2 md:gap-3 text-primary-theme">
                     <i class="fa-solid fa-gift flex-shrink-0"></i>
                     <span class="truncate">
-                        <%= t('wishlist.title') %>
+                        Min ønskeliste
                     </span>
                 </span>
                 <span
                     class="px-3 md:mt-1.5 py-1 bg-black/5 dark:bg-white/10 rounded-full text-sm font-medium opacity-70 w-fit">
                     <%= albums.length %>
-                        <%= t('common.items') %>
+                        elementer
                 </span>
             </h1>
 
@@ -33,11 +33,11 @@
                 class="text-center py-16 md:py-20 card-theme rounded-xl border-dashed opacity-80 transition-colors shadow-sm">
                 <i class="fa-regular fa-heart text-5xl md:text-6xl opacity-20 mb-4 transition-colors"></i>
                 <p class="opacity-60 px-4">
-                    <%= t('wishlist.empty_msg') %>
+                    Din ønskeliste er tom.
                 </p>
                 <a href="<%= baseUrl %>/add-vinyl"
                     class="text-primary-theme hover:underline mt-2 inline-block font-medium transition-colors">
-                    <%= t('wishlist.search_link') %>
+                    Søg efter et album
                 </a>
             </div>
             <% } else { %>
@@ -72,7 +72,8 @@
 
                                                 <span
                                                     class="absolute top-1.5 right-1.5 md:top-2 md:right-2 z-20 text-[10px] font-bold px-1.5 py-0.5 md:px-2 md:py-1 rounded backdrop-blur-md border border-white/10 shadow-sm <%= badgeClass %>">
-                                                    <%= t('media.' + formatKey) %>
+                                                    <% const _wlMediaLabels = { vinyl: 'Vinyl', cd: 'CD', cassette: 'Kassette', dvd: 'DVD', bluray: 'Blu-ray', '4k': '4K Ultra HD', vhs: 'VHS', laserdisc: 'Laserdisc', book: 'Bog', hardcover: 'Hardcover', paperback: 'Paperback', manga: 'Manga', comic: 'Tegneserie', graphic_novel: 'Grafisk roman' }; %>
+                                                    <%= _wlMediaLabels[formatKey] || formatKey %>
                                                 </span>
                                     </div>
 
@@ -103,7 +104,7 @@
                                         class="w-full py-2.5 md:py-2 bg-black/5 dark:bg-white/5 hover:bg-primary-theme hover:text-white text-primary-theme text-[10px] md:text-xs font-bold uppercase transition-colors flex items-center justify-center gap-1.5 border-t border-black/10 dark:border-white/10 active:brightness-90">
                                         <i class="fa-solid fa-check"></i>
                                         <span>
-                                            <%= t('wishlist.btn_received') %>
+                                            Jeg har modtaget den!
                                         </span>
                                     </button>
                                     <% } %>
@@ -116,8 +117,8 @@
     <script src="<%= baseUrl %>/socket.io/socket.io.js"></script>
     <script>
         const wishlistTranslations = {
-            confirmMove: "<%= t('wishlist.confirm_move') %>",
-            serverError: "<%= t('messages.generic_error') %>"
+            confirmMove: "Fedt! Vil du flytte dette album til din officielle samling?",
+            serverError: "Der opstod en fejl. Prøv igen."
         };
 
         async function moveToCollection(id) {

@@ -18,9 +18,6 @@ const mongoose = require('mongoose');
 const http = require('http');
 const { Server } = require("socket.io");
 
-const i18next = require('i18next');
-const i18nMiddleware = require('i18next-http-middleware');
-
 const settingsMiddleware = require('./middleware/settingsMiddleware');
 const themesConfig = require('./config/themes');
 const { BASE_URL } = require('./config/constants');
@@ -48,21 +45,6 @@ const io = new Server(server, {
 });
 
 
-i18next
-  .init({
-    lng: 'en',
-    fallbackLng: 'en',
-    preload: ['en', 'fr', 'es', 'it', 'de'],
-    resources: {
-      en: { translation: require('./locales/en.json') },
-      fr: { translation: require('./locales/fr.json') },
-      es: { translation: require('./locales/es.json') },
-      it: { translation: require('./locales/it.json') },
-      de: { translation: require('./locales/de.json') }
-    }
-  });
-
-
 // Basic configuration
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -73,9 +55,6 @@ app.use(BASE_URL, express.static(path.join(__dirname, 'public')));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(cookieParser());
-
-
-app.use(i18nMiddleware.handle(i18next));
 
 
 app.use(session({
@@ -106,15 +85,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(async (req, res, next) => {
-  // If the user is authenticated and has a language preference, enforce it
-  if (req.user && req.user.language) {
-    await req.i18n.changeLanguage(req.user.language);
-  }
-
-  // Make translation helper and current language available to all EJS views
-  res.locals.t = req.t;
-  res.locals.currentLng = req.language;
+app.use((req, res, next) => {
   res.locals.appVersion = pkg.version;
   res.locals.baseUrl = BASE_URL;
   req.io = io;
@@ -133,7 +104,7 @@ app.use(async (req, res, next) => {
   const clientIP = req.headers['x-forwarded-for']?.split(',')[0] || req.socket.remoteAddress;
   try {
     const blocked = await BlockedIP.findOne({ ip: clientIP });
-    if (blocked) return res.status(403).send(req.t('common.forbidden'));
+    if (blocked) return res.status(403).send('Adgang nægtet');
     next();
   } catch (err) {
     console.error('IP error:', err);
@@ -199,6 +170,8 @@ app.use(BASE_URL, bookRoutes);
 app.use(BASE_URL, dvdRoutes);
 app.use(BASE_URL, gameRoutes);
 app.use(BASE_URL + '/api/collections', collectionRoutes);
+const barcodeRoutes = require('./routes/barcodeRoutes.js');
+app.use(BASE_URL + '/api/barcodes', barcodeRoutes);
 
 app.use((req, res) => {
     res.status(404).render('404');

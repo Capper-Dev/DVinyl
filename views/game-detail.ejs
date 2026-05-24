@@ -12,13 +12,13 @@
                 <a href="<%= baseUrl %>/wishlist"
                     class="hover:opacity-100 hover:text-primary-theme transition-colors flex items-center gap-2">
                     <i class="fa-solid fa-arrow-left"></i>
-                    <%= t('detail.back_to_wishlist') %>
+                    Tilbage til ønskelisten
                 </a>
                 <% } else { %>
                     <a href="<%= baseUrl %>/collection?type=games"
                         class="hover:opacity-100 hover:text-primary-theme transition-colors flex items-center gap-2">
                         <i class="fa-solid fa-arrow-left"></i>
-                        <%= t('detail.back_to_collection') %>
+                        Tilbage til samlingen
                     </a>
                     <% } %>
         </nav>
@@ -32,7 +32,7 @@
                         <div
                             class="absolute top-4 left-4 bg-pink-500 text-white text-[10px] font-bold px-2 py-1 rounded shadow-md z-10 flex items-center gap-1">
                             <i class="fa-solid fa-gift"></i>
-                            <%= t('index.section_wishlist') %>
+                            Ønskeliste
                         </div>
                         <% } %>
 
@@ -45,27 +45,27 @@
                             <span
                                 class="absolute top-4 right-4 z-20 bg-primary-theme/90 text-white text-xs px-3 py-1 rounded-full border border-white/10 shadow-sm">
                                 <i class="fa-solid fa-gamepad mr-1"></i>
-                                <%= t('media.game') %>
+                                Spil
                             </span>
                 </div>
 
                 <div class="w-full mt-6 grid grid-cols-2 gap-4">
                     <div class="card-theme p-4 rounded-xl text-center shadow-sm">
                         <span class="block text-[10px] uppercase font-bold opacity-50 mb-1">
-                            <%= t('confirm_game.field_status') %>
+                            Status
                         </span>
                         <% let statusColor='text-gray-500' ; if(game.playStatus==='playing' )
                             statusColor='text-blue-500' ; else if(game.playStatus==='played' )
                             statusColor='text-green-500' ; %>
                             <span class="text-sm font-bold <%= statusColor %>">
-                                <%= game.playStatus==='playing' ? t('confirm_game.status_playing') :
-                                    (game.playStatus==='played' ? t('confirm_game.status_played') :
-                                    t('confirm_game.status_to_play')) %>
+                                <%= game.playStatus==='playing' ? 'Spiller' :
+                                    (game.playStatus==='played' ? 'Spillet' :
+                                    'Ikke spillet') %>
                             </span>
                     </div>
                     <div class="card-theme p-4 rounded-xl text-center shadow-sm">
                         <span class="block text-[10px] uppercase font-bold opacity-50 mb-1">
-                            <%= t('confirm_game.field_rating') %>
+                            Bedømmelse
                         </span>
                         <div class="flex justify-center text-yellow-500 text-xs">
                             <% for(let i=1; i<=5; i++) { %>
@@ -82,7 +82,7 @@
                     <p
                         class="text-primary-theme font-bold text-sm mb-1 uppercase tracking-wider flex items-center gap-2">
                         <i class="fa-solid fa-gamepad"></i>
-                        <%= game.platform || t('media.game') %>
+                        <%= game.platform || 'Spil' %>
                     </p>
 
                     <h1 class="text-3xl md:text-5xl font-black mb-2 leading-tight transition-colors">
@@ -99,7 +99,7 @@
                             || 'bg-gray-600 text-white' ; %>
                             <span
                                 class="px-3 py-1 rounded-full text-xs font-bold tracking-wider <%= badgeColor %> shadow-sm">
-                                <%= t('media.' + (game.format || 'physical' )) %>
+                                <%= ({ physical: 'Fysisk', collector: 'Samler', limited: 'Begrænset udgave', steelbook: 'Steelbook' }[game.format || 'physical']) || 'Fysisk' %>
                             </span>
 
                             <% if (game.year) { %>
@@ -119,7 +119,7 @@
 
                                             <span
                                                 class="px-3 py-1 bg-black/5 dark:bg-white/10 border border-transparent rounded-full text-xs opacity-80 transition-colors">
-                                                <%= t('confirm_game.field_quantity') %> : <%= game.quantity || 1 %>
+                                                Antal: <%= game.quantity || 1 %>
                                             </span>
                     </div>
                 </div>
@@ -127,11 +127,11 @@
                 <div class="flex flex-col gap-6 ml-2">
                     <div class="flex flex-col">
                         <span class="text-[10px] uppercase tracking-widest opacity-50 font-bold mb-2">
-                            <%= t('common.location') %>
+                            Placering
                         </span>
                         <span class="text-sm font-medium">
                             <i class="fa-solid fa-box-archive mr-2 opacity-50"></i>
-                            <%= game.location || t('common.not_specified') %>
+                            <%= game.location || 'Ikke angivet' %>
                         </span>
                     </div>
 
@@ -140,7 +140,7 @@
                             <% if (game.genres && game.genres.length> 0) { %>
                                 <div class="flex flex-col">
                                     <span class="text-[10px] uppercase tracking-widest opacity-50 font-bold mb-2">
-                                        <%= t('confirm_vinyl.field_genres') %>
+                                        Genrer
                                     </span>
                                     <div class="flex flex-wrap gap-2">
                                         <% game.genres.forEach(genre=> { %>
@@ -159,7 +159,7 @@
                 <div class="card-theme rounded-xl p-6 grid grid-cols-2 gap-y-6 gap-x-4 transition-colors shadow-sm">
                     <div>
                         <span class="block text-xs opacity-50 uppercase font-bold mb-1">
-                            <%= t('game_detail.developer_label') %>
+                            Udvikler
                         </span>
                         <span class="font-medium transition-colors">
                             <%= game.developer || 'N/A' %>
@@ -167,7 +167,7 @@
                     </div>
                     <div>
                         <span class="block text-xs opacity-50 uppercase font-bold mb-1">
-                            <%= t('game_detail.publisher_label') %>
+                            Udgiver
                         </span>
                         <span class="font-medium transition-colors">
                             <%= game.publisher || 'N/A' %>
@@ -175,7 +175,7 @@
                     </div>
                     <div>
                         <span class="block text-xs opacity-50 uppercase font-bold mb-1">
-                            <%= t('game_detail.platform_label') %>
+                            Platform
                         </span>
                         <span class="font-medium transition-colors">
                             <%= game.platform || 'N/A' %>
@@ -183,7 +183,7 @@
                     </div>
                     <div>
                         <span class="block text-xs opacity-50 uppercase font-bold mb-1">
-                            <%= t('game_detail.region_label') %>
+                            Region
                         </span>
                         <span class="font-medium transition-colors">
                             <%= game.region || 'N/A' %>
@@ -191,28 +191,28 @@
                     </div>
                     <div>
                         <span class="block text-xs opacity-50 uppercase font-bold mb-1">
-                            <%= t('game_detail.barcode_label') %>
+                            Stregkode
                         </span>
                         <span class="inline-flex items-center gap-1.5 font-mono text-sm bg-black/5 dark:bg-white/5 px-2 py-1 rounded transition-colors">
                             <%= game.barcode || 'N/A' %>
                             <% if (game.barcode_locked) { %>
-                                <i class="fa-solid fa-lock text-[10px] text-primary-theme opacity-70" title="<%= t('confirm_vinyl.barcode_locked') %>"></i>
+                                <i class="fa-solid fa-lock text-[10px] text-primary-theme opacity-70" title="Lås stregkode"></i>
                             <% } %>
                         </span>
                     </div>
                     <div>
                         <span class="block text-xs opacity-50 uppercase font-bold mb-1">
-                            <%= t('detail.added_at') %>
+                            Tilføjet
                         </span>
                         <span class="transition-colors">
-                            <%= new Date(game.added_at).toLocaleDateString(currentLng==='fr' ? 'fr-FR' : 'en-US' ) %>
+                            <%= new Date(game.added_at).toLocaleDateString('da-DK') %>
                         </span>
                     </div>
                     <% if (game.igdb_id) { %>
                         <div
                             class="col-span-2 border-t border-black/10 dark:border-white/10 mt-2 pt-4 transition-colors">
                             <span class="block text-xs opacity-50 uppercase font-bold mb-1">
-                                <%= t('detail.source') %>
+                                Kilde
                             </span>
                             <a href="https://www.igdb.com/games/<%= game.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') %>"
                                 target="_blank"
@@ -231,7 +231,7 @@
                         </div>
                         <h3 class="text-xs uppercase font-bold opacity-50 mb-3 flex items-center gap-2 relative z-10">
                             <i class="fa-regular fa-comment-dots"></i>
-                            <%= t('detail.personal_notes') %>
+                            Personlige noter
                         </h3>
                         <p class="text-sm leading-relaxed whitespace-pre-line relative z-10 transition-colors">
                             <%= game.comments %>
@@ -247,19 +247,19 @@
                                         <button id="refreshInfoBtn" onclick="refreshMetadata('<%= game._id %>')"
                                             class="opacity-60 hover:opacity-100 px-4 py-2 text-sm transition-colors border border-black/10 dark:border-white/10 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 flex items-center gap-2">
                                             <i class="fa-solid fa-arrows-rotate" id="refreshInfoIcon"></i>
-                                            <%= t('collection.refresh_metadata_btn') %>
+                                            Opdater info
                                         </button>
                                         <% } %>
                                 </div>
                                 <a href="<%= baseUrl %>/game/edit/<%= game._id %>"
                                     class="opacity-70 hover:opacity-100 hover:text-primary-theme px-4 py-2 text-sm transition-colors border border-black/10 dark:border-white/10 rounded-lg hover:bg-black/5 dark:hover:bg-white/5">
                                     <i class="fa-solid fa-pen-to-square mr-2"></i>
-                                    <%= t('common.edit') %>
+                                    Rediger
                                 </a>
                                 <button onclick="confirmDelete('<%= game._id %>')"
                                     class="text-red-600 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400 bg-red-100 dark:bg-red-500/10 hover:bg-red-200 dark:hover:bg-red-500/20 px-4 py-2 rounded-lg text-sm transition-colors">
                                     <i class="fa-solid fa-trash mr-2"></i>
-                                    <%= t('admin.tooltips.delete') %>
+                                    Slet
                                 </button>
                             </div>
                             <% } %>
@@ -269,7 +269,7 @@
 
     <script>
         async function confirmDelete(id) {
-            if (confirm("<%= t('game_detail.delete_confirm') %>")) {
+            if (confirm("Er du sikker på, at du vil slette dette spil? Denne handling kan ikke fortrydes.")) {
                 try {
                     const response = await fetch(`<%= baseUrl %>/api/game/${id}`, {
                         method: 'DELETE',
@@ -283,7 +283,7 @@
                     }
                 } catch (err) {
                     console.error(err);
-                    alert("<%= t('messages.generic_error') %>");
+                    alert("Der opstod en fejl.");
                 }
             }
         }
@@ -302,13 +302,13 @@
                 if (response.ok && data.success) {
                     window.location.reload();
                 } else {
-                    alert("<%= t('game_detail.refresh_info_error') %>");
+                    alert("Fejl ved opdatering af metadata.");
                     btn.disabled = false;
                     icon.classList.remove('fa-spin');
                 }
             } catch (err) {
                 console.error(err);
-                alert("<%= t('game_detail.refresh_info_error') %>");
+                alert("Fejl ved opdatering af metadata.");
                 btn.disabled = false;
                 icon.classList.remove('fa-spin');
             }

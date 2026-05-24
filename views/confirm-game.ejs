@@ -4,7 +4,7 @@
     
     <nav class="flex mb-6 text-sm opacity-60 transition-colors">
         <a href="<%= baseUrl %>/add-game" class="hover:opacity-100 transition-opacity flex items-center py-2">
-            <i class="fa-solid fa-arrow-left mr-2"></i> <%= t('common.back_to_search') %>
+            <i class="fa-solid fa-arrow-left mr-2"></i> Tilbage til søgning
         </a>
     </nav>
 
@@ -16,10 +16,10 @@
                 <div class="aspect-[3/4] rounded-lg overflow-hidden mb-4 shadow-lg relative group bg-black/5 dark:bg-white/5">
                     <img id="livePreview" src="<%= game.cover_image %>" class="w-full h-full object-contain transition-all duration-500 p-2">
                     <div class="absolute inset-0 bg-black/40 hidden group-hover:flex items-center justify-center text-white text-xs font-bold backdrop-blur-sm cursor-pointer" onclick="document.getElementById('checkEditCover').click()">
-                        <%= t('confirm_game.replace_cover') %>
+                        Erstat cover
                     </div>
                     <div class="absolute top-2 right-2 bg-primary-theme/90 text-white text-[10px] font-bold px-2 py-1 rounded backdrop-blur-sm uppercase">
-                        <i class="fa-solid fa-gamepad mr-1"></i> <%= t('media.game') %>
+                        <i class="fa-solid fa-gamepad mr-1"></i> Spil
                     </div>
                 </div>
                 
@@ -29,23 +29,23 @@
                 <div class="space-y-3 text-sm border-t border-black/10 dark:border-white/10 pt-4 transition-colors">
                     <% if (game.developer) { %>
                     <div class="flex justify-between">
-                        <span class="opacity-60"><%= t('confirm_game.field_developer') %></span>
+                        <span class="opacity-60">Udvikler</span>
                         <span class="font-medium text-right truncate ml-4"><%= game.developer %></span>
                     </div>
                     <% } %>
                     <% if (game.publisher) { %>
                     <div class="flex justify-between">
-                        <span class="opacity-60"><%= t('confirm_game.field_publisher') %></span>
+                        <span class="opacity-60">Udgiver</span>
                         <span class="font-medium text-right truncate ml-4"><%= game.publisher %></span>
                     </div>
                     <% } %>
                     <div class="flex justify-between">
-                        <span class="opacity-60"><%= t('confirm_game.field_year') %></span>
+                        <span class="opacity-60">År</span>
                         <span><%= game.year || '-' %></span>
                     </div>
                     <% if (game.platforms_text) { %>
                     <div class="flex justify-between">
-                        <span class="opacity-60"><%= t('confirm_game.field_platform') %></span>
+                        <span class="opacity-60">Platform</span>
                         <span class="text-right text-xs truncate ml-4"><%= game.platforms_text %></span>
                     </div>
                     <% } %>
@@ -53,7 +53,7 @@
 
                 <% if(game.summary) { %>
                     <div class="mt-6 border-t border-black/10 dark:border-white/10 pt-4 transition-colors">
-                        <h3 class="text-xs uppercase font-bold opacity-50 mb-3"><%= t('confirm_book.description_title') %></h3>
+                        <h3 class="text-xs uppercase font-bold opacity-50 mb-3">Resumé</h3>
                         <div class="text-sm opacity-70 max-h-40 overflow-y-auto pr-2 custom-scrollbar text-justify">
                             <%= game.summary %>
                         </div>
@@ -66,7 +66,7 @@
             <div class="card-theme rounded-xl p-6 md:p-8 transition-colors shadow-sm">
                 
                 <h1 class="text-2xl font-bold mb-6 flex items-center gap-2">
-                    <i class="fa-solid fa-pen-to-square text-primary-theme"></i> <%= t('confirm_game.config_title') %>
+                    <i class="fa-solid fa-pen-to-square text-primary-theme"></i> Bekræft og udfyld
                 </h1>
 
                 <form action="<%= baseUrl %>/save-game" method="POST" class="space-y-6">
@@ -74,22 +74,22 @@
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60"><%= t('confirm_game.field_title') %></label>
+                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">Titel</label>
                             <input type="text" name="title" value="<%= game.title %>" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-primary-theme focus:border-primary-theme block w-full p-3 transition-colors outline-none" required>
                         </div>
                         <div>
-                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60"><%= t('confirm_game.field_developer') %></label>
+                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">Udvikler</label>
                             <input type="text" name="developer" value="<%= game.developer %>" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-primary-theme focus:border-primary-theme block w-full p-3 transition-colors outline-none">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60"><%= t('confirm_game.field_publisher') %></label>
+                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">Udgiver</label>
                             <input type="text" name="publisher" value="<%= game.publisher %>" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-primary-theme block w-full p-3 transition-colors outline-none">
                         </div>
                         <div>
-                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60"><%= t('confirm_game.field_year') %></label>
+                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">År</label>
                             <input type="text" name="year" value="<%= game.year %>" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-primary-theme block w-full p-3 transition-colors outline-none">
                         </div>
                     </div>
@@ -97,7 +97,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div>
                             <label class="block mb-2 text-sm font-bold uppercase tracking-widest text-primary-theme opacity-80">
-                                <i class="fa-solid fa-gamepad mr-1"></i> <%= t('confirm_game.field_platform') %>
+                                <i class="fa-solid fa-gamepad mr-1"></i> Platform
                             </label>
                             <select name="platform" class="bg-black/5 dark:bg-white/5 border border-transparent text-gray-900 dark:text-white text-sm rounded-lg focus:ring-primary-theme focus:border-primary-theme block w-full p-3 transition-colors outline-none cursor-pointer">
                                 <% game.platforms.forEach(p => { %>
@@ -107,17 +107,17 @@
                         </div>
                         <div>
                             <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">
-                                <i class="fa-solid fa-globe mr-1"></i> <%= t('confirm_game.field_region') %>
+                                <i class="fa-solid fa-globe mr-1"></i> Region
                             </label>
-                            <input type="text" name="region" placeholder="<%= t('confirm_game.region_placeholder') %>" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-primary-theme block w-full p-3 transition-colors outline-none">
+                            <input type="text" name="region" placeholder="PAL / NTSC / NTSC-J..." class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-primary-theme block w-full p-3 transition-colors outline-none">
                         </div>
                         <div>
-                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60"><%= t('confirm_game.field_format') %></label>
+                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">Format</label>
                             <select name="format" class="bg-black/5 dark:bg-white/5 border border-transparent text-gray-900 dark:text-white text-sm rounded-lg focus:ring-primary-theme focus:border-primary-theme block w-full p-3 transition-colors outline-none cursor-pointer">
-                                <option value="physical" class="bg-white dark:bg-[#1a1a1a]"><%= t('media.physical') %></option>
-                                <option value="collector" class="bg-white dark:bg-[#1a1a1a]"><%= t('media.collector') %></option>
-                                <option value="limited" class="bg-white dark:bg-[#1a1a1a]"><%= t('media.limited') %></option>
-                                <option value="steelbook" class="bg-white dark:bg-[#1a1a1a]"><%= t('media.steelbook') %></option>
+                                <option value="physical" class="bg-white dark:bg-[#1a1a1a]">Fysisk</option>
+                                <option value="collector" class="bg-white dark:bg-[#1a1a1a]">Samler</option>
+                                <option value="limited" class="bg-white dark:bg-[#1a1a1a]">Begrænset udgave</option>
+                                <option value="steelbook" class="bg-white dark:bg-[#1a1a1a]">Steelbook</option>
                             </select>
                         </div>
                     </div>
@@ -125,8 +125,8 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60 flex items-center gap-2">
-                                <%= t('confirm_game.field_barcode') %>
-                                <label class="cursor-pointer flex items-center ml-auto" title="<%= t('confirm_vinyl.barcode_locked') %>">
+                                Stregkode
+                                <label class="cursor-pointer flex items-center ml-auto" title="Lås stregkode">
                                     <input type="checkbox" name="barcode_locked" class="hidden peer">
                                     <i class="fa-solid fa-unlock opacity-30 peer-checked:hidden"></i>
                                     <i class="fa-solid fa-lock text-primary-theme hidden peer-checked:block"></i>
@@ -135,7 +135,7 @@
                             <input type="text" name="barcode" value="<%= scanned_barcode || '' %>" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-primary-theme focus:border-primary-theme block w-full p-3 transition-colors outline-none font-mono" placeholder="Code-barres...">
                         </div>
                         <div>
-                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60"><%= t('confirm_game.field_quantity') %></label>
+                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">Antal</label>
                             <input type="number" name="quantity" value="1" min="1" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-primary-theme block w-full p-3 transition-colors outline-none">
                         </div>
                     </div>
@@ -158,10 +158,10 @@
 
                     <div class="pt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                         <button type="submit" name="in_wishlist" value="true" class="bg-black/5 dark:bg-white/5 hover:bg-pink-500 hover:text-white font-bold rounded-lg text-sm px-5 py-4 transition-colors flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-gift"></i> <%= t('confirm_game.btn_wishlist') %>
+                            <i class="fa-solid fa-gift"></i> Ønskeliste
                         </button>
                         <button type="submit" name="in_wishlist" value="false" class="text-white bg-primary-theme hover:brightness-110 font-bold rounded-lg text-lg px-5 py-4 transition-transform hover:scale-[1.01] flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
-                            <i class="fa-solid fa-check"></i> <%= t('confirm_game.btn_collection') %>
+                            <i class="fa-solid fa-check"></i> Tilføj til samlingen
                         </button>
                     </div>
                 </form>

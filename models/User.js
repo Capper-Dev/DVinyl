@@ -10,21 +10,21 @@ const bcrypt = require('bcrypt');
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
-        required: [true, "auth.username_required"],
+        required: [true, "Indtast venligst et brugernavn"],
         unique: true,
         trim: true
     },
     email: {
         type: String,
-        required: [true, "auth.email_required"],
+        required: [true, "Indtast venligst en e-mail"],
         unique: true,
         lowercase: true,
-        validate: [isEmail, "auth.email_invalid"]
+        validate: [isEmail, "Indtast venligst en gyldig e-mail"]
     },
     password: {
         type: String,
-        required: [true, "auth.password_required"],
-        minlength: [6, "auth.password_too_short"]
+        required: [true, "Indtast venligst en adgangskode"],
+        minlength: [6, "Adgangskoden skal være mindst 6 tegn"]
     },
     img: {
         type: String,
@@ -38,11 +38,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: 'dark',
         enum: ['light', 'dark']
-    },
-    language: {
-        type: String,
-        enum: ['fr', 'en', 'de', 'es', 'it'],
-        default: 'fr'
     },
     currency: {
         type: String,

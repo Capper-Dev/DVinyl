@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <% 
   const isDark = (typeof locals.isDark !== 'undefined') ? locals.isDark : true;
-  const currentLng = (typeof locals.currentLng !== 'undefined') ? locals.currentLng : 'fr';
   const THEMES = (typeof locals.allThemes !== 'undefined') ? locals.allThemes : {};
   
   const rawCategory = (typeof locals.currentType !== 'undefined') ? locals.currentType : (locals.detectedType || 'home');
@@ -41,7 +40,7 @@
   const activeTheme = (THEMES[activePresetKey]) ? THEMES[activePresetKey] : (THEMES['default'] || safeFallback);
 %>
 
-<html lang="<%= currentLng %>" class="<%= isDark ? 'dark' : '' %>">
+<html lang="da-DK" class="<%= isDark ? 'dark' : '' %>">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -161,30 +160,30 @@
         <ul class="flex flex-col font-medium p-4 md:p-0 mt-4 rounded-lg md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-transparent">
           <% 
             const shortcutConfig = {
-                'global_home': { label: t('nav.home'), url: '/' },
-                'global_collection': { label: t('nav.collection'), url: '/collection' },
-                'global_wishlist': { label: t('nav.wishlist'), url: '/wishlist' },
+                'global_home': { label: 'Forside', url: '/' },
+                'global_collection': { label: 'Samling', url: '/collection' },
+                'global_wishlist': { label: 'Ønskeliste', url: '/wishlist' },
 
-                'music': { label: t('media.music'), url: '/collection?type=music', module: 'music' },
-                'music_vinyl': { label: t('media.vinyls'), url: '/collection?type=music&format=vinyl', module: 'music' },
-                'music_cd': { label: t('media.cds'), url: '/collection?type=music&format=cd', module: 'music' },
-                'music_cassette': { label: t('media.cassettes'), url: '/collection?type=music&format=cassette', module: 'music' },
+                'music': { label: 'Musik', url: '/collection?type=music', module: 'music' },
+                'music_vinyl': { label: 'Vinyler', url: '/collection?type=music&format=vinyl', module: 'music' },
+                'music_cd': { label: "CD'er", url: '/collection?type=music&format=cd', module: 'music' },
+                'music_cassette': { label: 'Kassetter', url: '/collection?type=music&format=cassette', module: 'music' },
 
-                'books': { label: t('media.books'), url: '/collection?type=books', module: 'books' },
-                'book_hardcover': { label: t('media.hardcover'), url: '/collection?type=books&format=hardcover', module: 'books' },
-                'book_paperback': { label: t('media.paperback'), url: '/collection?type=books&format=paperback', module: 'books' },
-                'book_manga': { label: t('media.manga'), url: '/collection?type=books&format=manga', module: 'books' },
-                'book_comic': { label: t('media.comic'), url: '/collection?type=books&format=comic', module: 'books' },
-                'book_graphic_novel': { label: t('media.graphic_novel'), url: '/collection?type=books&format=graphic_novel', module: 'books' },
+                'books': { label: 'Bøger', url: '/collection?type=books', module: 'books' },
+                'book_hardcover': { label: 'Hardcover', url: '/collection?type=books&format=hardcover', module: 'books' },
+                'book_paperback': { label: 'Paperback', url: '/collection?type=books&format=paperback', module: 'books' },
+                'book_manga': { label: 'Manga', url: '/collection?type=books&format=manga', module: 'books' },
+                'book_comic': { label: 'Tegneserie', url: '/collection?type=books&format=comic', module: 'books' },
+                'book_graphic_novel': { label: 'Grafisk roman', url: '/collection?type=books&format=graphic_novel', module: 'books' },
 
-                'dvd': { label: t('media.dvd_gen'), url: '/collection?type=dvd', module: 'dvd' },
-                'dvd_dvd': { label: t('media.dvd'), url: '/collection?type=dvd&format=dvd', module: 'dvd' },
-                'dvd_bluray': { label: t('media.bluray'), url: '/collection?type=dvd&format=bluray', module: 'dvd' },
-                'dvd_4k': { label: t('media.4k'), url: '/collection?type=dvd&format=4k', module: 'dvd' },
-                'dvd_vhs': { label: t('media.vhs'), url: '/collection?type=dvd&format=vhs', module: 'dvd' },
-                'dvd_laserdisc': { label: t('media.laserdisc'), url: '/collection?type=dvd&format=laserdisc', module: 'dvd' },
-                
-                'games': { label: t('media.games'), url: '/collection?type=games', module: 'games' }
+                'dvd': { label: 'Film / TV-serier', url: '/collection?type=dvd', module: 'dvd' },
+                'dvd_dvd': { label: 'DVD', url: '/collection?type=dvd&format=dvd', module: 'dvd' },
+                'dvd_bluray': { label: 'Blu-ray', url: '/collection?type=dvd&format=bluray', module: 'dvd' },
+                'dvd_4k': { label: '4K Ultra HD', url: '/collection?type=dvd&format=4k', module: 'dvd' },
+                'dvd_vhs': { label: 'VHS', url: '/collection?type=dvd&format=vhs', module: 'dvd' },
+                'dvd_laserdisc': { label: 'Laserdisc', url: '/collection?type=dvd&format=laserdisc', module: 'dvd' },
+
+                'games': { label: 'Videospil', url: '/collection?type=games', module: 'games' }
             };
 
             if (settings && settings.navbarShortcuts) {

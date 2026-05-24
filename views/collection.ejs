@@ -21,7 +21,7 @@
                     </div>
                     <div>
                         <h1 class="text-2xl md:text-3xl font-black leading-none"><%= tc.label %></h1>
-                        <p class="text-sm opacity-40 mt-0.5 font-medium"><%= totalItems %> <%= t('common.items') %></p>
+                        <p class="text-sm opacity-40 mt-0.5 font-medium"><%= totalItems %> elementer</p>
                     </div>
                 </div>
 
@@ -114,12 +114,12 @@
                     </div>
                     <input type="text" id="filterInput"
                         class="filter-input-textbox block w-full p-2.5 pl-10 text-sm card-theme rounded-lg border focus:ring-1 focus:ring-primary-theme placeholder-opacity-50 transition-shadow"
-                        value="<%= locals.querySearch || '' %>" placeholder="<%= t('collection.filter_placeholder') %>">
+                        value="<%= locals.querySearch || '' %>" placeholder="Filtrér...">
                 </div>
 
                 <div class="w-full lg:w-44">
                     <input type="text" id="locationInput" list="locations-list"
-                        placeholder="<%= t('common.location') %>" value="<%= locals.queryLocation || '' %>"
+                        placeholder="Placering" value="<%= locals.queryLocation || '' %>"
                         class="filter-input-textbox block w-full p-2.5 text-sm card-theme rounded-lg border focus:ring-1 focus:ring-primary-theme outline-none placeholder-opacity-50">
                     <datalist id="locations-list">
                         <% locations.forEach(loc=> { %> <option value="<%= loc %>"></option>
@@ -132,7 +132,7 @@
                         class="block w-full p-2.5 text-sm card-theme rounded-lg border focus:ring-1 focus:ring-primary-theme outline-none transition-all flex justify-between items-center group">
                         <span class="truncate transition-opacity <%= locals.queryDecade ? '' : 'opacity-50 group-hover:opacity-100' %>">
                             <% const currentDecadeArr = locals.queryDecade ? locals.queryDecade.split(',') : []; %>
-                            <%= currentDecadeArr.length > 0 ? (currentDecadeArr.length === 1 ? currentDecadeArr[0] + 's' : currentDecadeArr.length + ' ' + t('collection.decade_filter')) : t('collection.decade_filter') %>
+                            <%= currentDecadeArr.length > 0 ? (currentDecadeArr.length === 1 ? currentDecadeArr[0] + 's' : currentDecadeArr.length + ' Årti') : 'Årti' %>
                         </span>
                         <i class="fa-solid fa-chevron-down text-[10px] opacity-20 group-hover:opacity-60 transition-all"></i>
                     </button>
@@ -151,7 +151,7 @@
                         </div>
                         <div class="mt-3 pt-3 border-t border-black/5 dark:border-white/5">
                             <button onclick="reloadPage()" class="w-full py-2 bg-primary-theme text-white text-xs font-bold rounded-lg hover:brightness-110 active:scale-95 transition-all">
-                                <%= t('common.apply') %>
+                                Anvend
                             </button>
                         </div>
                     </div>
@@ -162,8 +162,7 @@
                         <button onclick="toggleGenreMenu(event)" id="genreSelectorBtn"
                             class="block w-full p-2.5 text-sm card-theme rounded-lg border focus:ring-1 focus:ring-primary-theme outline-none transition-all flex justify-between items-center group">
                             <span class="truncate opacity-50 group-hover:opacity-100 transition-opacity">
-                                <%= locals.queryGenre ? (locals.queryGenre.split(',').length + ' ' +
-                                    t('confirm_vinyl.field_genres')) : t('confirm_vinyl.field_genres') %>
+                                <%= locals.queryGenre ? (locals.queryGenre.split(',').length + ' Genrer') : 'Genrer' %>
                             </span>
                             <i
                                 class="fa-solid fa-chevron-down text-[10px] opacity-20 group-hover:opacity-60 transition-all"></i>
@@ -187,7 +186,7 @@
                             <div class="mt-3 pt-3 border-t border-black/5 dark:border-white/5">
                                 <button onclick="reloadPage()"
                                     class="w-full py-2 bg-primary-theme text-white text-xs font-bold rounded-lg hover:brightness-110 active:scale-95 transition-all">
-                                    <%= t('common.apply') %>
+                                    Anvend
                                 </button>
                             </div>
                         </div>
@@ -196,7 +195,7 @@
 
                 <div class="w-full lg:w-44 relative">
                     <div class="relative">
-                        <input type="text" id="artistInput" placeholder="<%= t('collection.artist_filter') %>"
+                        <input type="text" id="artistInput" placeholder="Kunstner"
                             value="<%= locals.queryArtist || '' %>" autocomplete="off"
                             class="filter-input-textbox block w-full p-2.5 text-sm card-theme rounded-lg border focus:ring-1 focus:ring-primary-theme outline-none placeholder-opacity-50">
                         <div id="artistAutocomplete"
@@ -210,16 +209,16 @@
                         class="block w-full p-2.5 text-sm card-theme rounded-lg border focus:ring-1 focus:ring-primary-theme outline-none transition-all flex justify-between items-center group">
                         <span class="truncate opacity-50 group-hover:opacity-100 transition-opacity"
                             id="sortLabel">
-                            <%= t('collection.sort_label') %>
+                            Sortér efter
                         </span>
                         <i
                             class="fa-solid fa-arrow-down-short-wide text-[12px] opacity-20 group-hover:opacity-60 transition-all"></i>
                     </button>
                     <div id="sort-menu"
                         class="hidden absolute left-0 right-0 top-full z-50 mt-2 card-theme rounded-xl p-2 shadow-2xl border border-black/5 dark:border-white/10 animate-in fade-in slide-in-from-top-2 duration-200">
-                        <% const sortOptions=[ { key: 'added' , label: t('collection.sort_added'), descFirst:
-                            true }, { key: 'title' , label: t('collection.sort_title'), descFirst: false }, {
-                            key: 'year' , label: t('collection.sort_year'), descFirst: true }, ]; %>
+                        <% const sortOptions=[ { key: 'added' , label: 'Tilføjelsesdato', descFirst:
+                            true }, { key: 'title' , label: 'Titel', descFirst: false }, {
+                            key: 'year' , label: 'År', descFirst: true }, ]; %>
                             <% sortOptions.forEach(opt=> {
                                 const isActive = currentSort.startsWith(opt.key);
                                 const currentDir = isActive ? (currentSort.endsWith('_asc') ? 'asc' :
@@ -246,7 +245,7 @@
                                                 class="w-full flex items-center justify-between gap-2 p-2.5 text-sm rounded-lg transition-all cursor-pointer
                                             <%= artistActive ? 'bg-primary-theme/10 text-primary-theme font-semibold' : 'hover:bg-black/5 dark:hover:bg-white/5 opacity-70 hover:opacity-100' %>">
                                                 <span>
-                                                    <%= t('collection.sort_artist') %>
+                                                    Kunstner
                                                 </span>
                                                 <% if (artistActive) { %>
                                                     <i
@@ -260,12 +259,12 @@
                 <div class="flex items-center gap-2 w-full lg:w-auto">
                     <div class="flex bg-black/5 dark:bg-white/5 p-1 rounded-lg h-10 items-center">
                         <button onclick="setFilterMode('show')" 
-                            title="<%= t('collection.filter_mode_show') %>"
+                            title="Vis"
                             class="w-10 h-8 flex items-center justify-center rounded-md transition-all <%= (locals.queryFilterMode !== 'hide') ? 'bg-white dark:bg-white/20 shadow-sm text-primary-theme' : 'opacity-40 hover:opacity-100' %>">
                             <i class="fa-solid fa-eye text-xs"></i>
                         </button>
                         <button onclick="setFilterMode('hide')" 
-                            title="<%= t('collection.filter_mode_hide') %>"
+                            title="Skjul"
                             class="w-10 h-8 flex items-center justify-center rounded-md transition-all <%= (locals.queryFilterMode === 'hide') ? 'bg-red-500 text-white shadow-sm' : 'opacity-40 hover:opacity-100' %>">
                             <i class="fa-solid fa-eye-slash text-xs"></i>
                         </button>
@@ -333,7 +332,8 @@
                     collector: 'bg-amber-600/90', limited: 'bg-purple-600/90', steelbook: 'bg-sky-600/90'
                 };
                 const badgeClass = isAdvancedCD ? (advancedCDType === 'sacd' ? 'bg-red-600/90' : 'bg-blue-600/90') : (badgeMap[formatKey] || 'bg-gray-600/90');
-                const displayFormat = isAdvancedCD ? t('media.' + advancedCDType) : (isGame ? (album.platform || 'Game') : t('media.' + formatKey));
+                const mediaLabels = { vinyl: 'Vinyl', vinyls: 'Vinyler', cd: 'CD', cds: "CD'er", cassette: 'Kassette', cassettes: 'Kassetter', dvd: 'DVD', dvds: "DVD'er", bluray: 'Blu-ray', blurays: 'Blu-rays', '4k': '4K Ultra HD', vhs: 'VHS', laserdisc: 'Laserdisc', book: 'Bog', music: 'Musik', books: 'Bøger', sacd: 'SACD', cdr: 'CDr', physical: 'Fysisk', collector: 'Collector', limited: 'Limited', steelbook: 'Steelbook', hardcover: 'Hardcover', paperback: 'Paperback', manga: 'Manga', comic: 'Tegneserie', graphic_novel: 'Grafisk roman' };
+                const displayFormat = isAdvancedCD ? (mediaLabels[advancedCDType] || advancedCDType) : (isGame ? (album.platform || 'Game') : (mediaLabels[formatKey] || formatKey));
                 const subtitle = isBook ? album.author : (isGame ? (album.developer || album.publisher || '') : (album.artist || album.director || ''));
             %>
                 <div class="album-card group relative"
@@ -368,7 +368,7 @@
 
             <div class="flex items-center gap-3 order-2 md:order-1">
                 <span class="text-xs font-bold uppercase tracking-widest opacity-40">
-                    <%= t('common.show') %>
+                    Vis
                 </span>
                 <div class="flex bg-black/5 dark:bg-white/5 p-1 rounded-xl">
                     <% [25, 50, 100].forEach(num=> { %>
@@ -421,10 +421,10 @@
             </button>
 
             <h3 class="text-2xl font-bold mb-2">
-                <%= t('modal.estimate_title') %>
+                Vurderer...
             </h3>
             <p class="opacity-60 text-sm mb-6">
-                <%= t('modal.estimate_desc') %>
+                Vi søger Discogs-markedet for hver plade.
             </p>
 
             <div id="progressContainer" class="mb-6">
@@ -441,23 +441,23 @@
             <div id="estimateResult" class="hidden text-center space-y-4">
                 <div class="p-6 bg-primary-theme/10 border border-primary-theme/30 rounded-xl">
                     <p class="text-primary-theme text-sm font-bold uppercase tracking-wider mb-1">
-                        <%= t('modal.avg_label') %>
+                        Vurderet værdi (gennemsnit)
                     </p>
                     <h4 id="finalPrice" class="text-4xl md:text-5xl font-black">--</h4>
                     <p class="text-xs opacity-60 mt-2">
-                        <%= t('modal.condition_hint') %>
+                        Baseret på "Very Good+" stand
                     </p>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div class="bg-gray-100 dark:bg-black/20 p-3 rounded-lg">
                         <span class="opacity-60 block text-[10px] uppercase font-bold">
-                            <%= t('modal.min_label') %>
+                            Minimum (G)
                         </span>
                         <span id="minPrice" class="font-bold text-lg">--</span>
                     </div>
                     <div class="bg-gray-100 dark:bg-black/20 p-3 rounded-lg">
                         <span class="opacity-60 block text-[10px] uppercase font-bold">
-                            <%= t('modal.max_label') %>
+                            Maksimum (Mint)
                         </span>
                         <span id="maxPrice" class="font-bold text-lg">--</span>
                     </div>
@@ -467,7 +467,7 @@
             <div id="startEstimateBtn" class="mt-6 text-center">
                 <button onclick="startEstimation()"
                     class="bg-primary-theme hover:brightness-110 text-white font-bold py-3 px-8 rounded-xl transition-colors">
-                    <%= t('modal.start_btn') %>
+                    Start analyse
                 </button>
             </div>
         </div>
@@ -737,8 +737,8 @@
         const progressBar = document.getElementById('estimateProgress');
         const countSpan = document.getElementById('estimateCount');
         const percentSpan = document.getElementById('estimatePercent');
-        const estimateErrorMsg = "<%= t('messages.estimate_error') %>";
-        const currentLocale = '<%= currentLng === "fr" ? "fr-FR" : "en-US" %>';
+        const estimateErrorMsg = "Vurderingen mislykkedes";
+        const currentLocale = 'da-DK';
         const currentCurrency = '<%= user.currency || "USD" %>';
 
         let totalAlbums = 0;

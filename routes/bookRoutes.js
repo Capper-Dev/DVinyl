@@ -222,8 +222,8 @@ router.get('/confirm-book/:id', requireAuth, async (req, res) => {
         res.render('confirm-book', { book: bookData, user: res.locals.user, locations, genres, collections, currentType: 'books' });
     } catch (err) {
         console.error("[ERR] Hardcover API Error:", err?.response?.data || err.message);
-        res.status(500).send(req.t('errors.generic_server_error'));
-    } 
+        res.status(500).send('Intern serverfejl.');
+    }
 });
 
 router.post('/save-book', requireAuth, requireAdmin, async (req, res) => {
@@ -304,7 +304,7 @@ router.post('/save-book', requireAuth, requireAdmin, async (req, res) => {
 
     } catch (err) {
         console.error("Erreur sauvegarde livre:", err);
-        res.status(500).send(req.t('errors.generic_server_error'));
+        res.status(500).send('Intern serverfejl.');
     }
 });
 
@@ -352,7 +352,7 @@ router.delete('/api/book/:id', requireAuth, requireAdmin, async (req, res) => {
 
     } catch (err) {
         console.error(err);
-        res.status(500).send(req.t('errors.generic_server_error'));
+        res.status(500).send('Intern serverfejl.');
     }
 });
 

@@ -55,16 +55,16 @@ router.post('/check-username', requireAuth, async (req, res) => {
     try {
         // If user checks their current username, consider it available
         if (username === res.locals.user.username) {
-            return res.json({ success: true, message: req.t('messages.username_current') });
+            return res.json({ success: true, message: 'Dette er dit nuværende brugernavn.' });
         }
 
         const userExists = await User.findOne({ username: username });
         if (userExists) {
-            return res.status(400).json({ success: false, message: req.t('errors.username_taken') });
+            return res.status(400).json({ success: false, message: 'Dette brugernavn er allerede taget.' });
         }
-        res.json({ success: true, message: req.t('messages.username_available') });
+        res.json({ success: true, message: 'Brugernavn tilgængeligt!' });
     } catch (error) {
-        res.status(500).json({ success: false, message: req.t('messages.generic_error') });
+        res.status(500).json({ success: false, message: 'Der opstod en fejl.' });
     }
 });
 
@@ -74,19 +74,19 @@ router.post('/update-username', requireAuth, async (req, res) => {
     try {
         const userExists = await User.findOne({ username: username });
         if (userExists && userExists._id.toString() !== res.locals.user._id.toString()) {
-            return res.status(400).json({ success: false, message: req.t('errors.username_taken') });
+            return res.status(400).json({ success: false, message: 'Dette brugernavn er allerede taget.' });
         }
         await User.findByIdAndUpdate(res.locals.user._id, { username: username });
         res.redirect('/settings');
     } catch (error) {
-        res.status(500).json({ success: false, message: req.t('messages.generic_error') });
+        res.status(500).json({ success: false, message: 'Der opstod en fejl.' });
     }
 });
 
 // Upload avatar
 router.post('/upload-avatar', requireAuth, upload.single('avatar'), async (req, res) => {
     // Multer error handling
-    if (!req.file) return res.status(400).json({ success: false, message: req.t('messages.avatar_upload_error') });
+    if (!req.file) return res.status(400).json({ success: false, message: 'Fejl ved upload af billede.' });
 
     try {
         const userId = res.locals.user._id;
@@ -109,11 +109,11 @@ router.post('/upload-avatar', requireAuth, upload.single('avatar'), async (req, 
         const newAvatarPath = `/uploads/avatars/${req.file.filename}`;
         await User.findByIdAndUpdate(userId, { img: newAvatarPath });
 
-        res.json({ success: true, message: req.t('messages.avatar_updated'), avatarPath: newAvatarPath });
+        res.json({ success: true, message: 'Profilbillede opdateret!', avatarPath: newAvatarPath });
 
     } catch (error) {
         console.error(error);
-        res.status(500).json({ success: false, message: req.t('messages.generic_error') });
+        res.status(500).json({ success: false, message: 'Der opstod en fejl.' });
     }
 });
 
@@ -121,64 +121,41 @@ router.post('/upload-avatar', requireAuth, upload.single('avatar'), async (req, 
 router.post('/update-password', requireAuth, async (req, res) => {
     const { currentPassword, newPassword } = req.body;
     try {
-        // Verify current password
         const user = await User.findById(res.locals.user._id);
-        
+
         const isMatch = await bcrypt.compare(currentPassword, user.password);
         if (!isMatch) {
-            return res.status(400).json({ success: false, message: req.t('errors.current_password_incorrect') });
+            return res.status(400).json({ success: false, message: 'Den nuværende adgangskode er forkert.' });
         }
-        
+
         const hashedPassword = await bcrypt.hash(newPassword, 10);
-        await User.findByIdAndUpdate(res.locals.user._id, { 
-            password: hashedPassword, 
-            lastChange: Date.now() 
+        await User.findByIdAndUpdate(res.locals.user._id, {
+            password: hashedPassword,
+            lastChange: Date.now()
         });
-        
-        res.json({ success: true, message: req.t('messages.password_updated') });
+
+        res.json({ success: true, message: 'Adgangskode opdateret.' });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ success: false, message: req.t('messages.generic_error') });
+        res.status(500).json({ success: false, message: 'Der opstod en fejl.' });
     }
 });
 
 // Update Theme
 router.post('/update-theme', requireAuth, async (req, res) => {
     const { theme } = req.body;
-    
+
     if (!['light', 'dark'].includes(theme)) {
-        return res.status(400).json({ success: false, message: req.t('errors.invalid_theme') });
+        return res.status(400).json({ success: false, message: 'Ugyldigt tema.' });
     }
 
     try {
         await User.findByIdAndUpdate(res.locals.user._id, { theme: theme });
-        res.json({ success: true, message: req.t('messages.theme_updated') });
+        res.json({ success: true, message: 'Tema opdateret.' });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ success: false, message: req.t('messages.generic_error') });
+        res.status(500).json({ success: false, message: 'Der opstod en fejl.' });
     }
-});
-
-// Update Language
-router.post('/update-language', requireAuth, async (req, res) => {
-  const { language } = req.body;
-  const userId = res.locals.user._id;
-
-  try {
-    // Update language in DB
-    await User.findByIdAndUpdate(userId, { language });
-
-    // Update i18n language for current session
-    await req.i18n.changeLanguage(language);
-
-    // Redirect back or to settings page
-    const backURL = req.header('Referer') || '/settings';
-    res.redirect(backURL);
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).send(req.t('errors.lang_change_error'));
-  }
 });
 
 router.post('/update-currency', requireAuth, async (req, res) => {
@@ -186,7 +163,7 @@ router.post('/update-currency', requireAuth, async (req, res) => {
     const userId = res.locals.user._id;
 
     if (!['EUR', 'USD', 'GBP'].includes(currency)) {
-        return res.status(400).send('Devise non supportée');
+        return res.status(400).send('Valuta understøttes ikke');
     }
 
     try {
@@ -194,7 +171,7 @@ router.post('/update-currency', requireAuth, async (req, res) => {
         res.redirect('/settings');
     } catch (error) {
         console.error(error);
-        res.status(500).json({ success: false, message: req.t('messages.generic_error') });
+        res.status(500).json({ success: false, message: 'Der opstod en fejl.' });
     }
 });
 
