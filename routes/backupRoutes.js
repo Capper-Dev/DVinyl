@@ -1,47 +1,18 @@
 const express = require('express');
 const router = express.Router();
 const Item = require('../models/Item');
-const User = require('../models/User');
-const LoginLog = require('../models/LoginLog');
+const Collection = require('../models/Collection');
 const Settings = require('../models/Settings');
-const { requireAuth, requireAdmin } = require('../middleware/authMiddleware');
+const { requireAuth } = require('../middleware/authMiddleware');
 
-/**
- * routes/backupRoutes.js
- *
- * Backup and restore endpoints for the application data.
- *
- * - GET /export:    Authenticated admin-only endpoint that streams a JSON
- *                   backup containing users, albums and login logs.
- * - POST /import:   Endpoint that accepts a JSON backup payload and restores
- *                   the database collections. Intended for admin use.
- *
- * These routes use the standard `requireAuth` and `requireAdmin` middleware
- * where appropriate. Responses are JSON for the import endpoint and a file
- * attachment for the export endpoint.
- */
-
-/**
- * GET /export
- *
- * Export the current database state as a JSON file. This endpoint is
- * protected: only authenticated administrators may request a backup.
- *
- * Response:
- * - Attachment: JSON file containing `users`, `albums`, `logs` and `metadata`.
- * - 500 on server error.
- */
-router.get('/export', requireAuth, requireAdmin, async (req, res) => {
+// Export the whole library as JSON
+router.get('/export', requireAuth, async (req, res) => {
     try {
         const data = {
-            users: await User.find({}).lean(),
-            albums: await Item.find({}).lean(), 
-            logs: await LoginLog.find({}).lean(),
+            albums: await Item.find({}).lean(),
+            collections: await Collection.find({}).lean(),
             settings: await Settings.findOne().lean(),
-            metadata: {
-                version: "2.0.0",
-                date: new Date()
-            }
+            metadata: { version: '3.0.0', date: new Date() }
         };
 
         const fileName = `dvinyl_backup_${new Date().toISOString().split('T')[0]}.json`;
@@ -50,73 +21,47 @@ router.get('/export', requireAuth, requireAdmin, async (req, res) => {
         res.send(JSON.stringify(data, null, 2));
     } catch (err) {
         console.error(err);
-        res.status(500).send("Export failed");
+        res.status(500).send('Export failed');
     }
 });
 
-/**
- * POST /import
- */
-router.post('/import', async (req, res) => {
-    try {        
-        const userCount = await User.countDocuments();
-        
-        if (userCount > 0) {
-            const currentUser = res.locals.user;
-
-            if (!currentUser || !currentUser.isAdmin) {
-                console.warn(`[SECURITY] import unauthorized : ${req.ip}`);
-                return res.status(403).json({ 
-                    error: "Import unauthorized." 
-                });
-            }
-        }
-        
-        // Setup
+// Restore from a backup JSON
+router.post('/import', requireAuth, async (req, res) => {
+    try {
         let data = req.body;
-
         if (data.backupData) {
             try {
                 data = typeof data.backupData === 'string' ? JSON.parse(data.backupData) : data.backupData;
             } catch (e) {
-                return res.status(400).json({ error: "Invalid JSON format" });
+                return res.status(400).json({ error: 'Invalid JSON format' });
             }
         }
-
-        if (!data || (!data.users && !data.albums)) {
-            return res.status(400).json({ error: "Backup file missing required fields" });
+        if (!data || !data.albums) {
+            return res.status(400).json({ error: 'Backup file missing required fields' });
         }
 
         await Promise.all([
-            LoginLog.deleteMany({}),
             Item.deleteMany({}),
-            User.deleteMany({}),
+            Collection.deleteMany({}),
             Settings.deleteMany({})
         ]);
 
-        if (data.users && data.users.length > 0) {
-            await User.insertMany(data.users);
-        }
-
-        if (data.albums && data.albums.length > 0) {
-            const cleanAlbums = data.albums.filter(album => album.kind === 'Dvd' || album.kind === 'Game');
+        if (Array.isArray(data.albums) && data.albums.length > 0) {
+            const cleanAlbums = data.albums.filter(a => a.kind === 'Dvd' || a.kind === 'Game');
             if (cleanAlbums.length > 0) await Item.insertMany(cleanAlbums);
         }
-
-        if (data.logs && data.logs.length > 0) {
-            await LoginLog.insertMany(data.logs);
+        if (Array.isArray(data.collections) && data.collections.length > 0) {
+            await Collection.insertMany(data.collections);
         }
-        
         if (data.settings) {
             await Settings.create(data.settings);
         } else {
             await Settings.create({});
         }
-        res.cookie('jwt', '', { maxAge: 1 });
-        res.status(200).json({ success: true, message: "Import successful" });
 
+        res.status(200).json({ success: true, message: 'Import successful' });
     } catch (err) {
-        console.error("[ERR] Import :", err);
+        console.error('[ERR] Import:', err);
         res.status(500).json({ error: err.message });
     }
 });

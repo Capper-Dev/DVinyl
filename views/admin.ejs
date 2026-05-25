@@ -1,1219 +1,328 @@
 <%- include('partials/header') %>
 
-    <div class="max-w-screen-xl mx-auto px-4 pb-20 space-y-10">
+<div class="max-w-screen-xl mx-auto px-4 md:px-6 pb-20">
 
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between py-6 gap-4">
-            <h1 class="text-2xl md:text-3xl font-bold flex items-center gap-3 transition-colors">
-                <i class="fa-solid fa-shield-halved text-primary-theme"></i>
-                Administration
-            </h1>
-            <div
-                class="w-fit text-[10px] font-black tracking-widest opacity-40 border border-black/10 dark:border-white/10 px-3 py-1 rounded-full">
-                v<%= appVersion %>
-            </div>
+    <%# Header %>
+    <header class="pt-8 md:pt-14 pb-7">
+        <p class="text-[10px] md:text-[11px] font-bold uppercase tracking-[0.2em] text-sub mb-2.5">Indstillinger</p>
+        <div class="flex items-end justify-between gap-4 flex-wrap">
+            <h1 class="text-[32px] md:text-[56px] font-black leading-[0.95] tracking-tight">Admin</h1>
+            <a href="<%= baseUrl %>/admin/personnalisation"
+               class="inline-flex items-center gap-2 text-[13px] font-bold text-sub hover:text-[var(--text-main)] transition">
+                Personliggør <i class="fa-solid fa-arrow-right text-[10px]"></i>
+            </a>
         </div>
+    </header>
 
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <h1 class="text-2xl md:text-3xl font-bold flex items-center gap-3 transition-colors">
-                <i class="fa-solid fa-puzzle-piece text-primary-theme"></i>
-                Moduler
-            </h1>
-        </div>
+    <% if (locals.successMessage) { %>
+    <div class="mb-6 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-sm flex items-center gap-2">
+        <i class="fa-solid fa-circle-check text-xs"></i>
+        <%= successMessage %>
+    </div>
+    <% } %>
 
-        <section class="card-theme rounded-3xl p-6 shadow-sm mb-10 transition-colors">
-            <div class="flex flex-col gap-8">
-                <div class="flex items-center gap-4">
-                    <div
-                        class="w-12 h-12 rounded-2xl bg-primary-theme/10 text-primary-theme flex items-center justify-center shrink-0">
-                        <i class="fa-solid fa-cubes-stacked text-xl"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-sm font-black uppercase tracking-widest opacity-80">
-                            Aktive moduler
-                        </h2>
-                        <p class="text-xs opacity-50">
-                            Aktivér eller deaktivér DVinyls moduler
-                        </p>
-                    </div>
+    <%# Modules section %>
+    <section class="mb-10">
+        <h2 class="text-[13px] font-bold uppercase tracking-[0.18em] text-sub mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-cubes-stacked text-[12px]"></i>
+            Moduler
+        </h2>
+
+        <form action="<%= baseUrl %>/admin/modules/save" method="POST"
+              class="surface-card border border-[var(--border-color)] rounded-3xl p-6">
+            <p class="text-sub text-sm mb-5">Aktivér eller deaktivér de moduler du bruger.</p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <% const mods = [
+                    { key: 'dvd',   label: "Film & TV",  icon: 'fa-film',    needsKey: hasTmdbKey, errorId: 'error-dvd',   missing: 'TMDB API-nøgle mangler' },
+                    { key: 'games', label: 'Spil',       icon: 'fa-gamepad', needsKey: hasIgdbKey, errorId: 'error-games', missing: 'IGDB/Twitch nøgler mangler' }
+                ]; %>
+                <% mods.forEach(mod => { %>
+                <div>
+                    <label class="flex items-center justify-between p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-transparent hover:border-[var(--border-color)] has-[:checked]:bg-[var(--text-main)]/5 has-[:checked]:border-[var(--text-main)]/15 transition-all cursor-pointer">
+                        <div class="flex items-center gap-3">
+                            <span class="w-10 h-10 rounded-xl flex items-center justify-center bg-[var(--bg-card)]">
+                                <i class="fa-solid <%= mod.icon %> text-sm"></i>
+                            </span>
+                            <span class="text-sm font-bold"><%= mod.label %></span>
+                        </div>
+                        <input type="checkbox" name="<%= mod.key %>Active"
+                               <%= settings.modules && settings.modules[mod.key] ? 'checked' : '' %>
+                               class="sr-only peer">
+                        <div class="w-11 h-6 bg-black/10 dark:bg-white/10 rounded-full peer peer-checked:bg-[var(--text-main)] relative transition-colors after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full"></div>
+                    </label>
+                    <% if (!mod.needsKey) { %>
+                    <p id="<%= mod.errorId %>" class="hidden mt-1.5 ml-1 text-[11px] text-amber-400 font-semibold">
+                        <i class="fa-solid fa-triangle-exclamation text-[10px] mr-1"></i><%= mod.missing %>
+                    </p>
+                    <% } %>
                 </div>
-
-                <form action="<%= baseUrl %>/admin/modules/save" method="POST" class="space-y-6">
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                        <% const mods=[ {key: 'dvd' , label: "DVD'er", icon: 'fa-film' , needsKey: true},
-                            {key: 'games' , label: 'Videospil', icon: 'fa-gamepad' , needsKey: true} ] %>
-                            <% mods.forEach((mod)=> { %>
-                                <div class="flex flex-col gap-2">
-                                    <label
-                                        class="group flex items-center justify-between p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-transparent hover:border-primary-theme/30 has-[:checked]:bg-green-500/10 has-[:checked]:border-green-500/30 transition-all cursor-pointer">
-                                        <div class="flex items-center gap-3">
-                                            <div
-                                                class="w-10 h-10 rounded-xl flex items-center justify-center bg-white dark:bg-black/20 shadow-sm group-hover:text-primary-theme group-has-[:checked]:bg-green-500 group-has-[:checked]:text-white transition-colors">
-                                                <i class="fa-solid <%= mod.icon %> text-sm"></i>
-                                            </div>
-                                            <span
-                                                class="text-sm font-bold opacity-70 group-hover:opacity-100 group-has-[:checked]:opacity-100 transition-opacity">
-                                                <%= mod.label %>
-                                            </span>
-                                        </div>
-                                        <div class="relative inline-flex items-center cursor-pointer">
-                                            <input type="checkbox" name="<%= mod.key %>Active" <%=settings.modules &&
-                                                settings.modules[mod.key] ? 'checked' : '' %> class="sr-only peer">
-                                            <div
-                                                class="w-11 h-6 bg-black/10 dark:bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500">
-                                            </div>
-                                        </div>
-                                    </label>
-                                    <% if (mod.needsKey) { %>
-                                        <div id="error-<%= mod.key %>"
-                                            class="hidden p-3 bg-red-500/10 border border-red-500/20 rounded-xl animate-in fade-in slide-in-from-top-1 duration-300">
-                                            <p class="text-[10px] text-red-500 font-bold flex items-center gap-2">
-                                                <i class="fa-solid fa-circle-exclamation"></i>
-                                                Kan ikke aktivere dette modul: API-nøglen mangler.
-                                            </p>
-                                            <a href="https://github.com/Kyonew/DVinyl/blob/main/docs/api-keys.md"
-                                                target="_blank"
-                                                class="text-[9px] text-primary-theme underline mt-1 block font-bold uppercase tracking-tighter">
-                                                Læs konfigurationsvejledningen
-                                            </a>
-                                        </div>
-                                        <% } %>
-                                </div>
-                                <% }) %>
-                    </div>
-                    <div class="flex justify-end pt-2">
-                        <button type="submit"
-                            class="w-full sm:w-auto bg-primary-theme text-white text-xs font-black uppercase tracking-widest px-10 py-4 rounded-2xl hover:brightness-110 active:scale-95 transition-all shadow-lg shadow-primary-theme/20 flex items-center justify-center gap-3">
-                            <i class="fa-solid fa-save"></i>
-                            Gem præferencer
-                        </button>
-                    </div>
-                </form>
+                <% }) %>
             </div>
-        </section>
 
-        <% if (locals.newPassword) { %>
-            <div
-                class="bg-primary-theme/10 border border-primary-theme/30 p-6 rounded-2xl text-center animate-pulse transition-colors">
-                <h2 class="text-lg font-bold text-primary-theme mb-2">
-                    <i class="fa-solid fa-check-circle"></i>
-                    <%= successMessage %>
-                </h2>
-                <p class="text-sm opacity-70 mb-4">
-                    Her er den midlertidige adgangskode (kopiér den, den vises ikke igen):
-                </p>
-                <div
-                    class="bg-white dark:bg-black/50 p-4 rounded-xl inline-flex items-center gap-3 border border-primary-theme/30 shadow-sm overflow-hidden max-w-full">
-                    <code class="text-xl md:text-2xl font-mono select-all break-all"><%= newPassword %></code>
+            <div class="mt-5 flex justify-end">
+                <button type="submit"
+                        class="bg-[var(--text-main)] text-[var(--bg-page)] text-[13px] font-bold px-5 py-2.5 rounded-full hover:opacity-90 active:scale-95 transition">
+                    Gem
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <%# Maintenance — metadata refresh %>
+    <section class="mb-10">
+        <h2 class="text-[13px] font-bold uppercase tracking-[0.18em] text-sub mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-arrows-rotate text-[12px]"></i>
+            Vedligeholdelse
+        </h2>
+
+        <div class="grid gap-3">
+            <% if (settings.modules.dvd) { %>
+            <div class="surface-card border border-[var(--border-color)] rounded-2xl p-5 flex items-center justify-between gap-4 flex-wrap">
+                <div class="min-w-0">
+                    <p class="font-bold text-sm">Opdater filmmetadata</p>
+                    <p class="text-sub text-xs mt-0.5">Henter genrer fra TMDB for alle film.</p>
+                </div>
+                <div class="flex gap-2 items-center shrink-0">
+                    <select id="refreshModeDvd"
+                            class="appearance-none h-9 px-3 pr-7 text-[12px] font-semibold rounded-full bg-black/5 dark:bg-white/5 border border-transparent outline-none cursor-pointer">
+                        <option value="missing">Kun manglende</option>
+                        <option value="all">Alle (langsommere)</option>
+                    </select>
+                    <button id="btnRefreshDvd" onclick="startMetadataRefresh('Dvd')"
+                            class="bg-[var(--text-main)] text-[var(--bg-page)] text-[12px] font-bold px-4 h-9 rounded-full hover:opacity-90 transition flex items-center gap-2">
+                        <i class="fa-solid fa-play text-[10px]" id="iconRefreshDvd"></i>
+                        <span id="textRefreshDvd">Start</span>
+                    </button>
+                </div>
+                <div id="progressContainerDvd" class="hidden w-full">
+                    <div class="flex justify-between text-[10px] text-sub uppercase font-bold tracking-wider mb-1.5">
+                        <span id="progressTitleDvd">Initialiserer…</span>
+                        <span id="progressPercentDvd">0%</span>
+                    </div>
+                    <div class="w-full bg-black/10 dark:bg-white/10 rounded-full h-1 overflow-hidden">
+                        <div id="progressBarDvd" class="bg-[var(--text-main)] h-full w-0 transition-all"></div>
+                    </div>
+                    <p id="progressItemDvd" class="text-[10px] text-sub mt-1.5 truncate"></p>
                 </div>
             </div>
             <% } %>
-            
-                <%- include('partials/admin-visibility') %>
 
-                <section>
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between py-6 gap-4 mb-4">
-                        <h1 class="text-2xl md:text-3xl font-bold flex items-center gap-3 transition-colors">
-                            <i class="fa-solid fa-users text-neutral-400 dark:text-neutral-500"></i>
-                            Brugere (<%= users.length %>)
-                        </h1>
-                        <button onclick="toggleModal('addUserModal')"
-                            class="group relative flex items-center gap-3 bg-primary-theme hover:brightness-110 text-white px-5 py-3 rounded-2xl shadow-lg shadow-primary-theme/20 transition-all active:scale-95 overflow-hidden">
-                            <div
-                                class="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform">
-                            </div>
-                            <i class="fa-solid fa-user-plus text-sm relative"></i>
-                            <span class="text-xs font-black relative">
-                                Ny bruger
-                            </span>
-                        </button>
-                    </div>
-
-                    <div class="hidden md:block card-theme rounded-2xl overflow-hidden shadow-lg transition-colors">
-                        <table class="w-full text-left text-sm opacity-80">
-                            <thead class="bg-black/5 dark:bg-white/5 text-xs uppercase opacity-70 transition-colors">
-                                <tr>
-                                    <th class="px-6 py-4">
-                                        Bruger
-                                    </th>
-                                    <th class="px-6 py-4">
-                                        E-mail
-                                    </th>
-                                    <th class="px-6 py-4">
-                                        Sidste ændring
-                                    </th>
-                                    <th class="px-6 py-4 text-right">
-                                        Handlinger
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-black/5 dark:divide-white/5 transition-colors">
-                                <% users.forEach(u=> { %>
-                                    <tr class="hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
-                                        <td class="px-6 py-4 font-medium flex items-center gap-3">
-                                            <img src="<%= baseUrl + u.img %>"
-                                                class="w-8 h-8 rounded-full border border-black/10 dark:border-white/10 object-cover">
-                                            <%= u.username %>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <%= u.email %>
-                                        </td>
-                                        <td class="px-6 py-4 text-xs opacity-70">
-                                            <%= new Date(u.lastChange).toLocaleDateString('da-DK') %>
-                                        </td>
-                                        <td class="px-6 py-4 text-right flex justify-end gap-2">
-                                            <form action="<%= baseUrl %>/admin/reset-password" method="POST"
-                                                onsubmit="return confirm('<%= `Nulstil adgangskode for ${u.username}?` %>')">
-                                                <input type="hidden" name="userId" value="<%= u._id %>">
-                                                <button type="submit"
-                                                    class="text-yellow-600 bg-yellow-100 dark:bg-yellow-500/10 p-2 rounded-lg transition-colors hover:brightness-110"
-                                                    title="Nulstil adgangskode">
-                                                    <i class="fa-solid fa-key"></i>
-                                                </button>
-                                            </form>
-                                            <% if (u._id.toString() !==user._id.toString()) { %>
-                                                <form action="<%= baseUrl %>/admin/delete-user" method="POST"
-                                                    onsubmit="return confirm('<%= `SLET ${u.username} PERMANENT?` %>')">
-                                                    <input type="hidden" name="userId" value="<%= u._id %>">
-                                                    <button type="submit"
-                                                        class="text-red-600 bg-red-100 dark:bg-red-500/10 p-2 rounded-lg transition-colors hover:brightness-110"
-                                                        title="Slet">
-                                                        <i class="fa-solid fa-trash"></i>
-                                                    </button>
-                                                </form>
-                                                <% } %>
-                                        </td>
-                                    </tr>
-                                    <% }) %>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="md:hidden space-y-4">
-                        <% users.forEach(u=> { %>
-                            <div class="card-theme p-5 rounded-2xl shadow-sm space-y-4 transition-colors">
-                                <div class="flex items-center gap-4">
-                                    <img src="<%= baseUrl + u.img %>"
-                                        class="w-12 h-12 rounded-full border border-black/10 dark:border-white/10 object-cover">
-                                    <div class="overflow-hidden">
-                                        <p class="font-bold truncate">
-                                            <%= u.username %>
-                                        </p>
-                                        <p class="text-xs opacity-60 truncate">
-                                            <%= u.email %>
-                                        </p>
-                                    </div>
-                                </div>
-                                <div
-                                    class="flex items-center justify-between pt-4 border-t border-black/5 dark:border-white/5">
-                                    <div class="flex flex-col">
-                                        <span class="text-[9px] opacity-50 uppercase font-bold tracking-wider">
-                                            Sidste ændring
-                                        </span>
-                                        <span class="text-xs opacity-70">
-                                            <%= new Date(u.lastChange).toLocaleDateString('da-DK') %>
-                                        </span>
-                                    </div>
-                                    <div class="flex gap-2">
-                                        <form action="<%= baseUrl %>/admin/reset-password" method="POST"
-                                            onsubmit="return confirm('<%= `Nulstil adgangskode for ${u.username}?` %>')">
-                                            <input type="hidden" name="userId" value="<%= u._id %>">
-                                            <button type="submit"
-                                                class="text-yellow-600 bg-yellow-50 dark:bg-yellow-500/10 px-4 py-2 rounded-xl border border-yellow-200 dark:border-yellow-500/20 text-sm font-bold">
-                                                <i class="fa-solid fa-key"></i>
-                                            </button>
-                                        </form>
-                                        <% if (u._id.toString() !==user._id.toString()) { %>
-                                            <form action="<%= baseUrl %>/admin/delete-user" method="POST"
-                                                onsubmit="return confirm('<%= `SLET ${u.username} PERMANENT?` %>')">
-                                                <input type="hidden" name="userId" value="<%= u._id %>">
-                                                <button type="submit"
-                                                    class="text-red-600 bg-red-50 dark:bg-red-500/10 px-4 py-2 rounded-xl border border-red-200 dark:border-red-500/20 text-sm font-bold">
-                                                    <i class="fa-solid fa-trash"></i>
-                                                </button>
-                                            </form>
-                                            <% } %>
-                                    </div>
-                                </div>
-                            </div>
-                            <% }) %>
-                    </div>
-                </section>
-
-                <section>
-                    <div class="flex items-center gap-4 mb-6">
-                        <h2 class="text-lg sm:text-xl font-bold flex items-center gap-2 whitespace-nowrap">
-                            <i class="fa-solid fa-clock-rotate-left text-red-500"></i>
-                            Slet seneste elementer
-                        </h2>
-                        <div class="flex-grow border-t border-black/10 dark:border-white/10"></div>
-                    </div>
-
-                    <p class="text-sm opacity-50 -mt-2 mb-6">
-                        Nyttigt efter en mislykket import. Sletter de N seneste elementer af den valgte type.
-                    </p>
-
-                    <div class="card-theme rounded-3xl p-5 sm:p-8 shadow-sm">
-
-                        <div class="flex flex-col gap-6 sm:flex-row sm:items-end">
-
-                            <div class="flex-1 space-y-2">
-                                <label class="block text-[10px] font-black uppercase tracking-widest opacity-50">
-                                    Elementtype
-                                </label>
-                                <select id="deleteKind"
-                                    class="bg-black/5 dark:bg-white/5 border border-transparent text-gray-900 dark:text-white text-sm rounded-lg focus:ring-primary-theme focus:border-primary-theme block w-full p-3 transition-colors outline-none cursor-pointer">
-                                    <% if (settings.modules.dvd) { %>
-                                        <option class="bg-white dark:bg-[#1a1a1a]" value="Dvd">
-                                            DVD'er
-                                        </option>
-                                    <% } %>
-                                    <% if (settings.modules.games) { %>
-                                        <option class="bg-white dark:bg-[#1a1a1a]" value="Game">
-                                            Videospil
-                                        </option>
-                                    <% } %>
-                                </select>
-                            </div>
-
-                            <div class="flex-1 space-y-2">
-                                <label class="block text-[10px] font-black uppercase tracking-widest opacity-50">
-                                    Antal at slette
-                                </label>
-                                <input type="number" id="deleteCount" min="1" placeholder="ex: 500"
-                                    class="w-full bg-black/5 dark:bg-white/5 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-red-500/30">
-                            </div>
-
-                            <button onclick="confirmDeleteLast()" class="w-full sm:w-auto flex items-center justify-center gap-2
-                            bg-red-500/10 hover:bg-red-500
-                            text-red-500 hover:text-white
-                            border border-red-500/20 hover:border-red-500
-                            font-black px-6 py-3 rounded-xl
-                            transition-all active:scale-95">
-                                <i class="fa-solid fa-trash"></i>
-                                Slet
-                            </button>
-                        </div>
-
-                        <div id="deleteLastError" class="hidden mt-6 bg-red-500/10 border border-red-500/20
-                        text-red-400 p-4 rounded-xl text-sm flex gap-3">
-                            <i class="fa-solid fa-circle-exclamation mt-0.5"></i>
-                            <span id="deleteLastErrorText" class="leading-relaxed"></span>
-                        </div>
-
-                        <div id="deleteLastSuccess" class="hidden mt-6 bg-green-500/10 border border-green-500/20
-                        text-green-400 p-4 rounded-xl text-sm flex gap-3">
-                            <i class="fa-solid fa-check-circle mt-0.5"></i>
-                            <span id="deleteLastSuccessText" class="leading-relaxed"></span>
-                        </div>
-
-                    </div>
-                </section>
-
-                <section>
-                    <div class="flex items-center gap-4 mb-6">
-                        <h2 class="text-xl font-bold flex items-center gap-2 transition-colors whitespace-nowrap">
-                            <i class="fa-solid fa-database text-primary-theme"></i>
-                            Database-backup
-                        </h2>
-                        <div class="flex-grow border-t border-black/10 dark:border-white/10 transition-colors"></div>
-                    </div>
-                    <p class="text-sm opacity-50 -mt-3 mb-6">
-                        Eksportér eller gendan hele din samling.
-                    </p>
-
-                    <div class="card-theme rounded-3xl p-6 md:p-8 shadow-sm transition-colors">
-                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                            <div>
-                                <h2 class="text-xl font-bold flex items-center gap-2 mb-2">
-                                    <i class="fa-solid fa-database text-primary-theme"></i>
-                                    Systemvedligeholdelse
-                                </h2>
-                                <p class="text-sm opacity-60">
-                                    Sikkerhedskopiér din samling eller gendan en eksisterende database.
-                                </p>
-                            </div>
-                            <div class="flex flex-wrap gap-3">
-                                <a href="<%= baseUrl %>/backup/export"
-                                    class="flex-1 sm:flex-none bg-black/5 dark:bg-white/5 hover:bg-primary-theme hover:text-white px-6 py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2">
-                                    <i class="fa-solid fa-file-export"></i>
-                                    Eksportér database
-                                </a>
-                                <label
-                                    class="flex-1 sm:flex-none bg-black/5 dark:bg-white/5 hover:bg-yellow-500 hover:text-white px-6 py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer">
-                                    <i class="fa-solid fa-file-import"></i>
-                                    Importér database
-                                        <input type="file" id="backupInput" class="hidden" accept=".json">
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section>
-                    <div class="flex items-center gap-4 mb-6">
-                        <h2 class="text-xl font-bold flex items-center gap-2 transition-colors whitespace-nowrap">
-                            <i class="fa-solid fa-wrench text-primary-theme"></i>
-                            Vedligeholdelse
-                        </h2>
-                        <div class="flex-grow border-t border-black/10 dark:border-white/10 transition-colors"></div>
-                    </div>
-                    <p class="text-sm opacity-50 -mt-3 mb-6">
-                        Global håndtering af dine samlingers metadata.
-                    </p>
-
-                    <% if (false) { %>
-                        <!-- Books Refresh Block -->
-                        <div class="card-theme rounded-3xl p-6 md:p-8 shadow-sm transition-colors mb-6">
-                            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                                <div class="max-w-xl">
-                                    <h2 class="text-lg font-bold flex items-center gap-2 mb-2">
-                                        <i class="fa-solid fa-book text-[#553B08] dark:text-yellow-600"></i>
-                                        Opdater al metadata (bøger)
-                                    </h2>
-                                    <p class="text-xs opacity-60 leading-relaxed mb-4">
-                                        Genstart dataindhentning (Hardcover/OpenLibrary) for bøger.
-                                    </p>
-                                    <div class="flex flex-col gap-2 max-w-xs">
-                                        <label
-                                            class="block text-[10px] font-black uppercase tracking-widest opacity-50 ml-1">
-                                            Opdateringstilstand
-                                        </label>
-                                        <select id="refreshModeBook"
-                                            class="bg-black/5 dark:bg-white/5 border border-transparent text-gray-900 dark:text-white text-sm rounded-lg focus:ring-primary-theme focus:border-primary-theme block w-full p-3 transition-colors outline-none cursor-pointer">
-                                            <option class="bg-white dark:bg-[#1a1a1a]" value="all">
-                                                Alle elementer (langsom)
-                                            </option>
-                                            <option class="bg-white dark:bg-[#1a1a1a]" value="missing" selected>
-                                                Kun elementer med manglende genrer/stilarter (hurtigst)
-                                            </option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div>
-                                    <button id="btnRefreshBook" onclick="startMetadataRefresh('Book')"
-                                        class="w-full sm:w-auto bg-black/5 dark:bg-white/5 hover:bg-yellow-600 hover:text-white px-8 py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 border border-black/10 dark:border-white/10 shadow-sm">
-                                        <i class="fa-solid fa-play" id="iconRefreshBook"></i>
-                                        <span id="textRefreshBook">
-                                            Start opdatering
-                                        </span>
-                                    </button>
-                                </div>
-                            </div>
-                            <div id="progressContainerBook"
-                                class="hidden mt-6 space-y-3 p-4 bg-black/5 dark:bg-white/5 rounded-2xl animate-in fade-in slide-in-from-top-2 duration-500">
-                                <div
-                                    class="flex justify-between items-center text-[10px] uppercase font-bold tracking-widest opacity-60">
-                                    <span id="progressTitleBook">
-                                        Initialiserer...
-                                    </span>
-                                    <span id="progressPercentBook">0%</span>
-                                </div>
-                                <div class="w-full bg-black/10 dark:bg-white/10 rounded-full h-2 overflow-hidden">
-                                    <div id="progressBarBook"
-                                        class="bg-yellow-500 h-full transition-all duration-300 w-0"></div>
-                                </div>
-                                <p id="progressItemBook" class="text-[10px] opacity-40 font-mono truncate"></p>
-                            </div>
-                        </div>
-                        <% } %>
-
-                            <% if (settings.modules.dvd) { %>
-                                <!-- DVDs Refresh Block -->
-                                <div class="card-theme rounded-3xl p-6 md:p-8 shadow-sm transition-colors mb-6">
-                                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                                        <div class="max-w-xl">
-                                            <h2 class="text-lg font-bold flex items-center gap-2 mb-2">
-                                                <i class="fa-solid fa-film text-purple-600"></i>
-                                                Opdater al metadata (DVD'er)
-                                            </h2>
-                                            <p class="text-xs opacity-60 leading-relaxed mb-4">
-                                                Genstart dataindhentning (TMDB) for DVD'er og Blu-Rays.
-                                            </p>
-                                            <div class="flex flex-col gap-2 max-w-xs">
-                                                <label
-                                                    class="block text-[10px] font-black uppercase tracking-widest opacity-50 ml-1">
-                                                    Opdateringstilstand
-                                                </label>
-                                                <select id="refreshModeDvd"
-                                                    class="bg-black/5 dark:bg-white/5 border border-transparent text-gray-900 dark:text-white text-sm rounded-lg focus:ring-primary-theme focus:border-primary-theme block w-full p-3 transition-colors outline-none cursor-pointer">
-                                                    <option class="bg-white dark:bg-[#1a1a1a]" value="all">
-                                                        Alle elementer (langsom)
-                                                    </option>
-                                                    <option class="bg-white dark:bg-[#1a1a1a]" value="missing" selected>
-                                                        Kun elementer med manglende genrer/stilarter (hurtigst)
-                                                    </option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <button id="btnRefreshDvd" onclick="startMetadataRefresh('Dvd')"
-                                                class="w-full sm:w-auto bg-black/5 dark:bg-white/5 hover:bg-purple-600 hover:text-white px-8 py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 border border-black/10 dark:border-white/10 shadow-sm">
-                                                <i class="fa-solid fa-play" id="iconRefreshDvd"></i>
-                                                <span id="textRefreshDvd">
-                                                    Start opdatering
-                                                </span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div id="progressContainerDvd"
-                                        class="hidden mt-6 space-y-3 p-4 bg-black/5 dark:bg-white/5 rounded-2xl animate-in fade-in slide-in-from-top-2 duration-500">
-                                        <div
-                                            class="flex justify-between items-center text-[10px] uppercase font-bold tracking-widest opacity-60">
-                                            <span id="progressTitleDvd">
-                                                Initialiserer...
-                                            </span>
-                                            <span id="progressPercentDvd">0%</span>
-                                        </div>
-                                        <div
-                                            class="w-full bg-black/10 dark:bg-white/10 rounded-full h-2 overflow-hidden">
-                                            <div id="progressBarDvd"
-                                                class="bg-purple-500 h-full transition-all duration-300 w-0"></div>
-                                        </div>
-                                        <p id="progressItemDvd" class="text-[10px] opacity-40 font-mono truncate"></p>
-                                    </div>
-                                </div>
-                                <% } %>
-
-                            <% if (settings.modules.games) { %>
-                                <!-- Games Refresh Block -->
-                                <div class="card-theme rounded-3xl p-6 md:p-8 shadow-sm transition-colors mb-6">
-                                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                                        <div class="max-w-xl">
-                                            <h2 class="text-lg font-bold flex items-center gap-2 mb-2">
-                                                <i class="fa-solid fa-gamepad text-emerald-600"></i>
-                                                Opdater al metadata (videospil)
-                                            </h2>
-                                            <p class="text-xs opacity-60 leading-relaxed mb-4">
-                                                Genstart dataindhentning (IGDB) for videospil.
-                                            </p>
-                                            <div class="flex flex-col gap-2 max-w-xs">
-                                                <label class="block text-[10px] font-black uppercase tracking-widest opacity-50 ml-1">
-                                                    Opdateringstilstand
-                                                </label>
-                                                <select id="refreshModeGame"
-                                                    class="bg-black/5 dark:bg-white/5 border border-transparent text-gray-900 dark:text-white text-sm rounded-lg focus:ring-primary-theme focus:border-primary-theme block w-full p-3 transition-colors outline-none cursor-pointer">
-                                                    <option class="bg-white dark:bg-[#1a1a1a]" value="all">
-                                                        Alle elementer (langsom)
-                                                    </option>
-                                                    <option class="bg-white dark:bg-[#1a1a1a]" value="missing" selected>
-                                                        Kun elementer med manglende genrer/stilarter (hurtigst)
-                                                    </option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <button id="btnRefreshGame" onclick="startMetadataRefresh('Game')"
-                                                class="w-full sm:w-auto bg-black/5 dark:bg-white/5 hover:bg-emerald-600 hover:text-white px-8 py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 border border-black/10 dark:border-white/10 shadow-sm">
-                                                <i class="fa-solid fa-play" id="iconRefreshGame"></i>
-                                                <span id="textRefreshGame">
-                                                    Start opdatering
-                                                </span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div id="progressContainerGame"
-                                        class="hidden mt-6 space-y-3 p-4 bg-black/5 dark:bg-white/5 rounded-2xl animate-in fade-in slide-in-from-top-2 duration-500">
-                                        <div class="flex justify-between items-center text-[10px] uppercase font-bold tracking-widest opacity-60">
-                                            <span id="progressTitleGame">
-                                                Initialiserer...
-                                            </span>
-                                            <span id="progressPercentGame">0%</span>
-                                        </div>
-                                        <div class="w-full bg-black/10 dark:bg-white/10 rounded-full h-2 overflow-hidden">
-                                            <div id="progressBarGame"
-                                                class="bg-emerald-500 h-full transition-all duration-300 w-0"></div>
-                                        </div>
-                                        <p id="progressItemGame" class="text-[10px] opacity-40 font-mono truncate"></p>
-                                    </div>
-                                </div>
-                                <% } %>
-                </section>
-
-
-                <section>
-                    <h2 class="text-xl font-bold mb-6 flex items-center gap-2 transition-colors">
-                        <i class="fa-solid fa-ban text-red-500"></i>
-                        <%= `Blokerede IP'er (${blockedIps.length})` %>
-                    </h2>
-                    <% if(blockedIps.length> 0) { %>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            <% blockedIps.forEach(ip=> { %>
-                                <div
-                                    class="card-theme p-5 rounded-2xl flex justify-between items-center group hover:border-red-500/50 transition-colors shadow-sm">
-                                    <div class="overflow-hidden">
-                                        <span class="block font-mono font-bold truncate">
-                                            <%= ip.ip %>
-                                        </span>
-                                        <span class="text-[10px] opacity-50 uppercase tracking-tighter">
-                                            <%= new Date(ip.createdAt).toLocaleDateString('da-DK') %>
-                                        </span>
-                                    </div>
-                                    <form action="<%= baseUrl %>/admin/unblock-ip" method="POST">
-                                        <input type="hidden" name="ipId" value="<%= ip._id %>">
-                                        <button type="submit"
-                                            class="h-10 w-10 flex items-center justify-center bg-black/5 dark:bg-white/5 opacity-60 hover:text-green-500 hover:opacity-100 rounded-xl transition-colors"
-                                            title="Afblokér">
-                                            <i class="fa-solid fa-lock-open"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                                <% }) %>
-                        </div>
-                        <% } else { %>
-                            <div
-                                class="p-12 border-2 border-dashed border-black/10 dark:border-white/10 rounded-3xl text-center opacity-50 transition-colors">
-                                <i class="fa-solid fa-shield-check text-4xl mb-3 opacity-30 block"></i>
-                                Ingen blokerede IP-adresser.
-                            </div>
-                            <% } %>
-                </section>
-
-                <section>
-                    <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-xl font-bold flex items-center gap-2 transition-colors">
-                            <i class="fa-solid fa-satellite-dish text-primary-theme"></i>
-                            Forbindelseslogfiler
-                        </h2>
-                        <div class="md:hidden text-[10px] uppercase font-bold opacity-50 flex items-center gap-1">
-                            <i class="fa-solid fa-left-right animate-pulse"></i> Scroll
-                        </div>
-                    </div>
-                    <div class="card-theme rounded-2xl overflow-hidden shadow-lg transition-colors">
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-sm opacity-80 min-w-[700px]">
-                                <thead
-                                    class="bg-black/5 dark:bg-white/5 text-xs uppercase opacity-70 transition-colors">
-                                    <tr>
-                                        <th class="px-6 py-4">
-                                            Bruger
-                                        </th>
-                                        <th class="px-6 py-4">
-                                            Lok.
-                                        </th>
-                                        <th class="px-6 py-4">
-                                            IP & enhed
-                                        </th>
-                                        <th class="px-6 py-4">
-                                            Dato
-                                        </th>
-                                        <th class="px-6 py-4 text-right">
-                                            Sikkerhed
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-black/5 dark:divide-white/5 transition-colors">
-                                    <% logs.forEach(log=> { %>
-                                        <tr class="hover:bg-black/5 dark:hover:bg-white/5 transition-colors group">
-                                            <td class="px-6 py-4">
-                                                <div class="font-bold">
-                                                    <%= log.username %>
-                                                </div>
-                                                <div class="text-[10px] opacity-60 truncate">
-                                                    <%= log.email %>
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                <% if(log.country && log.country !=='XX' ) { %>
-                                                    <div class="flex items-center gap-2">
-                                                        <img src="https://flagcdn.com/24x18/<%= log.country.toLowerCase() %>.png"
-                                                            class="rounded-sm shadow-sm" alt="Flag">
-                                                        <span class="font-mono text-xs">
-                                                            <%= log.country %>
-                                                        </span>
-                                                    </div>
-                                                    <div class="text-[10px] opacity-60 uppercase">
-                                                        <%= log.city %>
-                                                    </div>
-                                                    <% } else { %>
-                                                        <span class="opacity-50 text-xs"><i
-                                                                class="fa-solid fa-globe"></i>
-                                                            Lokal
-                                                        </span>
-                                                        <% } %>
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                <div class="text-primary-theme font-mono text-xs mb-1">
-                                                    <%= log.ip %>
-                                                </div>
-                                                <div class="text-[10px] opacity-60 max-w-[120px] truncate"
-                                                    title="<%= log.userAgent %>">
-                                                    <%= log.userAgent.includes('Windows') ? 'Windows' :
-                                                        (log.userAgent.includes('Mac') ? 'Mac' : 'Mobile/Linux' ) %>
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4 text-[10px] whitespace-nowrap">
-                                                <% const diff=Math.floor((new Date() - new Date(log.timestamp)) /
-                                                    60000); let timeText=diff < 60 ? `${diff} min siden` : new
-                                                    Date(log.timestamp).toLocaleDateString('da-DK'); %>
-                                                    <%= timeText %>
-                                            </td>
-                                            <td class="px-6 py-4 text-right">
-                                                <div class="flex justify-end gap-2 opacity-100 transition-opacity">
-                                                    <% if (log.user) { %>
-                                                        <form action="<%= baseUrl %>/admin/reset-password" method="POST"
-                                                            onsubmit="return confirm('<%= `Nulstil adgangskode for ${log.username}?` %>')">
-                                                            <input type="hidden" name="userId" value="<%= log.user %>">
-                                                            <button type="submit"
-                                                                class="bg-black/5 dark:bg-white/5 hover:bg-yellow-500 hover:text-white p-2 rounded-xl border border-transparent transition-colors"
-                                                                title="Nulstil adgangskode">
-                                                                <i class="fa-solid fa-key"></i>
-                                                            </button>
-                                                        </form>
-                                                        <% } %>
-                                                            <form action="<%= baseUrl %>/admin/block-ip" method="POST"
-                                                                onsubmit="return confirm('<%= `BLOKÉR IP ${log.ip}?\nDe vil ikke længere have adgang til siden.` %>')">
-                                                                <input type="hidden" name="ipAddress"
-                                                                    value="<%= log.ip %>">
-                                                                <button type="submit"
-                                                                    class="bg-black/5 dark:bg-white/5 hover:bg-red-600 hover:text-white p-2 rounded-xl border border-transparent transition-colors"
-                                                                    title="Blokér IP">
-                                                                    <i class="fa-solid fa-ban"></i>
-                                                                </button>
-                                                            </form>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <% }) %>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </section>
-
-    </div>
-
-
-    <div id="addUserModal"
-        class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-6">
-        <div class="absolute inset-0" onclick="toggleModal('addUserModal')"></div>
-        <div
-            class="card-theme relative w-full max-w-md rounded-[2.5rem] p-8 md:p-10 shadow-2xl transition-all animate-scale-in">
-            <button onclick="toggleModal('addUserModal')"
-                class="absolute top-6 right-6 opacity-40 hover:opacity-100 hover:rotate-90 transition-all">
-                <i class="fa-solid fa-xmark text-2xl"></i>
-            </button>
-            <h3 class="text-2xl font-black mb-8">
-                Ny bruger
-            </h3>
-            <form action="<%= baseUrl %>/admin/add-user" method="POST" class="space-y-6">
-                <div class="space-y-2">
-                    <label class="block text-[10px] font-black uppercase tracking-widest opacity-50 ml-1">
-                        Brugernavn
-                    </label>
-                    <input type="text" name="username" required placeholder="Ex: John"
-                        class="w-full bg-black/5 dark:bg-white/5 border-2 border-transparent focus:border-primary-theme/30 rounded-2xl p-4 outline-none transition-all placeholder:opacity-30">
+            <% if (settings.modules.games) { %>
+            <div class="surface-card border border-[var(--border-color)] rounded-2xl p-5 flex items-center justify-between gap-4 flex-wrap">
+                <div class="min-w-0">
+                    <p class="font-bold text-sm">Opdater spilmetadata</p>
+                    <p class="text-sub text-xs mt-0.5">Henter genrer og covers fra IGDB.</p>
                 </div>
-                <div class="space-y-2">
-                    <label class="block text-[10px] font-black uppercase tracking-widest opacity-50 ml-1">
-                        E-mailadresse
-                    </label>
-                    <input type="email" name="email" required placeholder="email@domaine.com"
-                        class="w-full bg-black/5 dark:bg-white/5 border-2 border-transparent focus:border-primary-theme/30 rounded-2xl p-4 outline-none transition-all placeholder:opacity-30">
-                </div>
-                <button type="submit"
-                    class="w-full bg-primary-theme text-white font-black py-5 rounded-2xl shadow-lg shadow-primary-theme/20 hover:brightness-110 active:scale-95 transition-all mt-4">
-                    Opret og generér adgangskode
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <div id="importDiscogsModal"
-        class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-6">
-        <div class="absolute inset-0" onclick="toggleModal('importDiscogsModal')"></div>
-        <div
-            class="card-theme relative w-full max-w-md rounded-[2.5rem] p-8 md:p-10 shadow-2xl transition-all animate-scale-in overflow-hidden">
-            <button onclick="toggleModal('importDiscogsModal')"
-                class="absolute top-6 right-6 opacity-40 hover:opacity-100 hover:rotate-90 transition-all z-20">
-                <i class="fa-solid fa-xmark text-2xl"></i>
-            </button>
-            <h3 class="text-2xl font-black mb-2 relative z-10">
-                <span id="importModalTitle">Import Discogs</span>
-            </h3>
-            <p class="text-sm opacity-60 mb-8">
-                Indtast URL'en for den offentlige Discogs-samling
-            </p>
-            <div id="importError"
-                class="hidden bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-2xl mb-6 text-sm flex items-start gap-3 relative z-10">
-                <i class="fa-solid fa-circle-exclamation mt-0.5"></i>
-                <span id="importErrorText"></span>
-            </div>
-            <div class="space-y-6 relative z-10">
-                <input type="hidden" id="importType" value="collection">
-                <div class="space-y-2">
-                    <label class="block text-[10px] font-black uppercase tracking-widest opacity-50 ml-1">
-                        Samlings-URL
-                    </label>
-                    <% if (user.discogsUsername) { %>
-                        <input type="text" value="https://www.discogs.com/user/<%= user.discogsUsername %>/collection"
-                            id="discogsUrl" placeholder="https://www.discogs.com/user/..."
-                            class="w-full bg-black/5 dark:bg-white/5 border-2 border-transparent focus:border-primary-theme/30 rounded-2xl p-4 outline-none transition-all placeholder:opacity-30">
-                        <% } else { %>
-                            <input type="text" id="discogsUrl" placeholder="https://www.discogs.com/user/..."
-                                class="w-full bg-black/5 dark:bg-white/5 border-2 border-transparent focus:border-primary-theme/30 rounded-2xl p-4 outline-none transition-all placeholder:opacity-30">
-                            <% } %>
-                </div>
-                <div class="flex flex-col gap-3 mt-6">
-                    <button id="btnFastImport" onclick="startDiscogsImport(false)"
-                        class="w-full bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 font-bold py-4 rounded-2xl transition-all active:scale-95 flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-bolt text-yellow-500"></i>
-                        <span>
-                            Hurtig import
-                        </span>
+                <div class="flex gap-2 items-center shrink-0">
+                    <select id="refreshModeGame"
+                            class="appearance-none h-9 px-3 pr-7 text-[12px] font-semibold rounded-full bg-black/5 dark:bg-white/5 border border-transparent outline-none cursor-pointer">
+                        <option value="missing">Kun manglende</option>
+                        <option value="all">Alle</option>
+                    </select>
+                    <button id="btnRefreshGame" onclick="startMetadataRefresh('Game')"
+                            class="bg-[var(--text-main)] text-[var(--bg-page)] text-[12px] font-bold px-4 h-9 rounded-full hover:opacity-90 transition flex items-center gap-2">
+                        <i class="fa-solid fa-play text-[10px]" id="iconRefreshGame"></i>
+                        <span id="textRefreshGame">Start</span>
                     </button>
-                    <button id="btnFullImport" onclick="startDiscogsImport(true)"
-                        class="w-full bg-primary-theme text-white font-black py-4 rounded-2xl shadow-lg shadow-primary-theme/20 hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-list-ul"></i>
-                        <span>
-                            Komplet import
-                        </span>
-                    </button>
-                    <p class="text-[10px] opacity-40 text-center uppercase tracking-widest mt-2 px-4">
-                        Den komplette import henter spor men tager længere tid (API-begrænsninger).
-                    </p>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="importGoodreadsModal"
-        class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-6">
-        <div class="absolute inset-0" onclick="toggleModal('importGoodreadsModal')"></div>
-        <div
-            class="card-theme relative w-full max-w-md rounded-[2.5rem] p-8 md:p-10 shadow-2xl transition-all animate-scale-in overflow-y-auto max-h-[90vh]">
-            <button onclick="toggleModal('importGoodreadsModal')"
-                class="absolute top-6 right-6 opacity-40 hover:opacity-100 hover:rotate-90 transition-all">
-                <i class="fa-solid fa-xmark text-2xl"></i>
-            </button>
-
-            <h3 class="text-2xl font-black mb-1 flex items-center gap-3">
-                <i class="fa-solid fa-book-open text-[#553B08] dark:text-yellow-600"></i>
-                GoodReads
-            </h3>
-            <p class="text-sm opacity-60 mb-6">
-                Importér dine læste, igangværende og ulæste bøger.
-            </p>
-
-            <div class="bg-black/5 dark:bg-white/5 rounded-2xl p-4 mb-6 space-y-3">
-                <p class="text-[10px] font-black uppercase tracking-widest opacity-50">
-                    Hvordan eksporterer man fra GoodReads?
-                </p>
-                <div class="flex items-start gap-3 text-sm opacity-70">
-                    <span
-                        class="bg-primary-theme text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5">1</span>
-                    <span>
-                        Gå til My Books
-                    </span>
-                </div>
-                <div class="flex items-start gap-3 text-sm opacity-70">
-                    <span
-                        class="bg-primary-theme text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5">2</span>
-                    <span>
-                        Klik på den orange knap nederst på siden med 🛜-ikonet
-                    </span>
-                </div>
-                <div class="flex items-start gap-3 text-sm opacity-70">
-                    <span
-                        class="bg-primary-theme text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5">3</span>
-                    <span>
-                        Kopiér RSS-feed-URL'en
-                    </span>
-                    <div class="flex items-start gap-3 text-sm opacity-70">
-                        <span
-                            class="bg-primary-theme text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5">4</span>
-                        <span>
-                            Indsæt den nedenfor og start importen
-                        </span>
+                <div id="progressContainerGame" class="hidden w-full">
+                    <div class="flex justify-between text-[10px] text-sub uppercase font-bold tracking-wider mb-1.5">
+                        <span id="progressTitleGame">Initialiserer…</span>
+                        <span id="progressPercentGame">0%</span>
                     </div>
+                    <div class="w-full bg-black/10 dark:bg-white/10 rounded-full h-1 overflow-hidden">
+                        <div id="progressBarGame" class="bg-[var(--text-main)] h-full w-0 transition-all"></div>
+                    </div>
+                    <p id="progressItemGame" class="text-[10px] text-sub mt-1.5 truncate"></p>
                 </div>
             </div>
+            <% } %>
+        </div>
+    </section>
 
-            <div class="mb-6">
-                <label class="block text-[10px] font-black uppercase tracking-widest opacity-50 mb-2">
-                    Standardformat
-                </label>
-                <p class="text-xs opacity-40 mb-3">
-                    Bruges hvis ingen GoodReads-hylde tillader automatisk detektion.
-                </p>
-                <select id="goodreadsDefaultFormat"
-                    class="bg-black/5 dark:bg-white/5 border border-transparent text-gray-900 dark:text-white text-sm rounded-lg focus:ring-primary-theme focus:border-primary-theme block w-full p-3 transition-colors outline-none cursor-pointer">
-                    <option class="bg-white dark:bg-[#1a1a1a]" value="paperback">
-                        Paperback
-                    </option>
-                    <option class="bg-white dark:bg-[#1a1a1a]" value="hardcover">
-                        Hardback
-                    </option>
-                    <option class="bg-white dark:bg-[#1a1a1a]" value="manga">
-                        Manga
-                    </option>
-                    <option class="bg-white dark:bg-[#1a1a1a]" value="comic">
-                        Tegneserie
-                    </option>
-                    <option class="bg-white dark:bg-[#1a1a1a]" value="graphic_novel">
-                        Graphic Novel
-                    </option>
+    <%# Danger — delete last N %>
+    <section class="mb-10">
+        <h2 class="text-[13px] font-bold uppercase tracking-[0.18em] text-sub mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-clock-rotate-left text-[12px]"></i>
+            Slet seneste
+        </h2>
+        <div class="surface-card border border-red-500/15 rounded-3xl p-5">
+            <p class="text-sub text-xs mb-4">Nyttigt efter en mislykket import.</p>
+            <div class="flex gap-2 items-stretch flex-wrap">
+                <select id="deleteKind"
+                        class="appearance-none h-11 px-4 pr-8 text-[13px] font-semibold rounded-full bg-black/5 dark:bg-white/5 border border-transparent outline-none cursor-pointer flex-1 min-w-[110px]">
+                    <% if (settings.modules.dvd) { %><option value="Dvd">Film & TV</option><% } %>
+                    <% if (settings.modules.games) { %><option value="Game">Spil</option><% } %>
                 </select>
+                <input type="number" id="deleteCount" min="1" placeholder="Antal"
+                       class="h-11 px-4 text-[13px] font-semibold rounded-full bg-black/5 dark:bg-white/5 border border-transparent outline-none focus:border-red-500/40 transition w-24">
+                <button onclick="confirmDeleteLast()"
+                        class="bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white border border-red-500/20 hover:border-red-500 font-bold h-11 px-5 rounded-full transition flex items-center gap-2 text-[13px]">
+                    <i class="fa-solid fa-trash text-[11px]"></i>
+                    Slet
+                </button>
             </div>
-
-            <div class="mb-6">
-                <label class="block text-[10px] font-black uppercase tracking-widest opacity-50 mb-2">
-                    Standardsprog
-                </label>
-                <input type="text" id="goodreadsDefaultLanguage" placeholder="fr, en, ja..." maxlength="5"
-                    class="w-full bg-black/5 dark:bg-white/5 border-2 border-transparent focus:border-primary-theme/30 rounded-2xl p-4 outline-none transition-all text-sm placeholder:opacity-30">
-                <p class="text-[10px] opacity-40 mt-2">
-                    Bruges hvis Open Library ikke registrerer sproget. Eksempel: da, fr, en, ja...
-                </p>
-            </div>
-
-            <div class="mb-6">
-                <label class="block text-[10px] font-black uppercase tracking-widest opacity-50 mb-2">
-                    RSS-feed URL
-                </label>
-                <input type="url" id="goodreadsRssUrl" placeholder="https://www.goodreads.com/review/list_rss/..."
-                    class="w-full bg-black/5 dark:bg-white/5 border-2 border-transparent focus:border-primary-theme/30 rounded-2xl p-4 outline-none transition-all text-sm placeholder:opacity-30"
-                    oninput="onGoodreadsUrlInput(this.value)">
-                <p class="text-[10px] opacity-40 mt-2">
-                    Find denne URL på din GoodReads-profil → RSS-feed for dit bibliotek
-                </p>
-            </div>
-
-            <div id="goodreadsError"
-                class="hidden bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-2xl mb-6 text-sm flex items-start gap-3">
-                <i class="fa-solid fa-circle-exclamation mt-0.5"></i>
-                <span id="goodreadsErrorText"></span>
-            </div>
-
-            <div id="goodreadsWarning"
-                class="hidden bg-yellow-500/10 border border-yellow-500/20 rounded-2xl p-4 mb-4 flex items-start gap-3">
-                <i class="fa-solid fa-clock text-yellow-500 mt-0.5 shrink-0"></i>
-                <div>
-                    <p class="text-xs font-bold opacity-80">
-                        Importen kan tage tid
-                    </p>
-                    <p class="text-[11px] opacity-60 mt-1">
-                        Forvent ~1-2 min for 200 bøger, ~10 min for 2000. Importen kører i baggrunden, så du kan navigere frit.
-                    </p>
-                </div>
-            </div>
-
-            <button id="btnGoodreadsImport" onclick="startGoodreadsImport()" disabled
-                class="w-full bg-primary-theme text-white font-black py-4 rounded-2xl shadow-lg shadow-primary-theme/20 hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100">
-                <i class="fa-solid fa-rss"></i>
-                <span>
-                    Start import
-                </span>
-            </button>
+            <p id="deleteResult" class="hidden mt-3 text-[12px]"></p>
         </div>
-    </div>
+    </section>
 
-    <%- include('partials/footer') %>
+    <%# Backup %>
+    <section class="mb-10">
+        <h2 class="text-[13px] font-bold uppercase tracking-[0.18em] text-sub mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-database text-[12px]"></i>
+            Backup
+        </h2>
+        <div class="surface-card border border-[var(--border-color)] rounded-3xl p-5 flex items-center justify-between gap-3 flex-wrap">
+            <p class="text-sm">Eksportér eller importér hele samlingen som JSON.</p>
+            <div class="flex gap-2">
+                <a href="<%= baseUrl %>/backup/export"
+                   class="inline-flex items-center gap-2 bg-black/5 dark:bg-white/5 text-[13px] font-bold px-4 h-10 rounded-full hover:bg-black/10 dark:hover:bg-white/10 transition">
+                    <i class="fa-solid fa-file-export text-[11px]"></i>
+                    Eksportér
+                </a>
+                <label class="inline-flex items-center gap-2 bg-black/5 dark:bg-white/5 text-[13px] font-bold px-4 h-10 rounded-full hover:bg-amber-500 hover:text-white transition cursor-pointer">
+                    <i class="fa-solid fa-file-import text-[11px]"></i>
+                    Importér
+                    <input type="file" id="backupInput" class="hidden" accept=".json">
+                </label>
+            </div>
+        </div>
+    </section>
 
-        <script src="<%= baseUrl %>/socket.io/socket.io.js"></script>
-        <script>
-            function toggleModal(id) {
-                const modal = document.getElementById(id);
-                modal.classList.toggle('hidden');
-                document.body.style.overflow = modal.classList.contains('hidden') ? 'auto' : 'hidden';
+    <%# Sign out %>
+    <section>
+        <form action="<%= baseUrl %>/logout" method="POST" class="flex justify-end">
+            <button type="submit"
+                    class="inline-flex items-center gap-2 text-[13px] font-bold text-sub hover:text-red-500 transition">
+                <i class="fa-solid fa-arrow-right-from-bracket text-[11px]"></i>
+                Log ud
+            </button>
+        </form>
+    </section>
+</div>
+
+<script src="<%= baseUrl %>/socket.io/socket.io.js"></script>
+<script>
+    const socket = io({ path: '<%= baseUrl %>/socket.io' });
+    let activeRefreshKind = null;
+
+    async function confirmDeleteLast() {
+        const kind  = document.getElementById('deleteKind').value;
+        const count = parseInt(document.getElementById('deleteCount').value);
+        const result = document.getElementById('deleteResult');
+        if (!count || count < 1) {
+            result.className = 'mt-3 text-[12px] text-red-400';
+            result.textContent = 'Indtast et antal.';
+            result.classList.remove('hidden');
+            return;
+        }
+        if (!confirm(`Slet de ${count} seneste ${kind === 'Dvd' ? 'film' : 'spil'}?`)) return;
+        try {
+            const res = await fetch('<%= baseUrl %>/admin/delete-last-items', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ count, kind })
+            });
+            const data = await res.json();
+            result.className = res.ok ? 'mt-3 text-[12px] text-emerald-400' : 'mt-3 text-[12px] text-red-400';
+            result.textContent = res.ok ? `${data.deleted} elementer slettet.` : (data.error || 'Fejl.');
+            result.classList.remove('hidden');
+        } catch (e) {
+            result.className = 'mt-3 text-[12px] text-red-400';
+            result.textContent = 'Netværksfejl.';
+            result.classList.remove('hidden');
+        }
+    }
+
+    async function startMetadataRefresh(kind) {
+        if (!confirm('Start metadataopdatering?')) return;
+        activeRefreshKind = kind;
+        const mode = document.getElementById('refreshMode' + kind).value;
+        const btn = document.getElementById('btnRefresh' + kind);
+        const icon = document.getElementById('iconRefresh' + kind);
+        const text = document.getElementById('textRefresh' + kind);
+        const wrap = document.getElementById('progressContainer' + kind);
+        btn.disabled = true;
+        btn.classList.add('opacity-60', 'cursor-not-allowed');
+        icon.className = 'fa-solid fa-spinner fa-spin text-[10px]';
+        text.textContent = 'Starter';
+        wrap.classList.remove('hidden');
+        try {
+            const url = kind === 'Game' ? '<%= baseUrl %>/admin/refresh-all-games-metadata' : '<%= baseUrl %>/admin/refresh-all-dvds-metadata';
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ mode })
+            });
+            if (!res.ok) {
+                const data = await res.json();
+                throw new Error(data.error || 'Fejl');
             }
+        } catch (err) {
+            alert(err.message);
+            resetRefreshBtn(kind);
+        }
+    }
 
-            document.getElementById('backupInput').onchange = function (e) {
-                const file = e.target.files[0];
-                if (!file) return;
-                if (confirm("ADVARSEL: Dette vil slette alle dine nuværende data (albums, brugere, logfiler) og erstatte dem med filens indhold. Du bliver logget ud. Fortsæt?")) {
-                    const reader = new FileReader();
-                    reader.onload = async (event) => {
-                        try {
-                            const backupData = JSON.parse(event.target.result);
-                            const response = await fetch('<%= baseUrl %>/backup/import', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify(backupData)
-                            });
-                            if (response.ok) {
-                                alert("Database importeret.");
-                                window.location.href = '<%= baseUrl %>/login';
-                            } else {
-                                alert("Fejl under import.");
-                            }
-                        } catch (err) {
-                            alert("Ugyldig JSON-fil.");
-                        }
-                    };
-                    reader.readAsText(file);
+    function resetRefreshBtn(kind) {
+        const btn = document.getElementById('btnRefresh' + kind);
+        const icon = document.getElementById('iconRefresh' + kind);
+        const text = document.getElementById('textRefresh' + kind);
+        const wrap = document.getElementById('progressContainer' + kind);
+        if (btn) { btn.disabled = false; btn.classList.remove('opacity-60', 'cursor-not-allowed'); }
+        if (icon) icon.className = 'fa-solid fa-play text-[10px]';
+        if (text) text.textContent = 'Start';
+        if (wrap) wrap.classList.add('hidden');
+        activeRefreshKind = null;
+    }
+
+    socket.on('refresh_all_progress', d => {
+        if (!activeRefreshKind) return;
+        const k = activeRefreshKind;
+        const pct = Math.round((d.current / d.total) * 100);
+        document.getElementById('progressBar' + k).style.width = pct + '%';
+        document.getElementById('progressPercent' + k).textContent = pct + '%';
+        document.getElementById('progressTitle' + k).textContent = `${d.current} / ${d.total}`;
+        document.getElementById('progressItem' + k).textContent = d.title;
+    });
+    socket.on('refresh_all_finished', d => {
+        if (!activeRefreshKind) return;
+        alert(`Færdig: ${d.count} opdateret.`);
+        resetRefreshBtn(activeRefreshKind);
+    });
+
+    // Backup import
+    const backupInput = document.getElementById('backupInput');
+    if (backupInput) {
+        backupInput.onchange = function () {
+            const file = this.files[0];
+            if (!file) return;
+            if (!confirm('Importér denne backup? Det erstatter ALT eksisterende data.')) { this.value = ''; return; }
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    const res = await fetch('<%= baseUrl %>/backup/import', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ backupData: data })
+                    });
+                    if (res.ok) {
+                        alert('Import gennemført. Genindlæser…');
+                        window.location.reload();
+                    } else {
+                        const err = await res.json();
+                        alert('Fejl: ' + (err.error || 'ukendt'));
+                    }
+                } catch (err) {
+                    alert('Ugyldig JSON-fil.');
                 }
-                this.value = '';
             };
+            reader.readAsText(file);
+            this.value = '';
+        };
+    }
+</script>
 
-            const btnGoodreadsImport = document.getElementById('btnGoodreadsImport');
-
-            function onGoodreadsUrlInput(val) {
-                const isValid = val.includes('goodreads.com');
-                if (btnGoodreadsImport) btnGoodreadsImport.disabled = !isValid;
-
-                const warning = document.getElementById('goodreadsWarning');
-                if (warning) warning.classList.toggle('hidden', !isValid);
-            }
-
-            async function startGoodreadsImport() {
-                const rssUrl = document.getElementById('goodreadsRssUrl')?.value?.trim();
-                const defaultFormat = document.getElementById('goodreadsDefaultFormat')?.value || 'paperback';
-                const defaultLanguage = document.getElementById('goodreadsDefaultLanguage')?.value?.trim() || '';
-                if (!rssUrl) return;
-
-                const errorBox = document.getElementById('goodreadsError');
-                const errorText = document.getElementById('goodreadsErrorText');
-                errorBox.classList.add('hidden');
-                btnGoodreadsImport.disabled = true;
-                btnGoodreadsImport.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Importerer...';
-
-                try {
-                    const response = await fetch('<%= baseUrl %>/import/goodreads', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ rss_url: rssUrl, default_format: defaultFormat, default_language: defaultLanguage })
-                    });
-                    if (!response.ok) {
-                        const data = await response.json();
-                        throw new Error(data.error || 'Error');
-                    }
-                    btnGoodreadsImport.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Import startet...';
-                } catch (err) {
-                    errorText.innerText = err.message;
-                    errorBox.classList.remove('hidden');
-                    btnGoodreadsImport.disabled = false;
-                    btnGoodreadsImport.innerHTML = '<i class="fa-solid fa-rss mr-2"></i> Start import';
-                }
-            }
-
-            const socket = io({
-                path: '<%= baseUrl %>/socket.io',
-            });
-
-            socket.on('import_progress', (data) => {
-
-                // Discogs
-                const btnFast = document.getElementById('btnFastImport');
-                const btnFull = document.getElementById('btnFullImport');
-                if (btnFast && btnFull) {
-                    const activeBtn = btnFull.disabled ? btnFull : btnFast;
-                    activeBtn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Importation : ${data.current}...`;
-                }
-
-                // GoodReads
-                if (btnGoodreadsImport && !btnGoodreadsImport.disabled) return;
-                if (btnGoodreadsImport) {
-                    btnGoodreadsImport.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> ${data.current} / ${data.total}`;
-                }
-            });
-
-            socket.on('import_finished', (data) => {
-                alert(`${data.count} elementer tilføjet!`);
-                window.location.reload();
-            });
-
-            socket.on('import_error', (data) => {
-                const grModal = document.getElementById('importGoodreadsModal');
-                const isGrOpen = grModal && !grModal.classList.contains('hidden');
-                const errorBoxId = isGrOpen ? 'goodreadsError' : 'importError';
-                const errorTextId = isGrOpen ? 'goodreadsErrorText' : 'importErrorText';
-                const errorBox = document.getElementById(errorBoxId);
-                const errorText = document.getElementById(errorTextId);
-                if (errorText) errorText.innerText = data.message;
-                if (errorBox) errorBox.classList.remove('hidden');
-            });
-
-            function openImportModal(type) {
-                const titleEl = document.getElementById('importModalTitle');
-                const inputType = document.getElementById('importType');
-                inputType.value = type;
-                titleEl.innerHTML = type === 'wishlist'
-                    ? '<i class="fa-solid fa-heart text-primary-theme mr-2"></i> Importér ønskeliste'
-                    : '<i class="fa-solid fa-record-vinyl text-primary-theme mr-2"></i> Importér samling';
-                toggleModal('importDiscogsModal');
-            }
-
-            async function startDiscogsImport(isFull) {
-                const urlInput = document.getElementById('discogsUrl');
-                const btnFast = document.getElementById('btnFastImport');
-                const btnFull = document.getElementById('btnFullImport');
-                const errorBox = document.getElementById('importError');
-                const importType = document.getElementById('importType').value;
-                if (!urlInput.value) return;
-                errorBox.classList.add('hidden');
-                [btnFast, btnFull].forEach(b => { b.disabled = true; b.classList.add('opacity-50'); });
-                const activeBtn = isFull ? btnFull : btnFast;
-                activeBtn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Importerer...`;
-                try {
-                    const response = await fetch('<%= baseUrl %>/import/discogs', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ discogsUrl: urlInput.value, full: isFull, type: importType })
-                    });
-                    if (!response.ok) {
-                        const data = await response.json();
-                        throw new Error(data.error || "Error");
-                    }
-                    activeBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> Import startet...`;
-                } catch (err) {
-                    document.getElementById('importErrorText').innerText = err.message;
-                    errorBox.classList.remove('hidden');
-                    [btnFast, btnFull].forEach(b => { b.disabled = false; b.classList.remove('opacity-50'); });
-                }
-            }
-
-            document.addEventListener('DOMContentLoaded', () => {
-                const hasTmdbKey = <%= locals.hasTmdbKey      || false %>;
-                const hasIgdbKey = <%= locals.hasIgdbKey      || false %>;
-                const modulesWithKeys = [
-                    { name: 'dvdActive', hasKey: hasTmdbKey, errorId: 'error-dvd' },
-                    { name: 'gamesActive', hasKey: hasIgdbKey, errorId: 'error-games' }
-                ];
-                modulesWithKeys.forEach(mod => {
-                    const checkbox = document.querySelector(`input[name="${mod.name}"]`);
-                    const errorBox = document.getElementById(mod.errorId);
-                    if (checkbox) {
-                        checkbox.addEventListener('change', function () {
-                            if (this.checked && !mod.hasKey) {
-                                this.checked = false;
-                                if (errorBox) {
-                                    errorBox.classList.remove('hidden');
-                                    setTimeout(() => errorBox.classList.add('hidden'), 5000);
-                                }
-                            }
-                        });
-                    }
-                });
-            });
-
-            function interpolate(str, params) {
-                return str.replace(/{{(.*?)}}/g, (_, key) => {
-                    return params[key.trim()] ?? '';
-                });
-            }
-
-            window.translations = {
-                areyousure: "Er du sikker? Dette sletter de {{count}} seneste {{kindLabel}}.",
-                deleteConfirm: "{{count}} elementer slettet.",
-                refreshAllConfirm: "Er du sikker? Dette opdaterer dine musikelementer baseret på valgt tilstand og overskriver manuelle ændringer til genrer og stilarter.",
-                statusStarting: "Starter...",
-                statusInit: "Initialiserer...",
-                statusProcessing: "Opdaterer: {{current}} / {{total}}",
-                statusFinished: "Opdatering fuldført!",
-                statusError: "Opdatering mislykkedes.",
-                itemsUpdated: "elementer tilføjet!"
-            };
-
-            let activeRefreshKind = null;
-
-            async function startMetadataRefresh(kind = 'Music') {
-                if (!confirm(window.translations.refreshAllConfirm)) return;
-
-                activeRefreshKind = kind;
-
-                const mode = document.getElementById('refreshMode' + kind).value;
-                const btn = document.getElementById('btnRefresh' + kind);
-                const icon = document.getElementById('iconRefresh' + kind);
-                const text = document.getElementById('textRefresh' + kind);
-                const progressContainer = document.getElementById('progressContainer' + kind);
-
-                btn.disabled = true;
-                btn.classList.add('opacity-50', 'cursor-not-allowed');
-                icon.className = 'fa-solid fa-spinner fa-spin';
-                text.innerText = window.translations.statusStarting;
-                progressContainer.classList.remove('hidden');
-
-                try {
-                    const url = kind === 'Game' ? '<%= baseUrl %>/admin/refresh-all-games-metadata'
-                        : '<%= baseUrl %>/admin/refresh-all-dvds-metadata';
-
-                    const response = await fetch(url, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ mode })
-                    });
-
-                    if (!response.ok) {
-                        const data = await response.json();
-                        throw new Error(data.error || window.translations.statusError);
-                    }
-                } catch (err) {
-                    alert(err.message);
-                    btn.disabled = false;
-                    btn.classList.remove('opacity-50', 'cursor-not-allowed');
-                    icon.className = 'fa-solid fa-play';
-                    text.innerText = 'Start opdatering';
-                    progressContainer.classList.add('hidden');
-                    activeRefreshKind = null;
-                }
-            }
-
-            socket.on('refresh_all_progress', (data) => {
-                if (!activeRefreshKind) return;
-                const k = activeRefreshKind;
-                const percent = Math.round((data.current / data.total) * 100);
-                const statusText = window.translations.statusProcessing.replace('{{current}}', data.current).replace('{{total}}', data.total);
-
-                document.getElementById('progressBar' + k).style.width = `${percent}%`;
-                document.getElementById('progressPercent' + k).innerText = `${percent}%`;
-                document.getElementById('progressTitle' + k).innerText = statusText;
-                document.getElementById('progressItem' + k).innerText = data.title;
-                document.getElementById('textRefresh' + k).innerText = statusText;
-            });
-
-            socket.on('refresh_all_finished', (data) => {
-                if (!activeRefreshKind) return;
-                const k = activeRefreshKind;
-                document.getElementById('progressTitle' + k).innerText = window.translations.statusFinished;
-                document.getElementById('textRefresh' + k).innerText = window.translations.statusFinished;
-                document.getElementById('iconRefresh' + k).className = 'fa-solid fa-check text-green-500';
-
-                setTimeout(() => {
-                    alert(`${data.count} ${window.translations.itemsUpdated}`);
-                    window.location.reload();
-                }, 1000);
-            });
-
-            async function confirmDeleteLast() {
-                const count = parseInt(document.getElementById('deleteCount')?.value);
-                const kind = document.getElementById('deleteKind')?.value;
-                const kindLabel = document.getElementById('deleteKind')?.selectedOptions[0]?.text;
-
-                if (!count || count < 1) return;
-
-                const message = interpolate(window.translations.areyousure, {
-                    count,
-                    kindLabel
-                });
-
-                const confirmed = confirm(message);
-                if (!confirmed) return;
-
-                const errorBox = document.getElementById('deleteLastError');
-                const errorText = document.getElementById('deleteLastErrorText');
-                const successBox = document.getElementById('deleteLastSuccess');
-                const successText = document.getElementById('deleteLastSuccessText');
-                errorBox.classList.add('hidden');
-                successBox.classList.add('hidden');
-
-                try {
-                    const response = await fetch('<%= baseUrl %>/admin/delete-last-items', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ count, kind })
-                    });
-                    const data = await response.json();
-                    if (!response.ok) throw new Error(data.error || 'Erreur');
-
-                    successText.innerText = interpolate(
-                        window.translations.deleteConfirm,
-                        { count: data.deleted }
-                    );
-                    successBox.classList.remove('hidden');
-                    document.getElementById('deleteCount').value = '';
-                } catch (err) {
-                    errorText.innerText = err.message;
-                    errorBox.classList.remove('hidden');
-                }
-            }
-        </script>
+<%- include('partials/footer') %>

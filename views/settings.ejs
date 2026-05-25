@@ -1,413 +1,59 @@
 <%- include('partials/header') %>
 
-    <div class="max-w-screen-xl mx-auto pb-12 px-4 md:px-0 pt-8">
+<div class="max-w-screen-xl mx-auto px-4 md:px-6 pb-20">
 
-        <div class="mb-8">
-            <h1 class="text-3xl font-bold flex items-center gap-3 transition-colors">
-                <i class="fas fa-cog text-primary-theme animate-spin-slow"></i>
-                Kontoindstillinger
-            </h1>
-            <p class="opacity-60 mt-2 transition-colors">
-                Administrér dine personlige oplysninger og sikkerhed.
-            </p>
+    <header class="pt-8 md:pt-14 pb-7">
+        <p class="text-[10px] md:text-[11px] font-bold uppercase tracking-[0.2em] text-sub mb-2.5">Min konto</p>
+        <h1 class="text-[32px] md:text-[56px] font-black leading-[0.95] tracking-tight">Indstillinger</h1>
+    </header>
+
+    <section class="mb-8">
+        <div class="surface-card border border-[var(--border-color)] rounded-3xl p-6">
+            <p class="text-[10px] font-bold uppercase tracking-widest text-sub mb-2">Logget ind som</p>
+            <p class="text-2xl font-black capitalize"><%= user?.name || '—' %></p>
         </div>
+    </section>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-            <div class="space-y-6">
-                <div class="card-theme rounded-2xl p-6 relative overflow-hidden transition-colors shadow-sm">
-                    <div
-                        class="hidden dark:block absolute top-0 right-0 w-32 h-32 bg-primary-theme/10 rounded-full blur-2xl -mr-10 -mt-10 pointer-events-none">
-                    </div>
-
-                    <div class="flex flex-col items-center text-center relative z-10">
-                        <div class="relative group cursor-pointer" onclick="openModal('avatar-modal')">
-                            <img src="<%= baseUrl + user.img %>" id="current-avatar"
-                                class="w-32 h-32 rounded-full object-cover border-4 border-black/10 dark:border-white/10 group-hover:border-primary-theme transition-colors shadow-xl">
-                            <div
-                                class="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                <i class="fas fa-camera text-white text-2xl"></i>
-                            </div>
-                        </div>
-                        <h2 class="mt-4 text-xl font-bold transition-colors">
-                            <%= user.username %>
-                        </h2>
-                        <p class="opacity-60 text-sm transition-colors">
-                            <%= user.email %>
-                        </p>
-
-                        <button onclick="openModal('avatar-modal')"
-                            class="mt-4 text-sm text-primary-theme font-medium hover:underline transition-colors">
-                            Opdater billede
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="lg:col-span-2 space-y-6">
-
-                <div class="card-theme rounded-2xl p-6 transition-colors shadow-sm">
-                    <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-lg font-bold flex items-center gap-2 transition-colors">
-                            <i class="fas fa-user-circle opacity-50"></i>
-                            Identitet
-                        </h2>
-                        <button onclick="openModal('username-modal')"
-                            class="text-sm bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 px-3 py-1.5 rounded-lg transition-colors border border-transparent">
-                            <i class="fas fa-pen mr-1"></i>
-                            Rediger
-                        </button>
-                    </div>
-
-                    <div class="space-y-4">
-                        <div
-                            class="flex flex-col sm:flex-row sm:justify-between p-4 bg-black/5 dark:bg-white/5 rounded-xl border border-transparent transition-colors">
-                            <span class="opacity-60 text-sm">
-                                Brugernavn
-                            </span>
-                            <span class="font-medium transition-colors">
-                                <%= user.username %>
-                            </span>
-                        </div>
-                        <div
-                            class="flex flex-col sm:flex-row sm:justify-between p-4 bg-black/5 dark:bg-white/5 rounded-xl border border-transparent transition-colors">
-                            <span class="opacity-60 text-sm">
-                                E-mailadresse
-                            </span>
-                            <span class="font-medium transition-colors">
-                                <%= user.email %>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card-theme rounded-2xl p-6 transition-colors shadow-sm">
-                    <h2 class="text-lg font-bold flex items-center gap-2 mb-6 transition-colors">
-                        <i class="fas fa-coins opacity-50"></i>
-                        Valuta
-                    </h2>
-
-                    <div
-                        class="flex items-center justify-between p-4 bg-black/5 dark:bg-white/5 rounded-xl border border-transparent transition-colors">
-                        <span class="opacity-60 text-sm">
-                            Foretrukken valuta
-                        </span>
-
-                        <form action="<%= baseUrl %>/settings/update-currency" method="POST" class="flex items-center">
-                            <select name="currency" onchange="this.form.submit()"
-                                class="bg-black/5 dark:bg-white/5 border border-transparent text-gray-900 dark:text-white text-sm rounded-lg focus:ring-primary-theme focus:border-primary-theme block w-full p-3 transition-colors outline-none cursor-pointer">
-                                <option value="EUR" class="bg-white dark:bg-[#1a1a1a]" <%=user.currency==='EUR'
-                                    ? 'selected' : '' %>>
-                                    Euro (€)
-                                </option>
-
-                                <option value="USD" class="bg-white dark:bg-[#1a1a1a]" <%=user.currency==='USD'
-                                    ? 'selected' : '' %>>
-                                    US Dollar ($)
-                                </option>
-
-                                <option value="GBP" class="bg-white dark:bg-[#1a1a1a]" <%=user.currency==='GBP'
-                                    ? 'selected' : '' %>>
-                                    Britiske Pund (£)
-                                </option>
-                            </select>
-                        </form>
-                    </div>
-                </div>
-
-                <div class="card-theme rounded-2xl p-6 transition-colors shadow-sm">
-                    <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-lg font-bold flex items-center gap-2 transition-colors">
-                            <i class="fas fa-shield-alt opacity-50"></i>
-                            Sikkerhed
-                        </h2>
-                    </div>
-
-                    <div
-                        class="flex items-center justify-between p-4 bg-black/5 dark:bg-white/5 rounded-xl border border-transparent transition-colors">
-                        <div>
-                            <p class="font-medium transition-colors">
-                                Adgangskode
-                            </p>
-                            <p class="opacity-50 text-xs mt-1 transition-colors">
-                                Sidst opdateret : <%= new Date(user.lastChange).toLocaleDateString('da-DK') %>
-                            </p>
-                        </div>
-                        <button onclick="openModal('password-modal')"
-                            class="text-sm bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 px-3 py-1.5 rounded-lg transition-colors border border-transparent">
-                            Rediger
-                        </button>
-                    </div>
-                </div>
-
-            </div>
+    <section class="mb-8">
+        <div class="surface-card border border-[var(--border-color)] rounded-3xl p-6">
+            <p class="text-[10px] font-bold uppercase tracking-widest text-sub mb-3">Tema</p>
+            <p class="text-sm text-sub mb-4">Gemmes lokalt på denne enhed.</p>
+            <button type="button" id="settings-theme-toggle"
+                    class="inline-flex items-center gap-2 bg-black/5 dark:bg-white/5 text-[13px] font-bold px-4 h-10 rounded-full hover:bg-black/10 dark:hover:bg-white/10 transition">
+                <i id="settings-theme-icon" class="fa-solid fa-moon text-[12px]"></i>
+                <span id="settings-theme-label">Skift tema</span>
+            </button>
         </div>
-    </div>
+    </section>
 
-    <div id="username-modal"
-        class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="card-theme rounded-2xl w-full max-w-md p-6 relative shadow-2xl transition-colors">
-            <button onclick="closeModal('username-modal')"
-                class="absolute top-4 right-4 opacity-50 hover:opacity-100 transition-colors"><i
-                    class="fas fa-times"></i></button>
-            <h3 class="text-xl font-bold mb-4 transition-colors">
-                Skift brugernavn
-            </h3>
+    <section>
+        <form action="<%= baseUrl %>/logout" method="POST">
+            <button type="submit"
+                    class="w-full inline-flex items-center justify-center gap-2 text-[13px] font-bold text-red-500 bg-red-500/10 hover:bg-red-500 hover:text-white border border-red-500/20 hover:border-red-500 h-12 rounded-full transition">
+                <i class="fa-solid fa-arrow-right-from-bracket text-[11px]"></i>
+                Log ud
+            </button>
+        </form>
+    </section>
+</div>
 
-            <form action="<%= baseUrl %>/settings/update-username" method="POST">
-                <div class="mb-4">
-                    <label class="block text-sm opacity-60 mb-2 transition-colors">
-                        Nyt brugernavn
-                    </label>
-                    <input type="text" name="username" id="username-input"
-                        class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg p-3 focus:border-primary-theme focus:ring-1 focus:ring-primary-theme focus:outline-none transition-colors"
-                        placeholder="<%= user.username %>">
-                    <p id="username-feedback" class="mt-2 text-xs h-4"></p>
-                </div>
-                <button type="submit" id="save-username-btn" disabled
-                    class="w-full bg-primary-theme hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3 rounded-xl transition-colors shadow-lg shadow-primary-theme/20">
-                    Gem
-                </button>
-            </form>
-        </div>
-    </div>
+<script>
+    const stBtn = document.getElementById('settings-theme-toggle');
+    const stIcon = document.getElementById('settings-theme-icon');
+    const stLabel = document.getElementById('settings-theme-label');
+    const html = document.documentElement;
 
-    <div id="avatar-modal"
-        class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="card-theme rounded-2xl w-full max-w-md p-6 relative shadow-2xl transition-colors">
-            <button onclick="closeModal('avatar-modal')"
-                class="absolute top-4 right-4 opacity-50 hover:opacity-100 transition-colors"><i
-                    class="fas fa-times"></i></button>
-            <h3 class="text-xl font-bold mb-6 transition-colors">
-                Nyt profilbillede
-            </h3>
+    function syncSettingsTheme() {
+        const dark = html.classList.contains('dark');
+        if (stIcon) stIcon.className = dark ? 'fa-solid fa-sun text-[12px]' : 'fa-solid fa-moon text-[12px]';
+        if (stLabel) stLabel.textContent = dark ? 'Skift til lyst' : 'Skift til mørkt';
+    }
+    syncSettingsTheme();
+    stBtn?.addEventListener('click', () => {
+        html.classList.toggle('dark');
+        try { localStorage.setItem('dvinyl-theme', html.classList.contains('dark') ? 'dark' : 'light'); } catch (e) {}
+        syncSettingsTheme();
+    });
+</script>
 
-            <form id="avatar-form">
-                <div class="flex justify-center mb-6">
-                    <img src="<%= baseUrl + user.img %>" id="avatar-preview"
-                        class="w-32 h-32 rounded-full object-cover border-4 border-black/10 dark:border-white/10">
-                </div>
-
-                <input type="file" name="avatar" id="avatar-upload" accept="image/*" class="hidden">
-
-                <div class="grid grid-cols-2 gap-3">
-                    <button type="button" onclick="document.getElementById('avatar-upload').click()"
-                        class="bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 font-medium py-3 rounded-xl transition-colors border border-transparent">
-                        Vælg
-                    </button>
-                    <button type="submit"
-                        class="bg-primary-theme hover:brightness-110 text-white font-bold py-3 rounded-xl transition-colors shadow-lg shadow-primary-theme/20">
-                        Bekræft
-                    </button>
-                </div>
-                <p class="text-center opacity-50 text-xs mt-4">
-                    Maks. 5 MB. JPG, PNG, GIF, WEBP.
-                </p>
-            </form>
-        </div>
-    </div>
-
-    <div id="password-modal"
-        class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="card-theme rounded-2xl w-full max-w-md p-6 relative shadow-2xl transition-colors">
-            <button onclick="closeModal('password-modal')"
-                class="absolute top-4 right-4 opacity-50 hover:opacity-100 transition-colors"><i
-                    class="fas fa-times"></i></button>
-            <h3 class="text-xl font-bold mb-4 transition-colors">
-                Adgangskode
-            </h3>
-
-            <div
-                class="bg-orange-50 dark:bg-orange-500/10 border border-orange-200 dark:border-orange-500/20 text-orange-600 dark:text-orange-400 p-3 rounded-lg text-xs mb-4 transition-colors">
-                <i class="fas fa-triangle-exclamation mr-1"></i>
-                Du bliver logget ud efter ændringen.
-            </div>
-
-            <form id="password-form" class="space-y-4">
-                <div>
-                    <label class="block text-sm opacity-60 mb-1 transition-colors">
-                        Nuværende adgangskode
-                    </label>
-                    <input type="password" name="currentPassword"
-                        class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg p-3 focus:border-primary-theme focus:ring-1 focus:ring-primary-theme focus:outline-none transition-colors">
-                </div>
-                <div>
-                    <label class="block text-sm opacity-60 mb-1 transition-colors">
-                        Ny adgangskode
-                    </label>
-                    <input type="password" name="newPassword" id="new-password"
-                        class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg p-3 focus:border-primary-theme focus:ring-1 focus:ring-primary-theme focus:outline-none transition-colors">
-                </div>
-                <div>
-                    <label class="block text-sm opacity-60 mb-1 transition-colors">
-                        Bekræft ny adgangskode
-                    </label>
-                    <input type="password" name="confirmPassword" id="confirm-password"
-                        class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg p-3 focus:border-primary-theme focus:ring-1 focus:ring-primary-theme focus:outline-none transition-colors">
-                    <p id="password-match-feedback" class="text-xs mt-1 h-4"></p>
-                </div>
-
-                <button type="submit" id="save-password-btn"
-                    class="w-full bg-primary-theme hover:brightness-110 text-white font-bold py-3 rounded-xl transition-colors mt-2 shadow-lg shadow-primary-theme/20">
-                    Opdater
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <script>
-        function openModal(id) {
-            document.getElementById(id).classList.remove('hidden');
-        }
-        function closeModal(id) {
-            document.getElementById(id).classList.add('hidden');
-        }
-
-        const usernameInput = document.getElementById('username-input');
-        const usernameFeedback = document.getElementById('username-feedback');
-        const saveUsernameBtn = document.getElementById('save-username-btn');
-
-        const translations = {
-            avatarSuccess: "Profilbillede opdateret!",
-            avatarError: "Fejl ved upload af billede.",
-            passwordSuccess: "Adgangskode opdateret.",
-            passwordError: "Fejl ved opdatering af adgangskode.",
-            passwordMismatch: "Adgangskoderne stemmer ikke overens.",
-            usernameAvailable: "Brugernavn tilgængeligt!",
-            genericError: "Der opstod en fejl."
-        };
-
-
-        if (usernameInput) {
-            usernameInput.addEventListener('input', async function () {
-                const val = this.value.trim();
-                if (val.length < 3) {
-                    usernameFeedback.textContent = '';
-                    saveUsernameBtn.disabled = true;
-                    return;
-                }
-
-                try {
-                    const res = await fetch('<%= baseUrl %>/settings/check-username', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ username: val })
-                    });
-                    const data = await res.json();
-
-                    if (data.success) {
-                        usernameFeedback.textContent = '✅ ' + translations.usernameAvailable;
-                        usernameFeedback.className = 'mt-2 text-xs text-green-500';
-                        saveUsernameBtn.disabled = false;
-                    } else {
-                        usernameFeedback.textContent = '❌ ' + data.message;
-                        usernameFeedback.className = 'mt-2 text-xs text-red-500';
-                        saveUsernameBtn.disabled = true;
-                    }
-                } catch (e) { console.error(e); }
-            });
-        }
-
-        const avatarInput = document.getElementById('avatar-upload');
-        if (avatarInput) {
-            avatarInput.addEventListener('change', function (e) {
-                if (e.target.files && e.target.files[0]) {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        document.getElementById('avatar-preview').src = e.target.result;
-                    }
-                    reader.readAsDataURL(e.target.files[0]);
-                }
-            });
-        }
-
-        const avatarForm = document.getElementById('avatar-form');
-        if (avatarForm) {
-            avatarForm.addEventListener('submit', async function (e) {
-                e.preventDefault();
-                const formData = new FormData(this);
-
-                try {
-                    const res = await fetch('<%= baseUrl %>/settings/upload-avatar', {
-                        method: 'POST',
-                        body: formData
-                    });
-                    const data = await res.json();
-
-                    if (data.success) {
-                        document.getElementById('current-avatar').src = data.avatarPath;
-                        closeModal('avatar-modal');
-                        alert(translations.avatarSuccess);
-                        window.location.reload();
-                    } else {
-                        alert(translations.avatarError + ': ' + data.message);
-                    }
-                } catch (e) {
-                    alert(translations.genericError);
-                }
-            });
-        }
-
-        const passForm = document.getElementById('password-form');
-        const newPass = document.getElementById('new-password');
-        const confPass = document.getElementById('confirm-password');
-        const passFeed = document.getElementById('password-match-feedback');
-
-        if (confPass) {
-            confPass.addEventListener('input', function () {
-                if (this.value !== newPass.value) {
-                    passFeed.textContent = "Stemmer ikke overens";
-                    passFeed.className = "text-xs mt-1 text-red-500";
-                } else {
-                    passFeed.textContent = "Stemmer overens";
-                    passFeed.className = "text-xs mt-1 text-green-500";
-                }
-            });
-        }
-
-        if (passForm) {
-            passForm.addEventListener('submit', async function (e) {
-                e.preventDefault();
-                const current = this.currentPassword.value;
-                const newP = this.newPassword.value;
-                const confP = this.confirmPassword.value;
-
-                if (newP !== confP) return alert(translations.passwordMismatch);
-
-                try {
-                    const res = await fetch('<%= baseUrl %>/settings/update-password', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ currentPassword: current, newPassword: newP })
-                    });
-                    const data = await res.json();
-
-                    if (data.success) {
-                        alert(translations.passwordSuccess);
-                        window.location.href = '<%= baseUrl %>/logout';
-                    } else {
-                        alert(translations.passwordError + ': ' + data.message);
-                    }
-                } catch (e) { alert(translations.genericError); }
-            });
-        }
-
-    </script>
-
-    <style>
-        .animate-spin-slow {
-            animation: spin 4s linear infinite;
-        }
-
-        @keyframes spin {
-            from {
-                transform: rotate(0deg);
-            }
-
-            to {
-                transform: rotate(360deg);
-            }
-        }
-    </style>
-
-    <%- include('partials/footer') %>
+<%- include('partials/footer') %>

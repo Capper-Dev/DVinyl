@@ -3,15 +3,9 @@ const router = express.Router();
 const axios = require('axios');
 const Game = require('../models/Game');
 const Item = require('../models/Item');
-const User = require('../models/User');
 const Collection = require('../models/Collection');
-const { requireAuth, requireAdmin } = require('../middleware/authMiddleware');
+const { requireAuth } = require('../middleware/authMiddleware');
 const { igdbRequest } = require('../utils/igdbHelper');
-
-async function getAdminId() {
-    const admin = await User.findOne({ isAdmin: true }).select('_id');
-    return admin ? admin._id : null;
-}
 
 /**
  * Format an IGDB game result for display in search results.
@@ -54,12 +48,12 @@ const formatIGDBResult = (game) => {
 };
 
 // ─── ADD GAME (search page) ─────────────────────────────────
-router.get('/add-game', requireAuth, requireAdmin, (req, res) => {
+router.get('/add-game', requireAuth, (req, res) => {
     res.render('add-game', { results: null, user: res.locals.user, currentType: 'add-game' });
 });
 
 // ─── SEARCH GAMES (IGDB) ────────────────────────────────────
-router.post('/search-games', requireAuth, requireAdmin, async (req, res) => {
+router.post('/search-games', requireAuth, async (req, res) => {
     let query = req.body.query.trim();
     let searchQuery = query;
     let barcodeScanned = '';
@@ -104,7 +98,7 @@ router.post('/search-games', requireAuth, requireAdmin, async (req, res) => {
 });
 
 // ─── CONFIRM GAME ────────────────────────────────────────────
-router.get('/confirm-game/:igdb_id', requireAuth, requireAdmin, async (req, res) => {
+router.get('/confirm-game/:igdb_id', requireAuth, async (req, res) => {
     const igdbId = req.params.igdb_id;
 
     try {
@@ -122,9 +116,8 @@ router.get('/confirm-game/:igdb_id', requireAuth, requireAdmin, async (req, res)
 
         const gameData = formatIGDBResult(results[0]);
 
-        const adminId = await User.findOne({ isAdmin: true }).select('_id').lean();
-        const locations = await Item.distinct('location', { owner: adminId ? adminId._id : null, location: { $ne: "" } });
-        const genres = await Item.distinct('genre', { owner: adminId ? adminId._id : null, genre: { $ne: "" }, kind: 'Game' });
+        const locations = await Item.distinct('location', { location: { $ne: "" } });
+        const genres = await Item.distinct('genre', { genre: { $ne: "" }, kind: 'Game' });
         const collections = await Collection.find({ type: 'game' }).sort({ createdAt: 1 }).lean();
 
         res.render('confirm-game', {
@@ -143,7 +136,7 @@ router.get('/confirm-game/:igdb_id', requireAuth, requireAdmin, async (req, res)
 });
 
 // ─── SAVE GAME ───────────────────────────────────────────────
-router.post('/save-game', requireAuth, requireAdmin, async (req, res) => {
+router.post('/save-game', requireAuth, async (req, res) => {
     try {
         const {
             mongo_id, title, developer, publisher, platform, year,
@@ -155,11 +148,10 @@ router.post('/save-game', requireAuth, requireAdmin, async (req, res) => {
         const parsedGenres = Array.isArray(genres) ? genres : (genres ? genres.split(',').map(g => g.trim()).filter(Boolean) : []);
         const parsedStyles = Array.isArray(styles) ? styles : (styles ? styles.split(',').map(s => s.trim()).filter(Boolean) : []);
 
-        const adminId = req.user._id;
         let game;
 
         if (mongo_id) {
-            game = await Item.findOne({ _id: mongo_id, owner: adminId });
+            game = await Item.findById(mongo_id);
         }
 
         if (game) {
@@ -191,7 +183,6 @@ router.post('/save-game', requireAuth, requireAdmin, async (req, res) => {
                 barcode_locked: barcode_locked === 'on',
                 cover_image,
                 kind: 'Game',
-                owner: adminId,
                 comments: comments || '',
                 location: location || '',
                 genre: genre || (parsedGenres.length > 0 ? parsedGenres[0] : ''),
@@ -213,16 +204,15 @@ router.post('/save-game', requireAuth, requireAdmin, async (req, res) => {
 });
 
 // ─── EDIT GAME ───────────────────────────────────────────────
-router.get('/game/edit/:id', requireAuth, requireAdmin, async (req, res) => {
+router.get('/game/edit/:id', requireAuth, async (req, res) => {
     try {
-        const game = await Item.findOne({ _id: req.params.id, owner: req.user._id });
+        const game = await Item.findById(req.params.id);
         if (!game || game.kind !== 'Game') {
             return res.redirect('/collection?type=games');
         }
 
-        const adminId = await getAdminId();
-        const locations = await Item.distinct('location', { owner: adminId, location: { $ne: "" } });
-        const genres = await Item.distinct('genre', { owner: adminId, genre: { $ne: "" }, kind: 'Game' });
+        const locations = await Item.distinct('location', { location: { $ne: "" } });
+        const genres = await Item.distinct('genre', { genre: { $ne: "" }, kind: 'Game' });
         const collections = await Collection.find({ type: 'game' }).sort({ createdAt: 1 }).lean();
 
         res.render('edit-game', { game: game.toObject(), user: res.locals.user, locations, genres, collections, currentType: 'games' });
@@ -245,7 +235,7 @@ router.get('/game/:id', requireAuth, async (req, res) => {
 });
 
 // ─── DELETE GAME ─────────────────────────────────────────────
-router.delete('/api/game/:id', requireAuth, requireAdmin, async (req, res) => {
+router.delete('/api/game/:id', requireAuth, async (req, res) => {
     try {
         const game = await Item.findOne({ _id: req.params.id, owner: res.locals.user._id });
 
@@ -263,7 +253,7 @@ router.delete('/api/game/:id', requireAuth, requireAdmin, async (req, res) => {
 });
 
 // ─── REFRESH GAME INFO ───────────────────────────────────────
-router.post('/api/game/:id/refresh-info', requireAuth, requireAdmin, async (req, res) => {
+router.post('/api/game/:id/refresh-info', requireAuth, async (req, res) => {
     try {
         const game = await Game.findById(req.params.id);
         if (!game) return res.status(404).json({ success: false, error: 'Game not found' });

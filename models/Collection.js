@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const collectionSchema = new mongoose.Schema({
     name: { type: String, required: true, trim: true },
-    type: { type: String, required: true, enum: ['dvd', 'game'] },
+    type: { type: String, required: true, enum: ['dvd', 'game', 'all'], default: 'all' },
     createdAt: { type: Date, default: Date.now }
 });
 

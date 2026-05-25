@@ -48,11 +48,20 @@
   }
 %>
 
-<html lang="da-DK" class="<%= isDark ? 'dark' : '' %>">
+<html lang="da-DK" class="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>DVinyl</title>
+  <script>
+    // Apply theme before paint to prevent flash
+    try {
+      const t = localStorage.getItem('dvinyl-theme');
+      if (t === 'light') {
+        document.documentElement.classList.remove('dark');
+      }
+    } catch (e) {}
+  </script>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -247,16 +256,11 @@
       };
       syncIcon();
 
-      themeBtn?.addEventListener('click', async () => {
+      themeBtn?.addEventListener('click', () => {
         html.classList.toggle('dark');
         syncIcon();
-        const newTheme = html.classList.contains('dark') ? 'dark' : 'light';
         try {
-          await fetch('<%= baseUrl %>/settings/update-theme', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ theme: newTheme })
-          });
+          localStorage.setItem('dvinyl-theme', html.classList.contains('dark') ? 'dark' : 'light');
         } catch (e) {}
       });
 

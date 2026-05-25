@@ -4,15 +4,9 @@ const mongoose = require('mongoose');
 
 const Item = require('../models/Item');
 const Collection = require('../models/Collection');
-const User = require('../models/User');
 
-const { requireAuth, requireAdmin } = require('../middleware/authMiddleware');
+const { requireAuth } = require('../middleware/authMiddleware');
 const { applyVisibilityFilter } = require('../utils/visibilityHelper');
-
-async function getAdminId() {
-    const admin = await User.findOne({ isAdmin: true }).select('_id');
-    return admin ? admin._id : null;
-}
 
 const formatForView = (item) => {
     if (!item) return null;
@@ -41,9 +35,8 @@ const formatForView = (item) => {
 // Dashboard: collection summary
 router.get('/', requireAuth, async (req, res) => {
     try {
-        const adminId = await getAdminId();
         const settings = res.locals.settings;
-        let queryAll = { owner: adminId, in_wishlist: false };
+        let queryAll = { in_wishlist: false };
         applyVisibilityFilter(queryAll, res.locals.isAdmin, settings);
         const allItems = await Item.find(queryAll).lean();
 
@@ -105,12 +98,11 @@ router.get('/', requireAuth, async (req, res) => {
 // Collection view
 router.get('/collection', requireAuth, async (req, res) => {
     try {
-        const adminId = await getAdminId();
         const { search, type, format, sort } = req.query;
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 25;
 
-        let query = { owner: adminId, in_wishlist: false };
+        let query = { in_wishlist: false };
         let conditions = [];
 
         if (search) {
@@ -135,14 +127,14 @@ router.get('/collection', requireAuth, async (req, res) => {
             conditions.push({ format: formatRegex });
         }
 
-        const typeToCollectionType = { dvd: 'dvd', games: 'game' };
+        const typeToCollectionType = { dvd: 'dvd', games: 'game', all: null };
         const collectionType = typeToCollectionType[type];
-        let collectionsForType = [];
         let activeCollectionId = req.query.collection || null;
 
-        if (collectionType) {
-            collectionsForType = await Collection.find({ type: collectionType }).sort({ createdAt: 1 }).lean();
-        }
+        const colTypeFilter = collectionType
+            ? { type: { $in: [collectionType, 'all'] } }
+            : {};
+        const collectionsForType = await Collection.find(colTypeFilter).sort({ createdAt: 1 }).lean();
 
         if (activeCollectionId === 'uncategorized') {
             query.collection = null;
@@ -190,7 +182,7 @@ router.get('/collection', requireAuth, async (req, res) => {
             ]
         };
 
-        const baseStatsQuery = { owner: adminId, in_wishlist: false };
+        const baseStatsQuery = { in_wishlist: false };
         applyVisibilityFilter(baseStatsQuery, res.locals.isAdmin, res.locals.settings);
         if (query.kind) baseStatsQuery.kind = query.kind;
 

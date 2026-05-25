@@ -3,15 +3,9 @@ const router = express.Router();
 const axios = require('axios');
 const Dvd = require('../models/Dvd');
 const Item = require('../models/Item');
-const User = require('../models/User');
 const Collection = require('../models/Collection');
-const { requireAuth, requireAdmin } = require('../middleware/authMiddleware');
+const { requireAuth } = require('../middleware/authMiddleware');
 const { lookupBarcode, saveManualMatch } = require('../utils/barcodeLookup');
-
-async function getAdminId() {
-    const admin = await User.findOne({ isAdmin: true }).select('_id');
-    return admin ? admin._id : null;
-}
 
 const formatTMDBItem = (item) => {
     const isTv = item.media_type === 'tv';
@@ -27,11 +21,11 @@ const formatTMDBItem = (item) => {
 };
 
 
-router.get('/add-dvd', requireAuth, requireAdmin, (req, res) => {
+router.get('/add-dvd', requireAuth, (req, res) => {
     res.render('add-dvd', { results: null, user: res.locals.user, currentType: 'add-dvd' });
 });
 
-router.post('/search-dvds', requireAuth, requireAdmin, async (req, res) => {
+router.post('/search-dvds', requireAuth, async (req, res) => {
     const query = req.body.query.trim();
     const cleanQuery = query.replace(/[- ]/g, '');
     const isBarcode = /^\d{12,13}$/.test(cleanQuery);
@@ -78,7 +72,7 @@ router.post('/search-dvds', requireAuth, requireAdmin, async (req, res) => {
     }
 });
 
-router.get('/confirm-dvd/:media_type/:tmdb_id', requireAuth, requireAdmin, async (req, res) => {
+router.get('/confirm-dvd/:media_type/:tmdb_id', requireAuth, async (req, res) => {
     const tmdbId = req.params.tmdb_id;
     const mediaType = req.params.media_type;
 
@@ -113,9 +107,8 @@ router.get('/confirm-dvd/:media_type/:tmdb_id', requireAuth, requireAdmin, async
             genres: data.genres ? data.genres.map(g => g.name) : []
         };
 
-        const adminId = await User.findOne({ isAdmin: true }).select('_id').lean();
-        const locations = await Item.distinct('location', { owner: adminId ? adminId._id : null, location: { $ne: "" } });
-        const genres = await Item.distinct('genre', { owner: adminId ? adminId._id : null, genre: { $ne: "" }, kind: 'Dvd' });
+        const locations = await Item.distinct('location', { location: { $ne: "" } });
+        const genres = await Item.distinct('genre', { genre: { $ne: "" }, kind: 'Dvd' });
         const collections = await Collection.find({ type: 'dvd' }).sort({ createdAt: 1 }).lean();
 
         res.render('confirm-dvd', {
@@ -133,7 +126,7 @@ router.get('/confirm-dvd/:media_type/:tmdb_id', requireAuth, requireAdmin, async
     }
 });
 
-router.post('/save-dvd', requireAuth, requireAdmin, async (req, res) => {
+router.post('/save-dvd', requireAuth, async (req, res) => {
     try {
         const {
             mongo_id, title, director, studio, year, duration,
@@ -144,7 +137,6 @@ router.post('/save-dvd', requireAuth, requireAdmin, async (req, res) => {
         const parsedGenres = Array.isArray(genres) ? genres : (genres ? genres.split(',').map(g => g.trim()).filter(Boolean) : []);
         const parsedStyles = Array.isArray(styles) ? styles : (styles ? styles.split(',').map(s => s.trim()).filter(Boolean) : []);
 
-        const adminId = req.user._id;
         let dvd;
 
         if (mongo_id) {
@@ -182,7 +174,6 @@ router.post('/save-dvd', requireAuth, requireAdmin, async (req, res) => {
                 is_boxset: is_boxset === 'true',
                 cover_image,
                 kind: 'Dvd',
-                owner: adminId,
                 comments: comments || '',
                 location: location || '',
                 genre: genre || (parsedGenres.length > 0 ? parsedGenres[0] : ''),
@@ -214,16 +205,15 @@ router.post('/save-dvd', requireAuth, requireAdmin, async (req, res) => {
     }
 });
 
-router.get('/dvd/edit/:id', requireAuth, requireAdmin, async (req, res) => {
+router.get('/dvd/edit/:id', requireAuth, async (req, res) => {
     try {
         const dvd = await Item.findById(req.params.id);
         if (!dvd || dvd.kind !== 'Dvd') {
             return res.redirect('/collection?type=dvd');
         }
 
-        const adminId = await getAdminId();
-        const locations = await Item.distinct('location', { owner: adminId, location: { $ne: "" } });
-        const genres = await Item.distinct('genre', { owner: adminId, genre: { $ne: "" }, kind: 'Dvd' });
+        const locations = await Item.distinct('location', { location: { $ne: "" } });
+        const genres = await Item.distinct('genre', { genre: { $ne: "" }, kind: 'Dvd' });
         const collections = await Collection.find({ type: 'dvd' }).sort({ createdAt: 1 }).lean();
 
         res.render('edit-dvd', { dvd: dvd.toObject(), user: res.locals.user, locations, genres, collections, currentType: 'dvd' });
@@ -244,7 +234,7 @@ router.get('/dvd/:id', requireAuth, async (req, res) => {
     }
 });
 
-router.delete('/api/dvd/:id', requireAuth, requireAdmin, async (req, res) => {
+router.delete('/api/dvd/:id', requireAuth, async (req, res) => {
     try {
         const dvd = await Item.findOne({ _id: req.params.id, owner: res.locals.user._id });
 
@@ -261,7 +251,7 @@ router.delete('/api/dvd/:id', requireAuth, requireAdmin, async (req, res) => {
     }
 });
 
-router.post('/api/dvd/:id/refresh-info', requireAuth, requireAdmin, async (req, res) => {
+router.post('/api/dvd/:id/refresh-info', requireAuth, async (req, res) => {
     try {
         const dvd = await Dvd.findById(req.params.id);
         if (!dvd) return res.status(404).json({ success: false, error: 'DVD not found' });

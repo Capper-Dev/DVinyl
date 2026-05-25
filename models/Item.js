@@ -11,7 +11,7 @@ const itemSchema = new mongoose.Schema({
   year: String,
   cover_image: String,
   user_image: String,
-  owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  owner: { type: mongoose.Schema.Types.ObjectId, default: null },
   in_wishlist: { type: Boolean, default: false },
   comments: { type: String, default: '' },
   location: { type: String, default: '' },
