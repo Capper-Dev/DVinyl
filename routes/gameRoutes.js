@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const axios = require('axios');
 const Game = require('../models/Game');
 const Item = require('../models/Item');
 const Collection = require('../models/Collection');
 const { requireAuth } = require('../middleware/authMiddleware');
 const { igdbRequest } = require('../utils/igdbHelper');
+const { lookupGameBarcode, saveManualGameMatch } = require('../utils/gameBarcodeLookup');
 
 /**
  * Format an IGDB game result for display in search results.
@@ -54,46 +54,46 @@ router.get('/add-game', requireAuth, (req, res) => {
 
 // ─── SEARCH GAMES (IGDB) ────────────────────────────────────
 router.post('/search-games', requireAuth, async (req, res) => {
-    let query = req.body.query.trim();
-    let searchQuery = query;
-    let barcodeScanned = '';
+    const query = req.body.query.trim();
+    const cleanQuery = query.replace(/[- ]/g, '');
+    const isBarcode = /^\d{12,13}$/.test(cleanQuery);
 
     try {
-        const isBarcode = /^\d{12,13}$/.test(query.replace(/[- ]/g, ''));
-
         if (isBarcode) {
-            barcodeScanned = query.replace(/[- ]/g, '');
-            try {
-                const upcResponse = await axios.get(`https://api.upcitemdb.com/prod/trial/lookup?upc=${barcodeScanned}`);
-                if (upcResponse.data.items && upcResponse.data.items.length > 0) {
-                    searchQuery = upcResponse.data.items[0].title;
-                    searchQuery = searchQuery.replace(/Nintendo|PlayStation|Xbox|PS[2-5]|Switch|Wii U?/gi, '').trim();
-                }
-            } catch (upcErr) {
-                console.error("[ERR] UPC Lookup:", upcErr.message);
+            const result = await lookupGameBarcode(cleanQuery);
+
+            if (result.status === 'found') {
+                return res.redirect(`/confirm-game/${result.igdb_id}?barcode=${result.ean}`);
             }
+
+            return res.render('add-game', {
+                results: null,
+                scanned_barcode: cleanQuery,
+                barcode_no_results: true,
+                barcode_error: result.status === 'error',
+                user: res.locals.user,
+                currentType: 'add-game'
+            });
         }
 
-        const results = await igdbRequest('games', 
-            `search "${searchQuery.replace(/"/g, '\\"')}";
-            fields name, cover.url, platforms.name, first_release_date, 
+        const results = await igdbRequest('games',
+            `search "${query.replace(/"/g, '\\"')}";
+            fields name, cover.url, platforms.name, first_release_date,
                    involved_companies.company.name, involved_companies.developer, involved_companies.publisher,
                    genres.name, summary;
             limit 24;`
         );
 
-        const formattedResults = results.map(formatIGDBResult);
-
         res.render('add-game', {
-            results: formattedResults,
-            scanned_barcode: barcodeScanned,
+            results: results.map(formatIGDBResult),
+            scanned_barcode: '',
             user: res.locals.user,
             currentType: 'add-game'
         });
 
     } catch (err) {
         console.error("[ERR] Game search:", err.message);
-        res.render('add-game', { results: [], scanned_barcode: '', error: 'Kunne ikke forbinde til Discogs.', user: res.locals.user, currentType: 'add-game' });
+        res.render('add-game', { results: [], scanned_barcode: '', error: 'Kunne ikke forbinde til IGDB.', user: res.locals.user, currentType: 'add-game' });
     }
 });
 
@@ -193,6 +193,16 @@ router.post('/save-game', requireAuth, async (req, res) => {
                 quantity: quantity || 1,
                 collection: collection_id || null,
             });
+        }
+
+        const ean = req.body.barcode;
+        if (ean && /^\d{12,13}$/.test(ean.replace(/[- ]/g, ''))) {
+            saveManualGameMatch(ean, {
+                igdb_id: req.body.igdb_id,
+                title: req.body.title,
+                year: req.body.year,
+                cover_image: req.body.cover_image
+            }).catch(err => console.error('[ERR] game cache save on confirm:', err));
         }
 
         res.redirect(`/collection?type=games`);

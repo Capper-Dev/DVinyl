@@ -1,5 +1,9 @@
 <%- include('partials/header') %>
 
+<div class="fixed inset-0 -z-10 opacity-10 dark:opacity-20 blur-3xl pointer-events-none transition-opacity duration-1000">
+    <img src="<%= dvd.cover_image %>" class="w-full h-full object-cover">
+</div>
+
 <div class="max-w-screen-xl mx-auto pb-20 px-4 md:px-0 pt-6">
     
     <nav class="flex mb-6 text-sm opacity-60 transition-colors">
@@ -109,19 +113,13 @@
                     <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
                         <i class="fa-solid fa-eye text-primary-theme"></i> Visningssporing
                     </h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <div>
-                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">Status</label>
-                            <select name="watchStatus" class="bg-black/5 dark:bg-white/5 border border-transparent text-gray-900 dark:text-white text-sm rounded-lg focus:ring-primary-theme focus:border-primary-theme block w-full p-3 transition-colors outline-none cursor-pointer">
-                                <option class="bg-white dark:bg-[#1a1a1a]" value="to_watch" <%= dvd.watchStatus === 'to_watch' ? 'selected' : '' %>>Ikke set</option>
-                                <option class="bg-white dark:bg-[#1a1a1a]" value="watching" <%= dvd.watchStatus === 'watching' ? 'selected' : '' %>>Ser</option>
-                                <option class="bg-white dark:bg-[#1a1a1a]" value="watched" <%= dvd.watchStatus === 'watched' ? 'selected' : '' %>>Set</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">Bedømmelse (ud af 5)</label>
-                            <input type="number" name="user_rating" min="0" max="5" step="0.5" value="<%= dvd.user_rating || 0 %>" class="bg-black/5 dark:bg-white/5 border border-transparent rounded-lg text-sm focus:ring-primary-theme block w-full p-3 transition-colors outline-none">
-                        </div>
+                    <div class="mb-6">
+                        <label class="block mb-2 text-sm font-bold uppercase tracking-widest opacity-60">Status</label>
+                        <select name="watchStatus" class="bg-black/5 dark:bg-white/5 border border-transparent text-gray-900 dark:text-white text-sm rounded-lg focus:ring-primary-theme focus:border-primary-theme block w-full p-3 transition-colors outline-none cursor-pointer">
+                            <option class="bg-white dark:bg-[#1a1a1a]" value="to_watch" <%= dvd.watchStatus === 'to_watch' ? 'selected' : '' %>>Ikke set</option>
+                            <option class="bg-white dark:bg-[#1a1a1a]" value="watching" <%= dvd.watchStatus === 'watching' ? 'selected' : '' %>>Ser</option>
+                            <option class="bg-white dark:bg-[#1a1a1a]" value="watched" <%= dvd.watchStatus === 'watched' ? 'selected' : '' %>>Set</option>
+                        </select>
                     </div>
 
                     <hr class="border-black/10 dark:border-white/10 my-6 transition-colors">
@@ -187,34 +185,23 @@
                     <div class="mb-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-xs font-bold uppercase tracking-wider opacity-60 mb-2">
-                                <i class="fa-solid fa-box-archive mr-1"></i> Placering
-                            </label>
-                            <input type="text" name="location" list="locationList" value="<%= dvd.location || '' %>"
-                                class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary-theme outline-none transition-all">
-                            
-                            <datalist id="locationList">
-                                <% locations.forEach(loc => { %>
-                                    <option value="<%= loc %>">
-                                <% }) %>
-                            </datalist>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider opacity-60 mb-2">
                                 <i class="fa-solid fa-film mr-1"></i> Genrer
                             </label>
-                            <input type="text" name="genres" 
+                            <input type="text" name="genres"
                                 placeholder="Action, Sci-Fi..."
                                 value="<%= dvd.genres ? dvd.genres.join(', ') : '' %>"
                                 class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary-theme outline-none transition-all">
                         </div>
                         <div>
                             <label class="block text-xs font-bold uppercase tracking-wider opacity-60 mb-2">
-                                <i class="fa-solid fa-tags mr-1"></i> Stilarter
+                                <i class="fa-solid fa-layer-group mr-1"></i> Samling
                             </label>
-                            <input type="text" name="styles" 
-                                placeholder="Cyberpunk, Noir..."
-                                value="<%= dvd.styles ? dvd.styles.join(', ') : '' %>"
-                                class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary-theme outline-none transition-all">
+                            <select name="collection_id" class="w-full bg-black/5 dark:bg-white/5 border border-transparent rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary-theme outline-none transition-all cursor-pointer">
+                                <option value="" class="bg-white dark:bg-[#1a1a1a]">Ingen samling</option>
+                                <% collections.forEach(function(col) { %>
+                                    <option value="<%= col._id %>" class="bg-white dark:bg-[#1a1a1a]" <%= dvd.collection && dvd.collection.toString() === col._id.toString() ? 'selected' : '' %>><%= col.name %></option>
+                                <% }) %>
+                            </select>
                         </div>
                     </div>
 

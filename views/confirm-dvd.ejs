@@ -130,6 +130,7 @@
                     <input type="hidden" name="cover_image" value="<%= dvd.cover_image %>">
                     <input type="hidden" name="watchStatus" value="to_watch">
                     <input type="hidden" name="user_rating" value="0">
+                    <input type="hidden" name="genres" value="<%= dvd.genres ? dvd.genres.join(', ') : '' %>">
 
                     <div>
                         <label class="block text-xs font-semibold uppercase tracking-wider opacity-60 mb-2">Collection</label>

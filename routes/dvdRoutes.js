@@ -155,13 +155,13 @@ router.post('/save-dvd', requireAuth, async (req, res) => {
             dvd.barcode_locked = barcode_locked === 'on';
             dvd.is_boxset = is_boxset === 'true';
             dvd.cover_image = cover_image;
-            dvd.comments = comments || '';
-            dvd.location = location || '';
+            if (comments !== undefined) dvd.comments = comments;
+            if (location !== undefined) dvd.location = location;
             dvd.genre = genre || (parsedGenres.length > 0 ? parsedGenres[0] : '');
             dvd.genres = parsedGenres;
-            dvd.styles = parsedStyles;
+            if (styles !== undefined) dvd.styles = parsedStyles;
             dvd.watchStatus = watchStatus || 'to_watch';
-            dvd.user_rating = user_rating || 0;
+            if (user_rating !== undefined) dvd.user_rating = user_rating;
             dvd.quantity = quantity || 1;
             dvd.collection = collection_id || null;
 

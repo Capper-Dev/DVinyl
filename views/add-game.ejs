@@ -17,6 +17,7 @@
                     <i class="fa-solid fa-search opacity-50 group-focus-within:text-primary-theme transition-colors"></i>
                 </div>
                 <input type="text" name="query" id="searchInput"
+                    value="<%= locals.barcode_no_results ? locals.scanned_barcode : '' %>"
                     class="block w-full p-4 pl-12 text-base bg-black/5 dark:bg-white/5 border border-transparent focus:border-primary-theme rounded-2xl focus:ring-2 focus:ring-primary-theme/50 placeholder-opacity-50 transition-all outline-none"
                     placeholder="Spillets titel..." autofocus required>
             </div>
@@ -51,6 +52,22 @@
             </p>
         </div>
     </form>
+
+    <% if (locals.barcode_no_results) { %>
+        <div class="max-w-2xl mx-auto mb-8 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-start gap-3">
+            <i class="fa-solid fa-triangle-exclamation text-amber-500 mt-0.5"></i>
+            <div>
+                <% if (locals.barcode_error) { %>
+                    <p class="font-semibold text-sm">Stregkode-opslag fejlede</p>
+                    <p class="text-xs opacity-60 mt-0.5">Prøv igen, eller søg manuelt på titlen — søgefeltet er klar til brug.</p>
+                <% } else { %>
+                    <p class="font-semibold text-sm">Stregkoden blev ikke fundet</p>
+                    <p class="text-xs opacity-60 mt-0.5">Stregkoden <code class="font-mono"><%= locals.scanned_barcode %></code> matchede ingen spil. Søg på titlen i stedet — søgefeltet er forudfyldt med stregkoden, erstat den blot med spillets titel.</p>
+                <% } %>
+                <p class="text-xs opacity-50 mt-1">Når du har valgt det rigtige spil fra resultaterne, gemmes stregkoden automatisk til cachen.</p>
+            </div>
+        </div>
+    <% } %>
 
     <% if (typeof results !== 'undefined' && results !== null) { %>
         <% if (results.length > 0) { %>

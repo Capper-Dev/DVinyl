@@ -41,11 +41,11 @@ function extractYear(text) {
 }
 
 async function readCache(ean) {
-    const row = await BarcodeCache.findOne({ ean });
+    const row = await BarcodeCache.findOne({ ean, kind: 'movie' });
     if (!row) return null;
 
     if (row.status === 'found') {
-        await BarcodeCache.updateOne({ ean }, { $inc: { hit_count: 1 } });
+        await BarcodeCache.updateOne({ ean, kind: 'movie' }, { $inc: { hit_count: 1 } });
         return {
             status: 'found',
             ean: row.ean,
@@ -60,7 +60,7 @@ async function readCache(ean) {
 
     const age = Date.now() - row.checked_at.getTime();
     if (row.status === 'not_found' && age < NOT_FOUND_TTL_MS) {
-        await BarcodeCache.updateOne({ ean }, { $inc: { hit_count: 1 } });
+        await BarcodeCache.updateOne({ ean, kind: 'movie' }, { $inc: { hit_count: 1 } });
         return {
             status: 'not_found',
             ean: row.ean,
@@ -73,7 +73,7 @@ async function readCache(ean) {
 
 async function writeFound(ean, source, match, rawTitle) {
     await BarcodeCache.findOneAndUpdate(
-        { ean },
+        { ean, kind: 'movie' },
         {
             $set: {
                 status: 'found',
@@ -94,7 +94,7 @@ async function writeFound(ean, source, match, rawTitle) {
 
 async function writeNotFound(ean) {
     await BarcodeCache.findOneAndUpdate(
-        { ean },
+        { ean, kind: 'movie' },
         {
             $set: {
                 status: 'not_found',
@@ -318,7 +318,7 @@ async function saveManualMatch(ean, payload) {
 async function forceRelookup(ean) {
     const normalized = normalizeEan(ean);
     if (!normalized) return { status: 'invalid', ean };
-    await BarcodeCache.deleteOne({ ean: normalized });
+    await BarcodeCache.deleteOne({ ean: normalized, kind: 'movie' });
     return lookupBarcode(normalized);
 }
 
