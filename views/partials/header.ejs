@@ -30,7 +30,6 @@
   const shortcutConfig = {
       'global_home':       { label: 'Forside',     url: '/' },
       'global_collection': { label: 'Samling',     url: '/collection' },
-      'global_wishlist':   { label: 'Ønskeliste',  url: '/wishlist' },
       'dvd':               { label: 'Film & TV',   url: '/collection?type=dvd',   module: 'dvd' },
       'dvd_dvd':           { label: 'DVD',         url: '/collection?type=dvd&format=dvd',       module: 'dvd' },
       'dvd_bluray':        { label: 'Blu-ray',     url: '/collection?type=dvd&format=bluray',    module: 'dvd' },
@@ -119,7 +118,7 @@
     }
 
     .text-primary-theme { color: var(--highlight) !important; }
-    .bg-primary-theme { background-color: var(--highlight) !important; color: #fff; }
+    .bg-primary-theme { background-color: var(--highlight) !important; color: var(--bg-page) !important; }
     .border-primary-theme { border-color: var(--highlight) !important; }
     .ring-primary-theme { --tw-ring-color: var(--highlight); }
 

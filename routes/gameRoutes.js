@@ -148,7 +148,7 @@ router.post('/save-game', requireAuth, requireAdmin, async (req, res) => {
         const {
             mongo_id, title, developer, publisher, platform, year,
             igdb_id, format, region, barcode, barcode_locked,
-            cover_image, in_wishlist, comments, location, genre, genres, styles,
+            cover_image, comments, location, genre, genres, styles,
             playStatus, user_rating, quantity, collection_id
         } = req.body;
 
@@ -156,7 +156,6 @@ router.post('/save-game', requireAuth, requireAdmin, async (req, res) => {
         const parsedStyles = Array.isArray(styles) ? styles : (styles ? styles.split(',').map(s => s.trim()).filter(Boolean) : []);
 
         const adminId = req.user._id;
-        const isWishlist = in_wishlist === 'true';
         let game;
 
         if (mongo_id) {
@@ -174,7 +173,6 @@ router.post('/save-game', requireAuth, requireAdmin, async (req, res) => {
             game.barcode = barcode;
             game.barcode_locked = barcode_locked === 'on';
             game.cover_image = cover_image;
-            game.in_wishlist = isWishlist;
             game.comments = comments || '';
             game.location = location || '';
             game.genre = genre || (parsedGenres.length > 0 ? parsedGenres[0] : '');
@@ -193,7 +191,6 @@ router.post('/save-game', requireAuth, requireAdmin, async (req, res) => {
                 barcode_locked: barcode_locked === 'on',
                 cover_image,
                 kind: 'Game',
-                in_wishlist: isWishlist,
                 owner: adminId,
                 comments: comments || '',
                 location: location || '',
@@ -207,11 +204,7 @@ router.post('/save-game', requireAuth, requireAdmin, async (req, res) => {
             });
         }
 
-        if (isWishlist) {
-            res.redirect('/wishlist');
-        } else {
-            res.redirect(`/collection?type=games`);
-        }
+        res.redirect(`/collection?type=games`);
 
     } catch (err) {
         console.error("[ERR] Game save:", err);

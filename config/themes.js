@@ -1,21 +1,21 @@
 const PRESETS = {
-    default: { 
-        label: 'Default (dark)',
+    default: {
+        label: 'Monokrom',
         light: {
-            bg: '#f8fafc',
-            card: '#ffffff', 
-            navbar: '#f1f5f9',
-            text: '#0f172a',
-            subtext: '#475569',
-            highlight: '#10b981'
+            bg: '#fafafa',
+            card: '#ffffff',
+            navbar: '#ffffff',
+            text: '#0a0a0a',
+            subtext: '#737373',
+            highlight: '#0a0a0a'
         },
         dark: {
-            bg: '#171717',
-            card: '#262626',
+            bg: '#0a0a0a',
+            card: '#171717',
             navbar: '#0a0a0a',
-            text: '#ffffff',
-            subtext: '#ffffff',
-            highlight: '#10b981'
+            text: '#fafafa',
+            subtext: '#a3a3a3',
+            highlight: '#fafafa'
         }
     },
 

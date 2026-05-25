@@ -133,35 +133,39 @@ async function resolveTitleOnTmdb(rawTitle, year) {
     const title = cleanTitle(rawTitle);
     if (!title) return null;
 
-    const movieParams = new URLSearchParams({
-        api_key: apiKey,
-        query: title,
-        language: 'da-DK',
-        region: 'DK',
-        page: '1'
-    });
-    if (year) movieParams.set('year', year);
+    const buildParams = (extra = {}) => {
+        const p = new URLSearchParams({
+            api_key: apiKey,
+            query: title,
+            language: 'da-DK',
+            page: '1',
+            ...extra
+        });
+        return p;
+    };
+
+    const pickBest = (results) => {
+        if (!results || results.length === 0) return null;
+        const sorted = [...results].sort((a, b) => {
+            const pa = (a.popularity || 0) + (a.vote_count || 0) * 0.1;
+            const pb = (b.popularity || 0) + (b.vote_count || 0) * 0.1;
+            return pb - pa;
+        });
+        return sorted[0];
+    };
 
     try {
-        const movieRes = await axios.get(`${TMDB_BASE}/search/movie?${movieParams}`, { timeout: AXIOS_TIMEOUT_MS });
-        const movies = movieRes.data.results || [];
-        if (movies.length === 1) return formatTmdbHit(movies[0], 'movie');
+        const movieRes = await axios.get(`${TMDB_BASE}/search/movie?${buildParams({ region: 'DK', ...(year ? { year } : {}) })}`, { timeout: AXIOS_TIMEOUT_MS });
+        const best = pickBest(movieRes.data.results || []);
+        if (best) return formatTmdbHit(best, 'movie');
     } catch (err) {
         console.error('[ERR] TMDb movie search:', err.message);
     }
 
-    const tvParams = new URLSearchParams({
-        api_key: apiKey,
-        query: title,
-        language: 'da-DK',
-        page: '1'
-    });
-    if (year) tvParams.set('first_air_date_year', year);
-
     try {
-        const tvRes = await axios.get(`${TMDB_BASE}/search/tv?${tvParams}`, { timeout: AXIOS_TIMEOUT_MS });
-        const tvs = tvRes.data.results || [];
-        if (tvs.length === 1) return formatTmdbHit(tvs[0], 'tv');
+        const tvRes = await axios.get(`${TMDB_BASE}/search/tv?${buildParams(year ? { first_air_date_year: year } : {})}`, { timeout: AXIOS_TIMEOUT_MS });
+        const best = pickBest(tvRes.data.results || []);
+        if (best) return formatTmdbHit(best, 'tv');
     } catch (err) {
         console.error('[ERR] TMDb tv search:', err.message);
     }

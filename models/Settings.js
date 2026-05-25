@@ -17,7 +17,7 @@ const settingsSchema = new mongoose.Schema({
     },
     navbarShortcuts: {
         type: [String],
-        default: ['global_home', 'dvd', 'games', 'global_wishlist']
+        default: ['global_home', 'dvd', 'games']
     },
     statsWidgets: {
         type: [String],

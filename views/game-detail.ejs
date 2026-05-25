@@ -8,19 +8,11 @@
     <div class="max-w-screen-xl mx-auto px-4 pb-20">
 
         <nav class="flex py-6 text-sm opacity-60 transition-colors">
-            <% if (game.in_wishlist) { %>
-                <a href="<%= baseUrl %>/wishlist"
-                    class="hover:opacity-100 hover:text-primary-theme transition-colors flex items-center gap-2">
-                    <i class="fa-solid fa-arrow-left"></i>
-                    Tilbage til ønskelisten
-                </a>
-                <% } else { %>
-                    <a href="<%= baseUrl %>/collection?type=games"
-                        class="hover:opacity-100 hover:text-primary-theme transition-colors flex items-center gap-2">
-                        <i class="fa-solid fa-arrow-left"></i>
-                        Tilbage til samlingen
-                    </a>
-                    <% } %>
+            <a href="<%= baseUrl %>/collection?type=games"
+                class="hover:opacity-100 hover:text-primary-theme transition-colors flex items-center gap-2">
+                <i class="fa-solid fa-arrow-left"></i>
+                Tilbage til samlingen
+            </a>
         </nav>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
@@ -28,14 +20,6 @@
             <div class="lg:col-span-5 flex flex-col items-center">
                 <div
                     class="relative w-full aspect-[3/4] card-theme rounded-2xl shadow-xl overflow-hidden flex items-center justify-center group transition-colors">
-                    <% if(game.in_wishlist) { %>
-                        <div
-                            class="absolute top-4 left-4 bg-pink-500 text-white text-[10px] font-bold px-2 py-1 rounded shadow-md z-10 flex items-center gap-1">
-                            <i class="fa-solid fa-gift"></i>
-                            Ønskeliste
-                        </div>
-                        <% } %>
-
                             <img src="<%= game.cover_image %>"
                                 class="absolute inset-0 w-full h-full object-cover blur-xl opacity-30 scale-110 pointer-events-none">
                             <img id="mainImage" src="<%= game.cover_image %>"

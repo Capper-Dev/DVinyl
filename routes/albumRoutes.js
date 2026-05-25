@@ -229,36 +229,4 @@ router.get('/collection', requireAuth, async (req, res) => {
     }
 });
 
-// Move an item from wishlist to collection
-router.post('/api/album/:id/move-to-collection', requireAuth, requireAdmin, async (req, res) => {
-    try {
-        await Item.findByIdAndUpdate(req.params.id, { in_wishlist: false, added_at: new Date() });
-        res.json({ success: true });
-    } catch (err) {
-        res.status(500).send('Intern serverfejl.');
-    }
-});
-
-// Wishlist
-router.get('/wishlist', requireAuth, async (req, res) => {
-    try {
-        const adminId = await getAdminId();
-        let query = {
-            owner: adminId,
-            in_wishlist: true
-        };
-        applyVisibilityFilter(query, res.locals.isAdmin, res.locals.settings);
-
-        const items = await Item.find(query).sort({ added_at: -1 });
-
-        res.render('wishlist', {
-            albums: items.map(formatForView),
-            user: res.locals.user
-        });
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Intern serverfejl.');
-    }
-});
-
 module.exports = router;

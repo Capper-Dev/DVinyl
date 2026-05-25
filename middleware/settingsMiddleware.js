@@ -11,7 +11,7 @@ module.exports = async (req, res, next) => {
             settings = {
                 siteName: 'DVinyl',
                 modules: { dvd: true, games: true },
-                navbarShortcuts: ['global_home', 'dvd', 'games', 'global_wishlist'],
+                navbarShortcuts: ['global_home', 'dvd', 'games'],
                 statsWidgets: ['total', 'dvd_total', 'game_total', 'director'],
                 theme: {
                     home: { preset: 'default' },
@@ -21,14 +21,14 @@ module.exports = async (req, res, next) => {
             };
         } else {
             if (!settings.navbarShortcuts) {
-                settings.navbarShortcuts = ['global_home', 'dvd', 'games', 'global_wishlist'];
+                settings.navbarShortcuts = ['global_home', 'dvd', 'games'];
             }
             if (!settings.statsWidgets) {
                 settings.statsWidgets = ['total', 'dvd_total', 'game_total', 'director'];
             }
         }
 
-        settings.navbarShortcuts = settings.navbarShortcuts || ['global_home', 'dvd', 'games', 'global_wishlist'];
+        settings.navbarShortcuts = settings.navbarShortcuts || ['global_home', 'dvd', 'games'];
         settings.statsWidgets = settings.statsWidgets || ['total', 'dvd_total', 'game_total', 'director'];
 
         res.locals.settings = settings;

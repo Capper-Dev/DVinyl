@@ -138,15 +138,13 @@ router.post('/save-dvd', requireAuth, requireAdmin, async (req, res) => {
         const {
             mongo_id, title, director, studio, year, duration,
             tmdb_id, media_type, format, zone, barcode, barcode_locked, is_boxset,
-            cover_image, in_wishlist, comments, location, genre, genres, styles, watchStatus, user_rating, quantity, collection_id
+            cover_image, comments, location, genre, genres, styles, watchStatus, user_rating, quantity, collection_id
         } = req.body;
 
         const parsedGenres = Array.isArray(genres) ? genres : (genres ? genres.split(',').map(g => g.trim()).filter(Boolean) : []);
         const parsedStyles = Array.isArray(styles) ? styles : (styles ? styles.split(',').map(s => s.trim()).filter(Boolean) : []);
 
-
         const adminId = req.user._id;
-        const isWishlist = in_wishlist === 'true';
         let dvd;
 
         if (mongo_id) {
@@ -165,7 +163,6 @@ router.post('/save-dvd', requireAuth, requireAdmin, async (req, res) => {
             dvd.barcode_locked = barcode_locked === 'on';
             dvd.is_boxset = is_boxset === 'true';
             dvd.cover_image = cover_image;
-            dvd.in_wishlist = isWishlist;
             dvd.comments = comments || '';
             dvd.location = location || '';
             dvd.genre = genre || (parsedGenres.length > 0 ? parsedGenres[0] : '');
@@ -185,7 +182,6 @@ router.post('/save-dvd', requireAuth, requireAdmin, async (req, res) => {
                 is_boxset: is_boxset === 'true',
                 cover_image,
                 kind: 'Dvd',
-                in_wishlist: isWishlist,
                 owner: adminId,
                 comments: comments || '',
                 location: location || '',
@@ -210,11 +206,7 @@ router.post('/save-dvd', requireAuth, requireAdmin, async (req, res) => {
             }).catch(err => console.error('[ERR] cache save on confirm:', err));
         }
 
-        if (isWishlist) {
-            res.redirect('/wishlist');
-        } else {
-            res.redirect(`/collection?type=dvd`);
-        }
+        res.redirect(`/collection?type=dvd`);
 
     } catch (err) {
         console.error("[ERR] DVD save:", err);

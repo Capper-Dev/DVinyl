@@ -23,17 +23,17 @@
 <div class="max-w-screen-xl mx-auto px-4 md:px-6 pb-20">
 
     <%# ───────── Page header ───────── %>
-    <header class="pt-10 md:pt-14 pb-8">
-        <p class="text-[11px] font-bold uppercase tracking-[0.22em] text-sub mb-3">Din samling</p>
-        <div class="flex items-end justify-between gap-6 flex-wrap">
+    <header class="pt-8 md:pt-14 pb-7">
+        <p class="text-[10px] md:text-[11px] font-bold uppercase tracking-[0.2em] text-sub mb-2.5">Din samling</p>
+        <div class="flex items-end justify-between gap-4 flex-wrap">
             <div class="min-w-0">
-                <h1 class="text-[40px] md:text-[56px] font-black leading-[0.95] tracking-tight"><%= tc.label %></h1>
-                <p class="text-sub mt-2 text-sm md:text-base"><%= tc.hint %></p>
+                <h1 class="text-[32px] md:text-[56px] font-black leading-[0.95] tracking-tight truncate max-w-full"><%= tc.label %></h1>
+                <p class="text-sub mt-2 text-[13px] md:text-base"><%= tc.hint %></p>
             </div>
 
             <% if (user.isAdmin && addRoute) { %>
             <a href="<%= baseUrl + addRoute %>"
-               class="inline-flex items-center gap-2 bg-[var(--text-main)] text-[var(--bg-page)] text-[13px] font-bold px-5 py-3 rounded-full hover:opacity-90 active:scale-95 transition-all">
+               class="inline-flex items-center gap-2 bg-[var(--text-main)] text-[var(--bg-page)] text-[13px] font-bold px-4 py-2.5 md:px-5 md:py-3 rounded-full hover:opacity-90 active:scale-95 transition-all shrink-0">
                 <i class="fa-solid fa-plus text-[11px]"></i>
                 Tilføj
             </a>
@@ -41,16 +41,16 @@
         </div>
 
         <%# Stats strip %>
-        <div class="mt-7 flex items-baseline gap-7 flex-wrap text-sm">
+        <div class="mt-6 flex items-baseline gap-x-4 gap-y-2 md:gap-x-7 flex-wrap text-sm">
             <span class="text-sub">
                 <span class="text-[var(--text-main)] text-[22px] md:text-[28px] font-black tabular-nums tracking-tight"><%= libraryTotal || totalItems %></span>
-                <span class="ml-1.5 text-xs font-semibold uppercase tracking-wider">titler</span>
+                <span class="ml-1 text-[10px] md:text-xs font-semibold uppercase tracking-wider">titler</span>
             </span>
             <% statEntries.forEach(([key, count]) => { %>
             <a href="?type=<%= currentType %>&format=<%= key %>"
-               class="text-sub hover:text-[var(--text-main)] transition-colors group">
-                <span class="text-[var(--text-main)] text-[18px] md:text-[20px] font-bold tabular-nums"><%= count %></span>
-                <span class="ml-1 text-xs font-semibold uppercase tracking-wider group-hover:text-primary-theme transition-colors"><%= fmtLabels[key] || key %></span>
+               class="text-sub hover:text-[var(--text-main)] transition-colors group whitespace-nowrap">
+                <span class="text-[var(--text-main)] text-[16px] md:text-[20px] font-bold tabular-nums"><%= count %></span>
+                <span class="ml-1 text-[10px] md:text-xs font-semibold uppercase tracking-wider group-hover:text-primary-theme transition-colors"><%= fmtLabels[key] || key %></span>
             </a>
             <% }) %>
         </div>
@@ -80,54 +80,56 @@
 
     <%# ───────── Sticky toolbar ───────── %>
     <div class="sticky top-14 z-30 -mx-4 md:-mx-6 px-4 md:px-6 py-3 mb-5 surface-bg/95 backdrop-blur supports-[backdrop-filter]:bg-opacity-80 border-b border-[var(--border-color)]">
-        <div class="flex gap-2 items-center">
+        <div class="flex flex-col sm:flex-row gap-2 sm:items-center">
 
-            <div class="relative flex-grow min-w-0">
+            <div class="relative w-full sm:flex-grow min-w-0">
                 <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-sub text-[13px] pointer-events-none"></i>
                 <input type="search" id="searchInput" value="<%= querySearch %>"
                        placeholder="Søg titel, år eller instruktør"
                        autocomplete="off"
-                       class="w-full h-11 pl-11 pr-24 text-[14px] rounded-full bg-black/5 dark:bg-white/5 border border-transparent focus:bg-[var(--bg-card)] focus:border-[var(--border-color)] outline-none transition-all placeholder:text-sub">
+                       class="w-full h-11 pl-11 pr-16 sm:pr-24 text-[14px] rounded-full bg-black/5 dark:bg-white/5 border border-transparent focus:bg-[var(--bg-card)] focus:border-[var(--border-color)] outline-none transition-all placeholder:text-sub">
                 <kbd class="hidden sm:inline-flex absolute right-3 top-1/2 -translate-y-1/2 items-center gap-1 px-1.5 py-0.5 text-[10px] font-bold text-sub bg-black/5 dark:bg-white/5 rounded border border-[var(--border-color)]">
                     /
                 </kbd>
                 <% if (querySearch) { %>
                 <button type="button" onclick="clearSearch()" aria-label="Ryd søgning"
-                        class="absolute right-12 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-full text-sub hover:text-[var(--text-main)] hover:bg-black/10 dark:hover:bg-white/10 transition">
+                        class="absolute right-3 sm:right-12 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-full text-sub hover:text-[var(--text-main)] hover:bg-black/10 dark:hover:bg-white/10 transition">
                     <i class="fa-solid fa-xmark text-[11px]"></i>
                 </button>
                 <% } %>
             </div>
 
-            <% if (formatOptions && formatOptions.length > 0) { %>
-            <div class="relative shrink-0">
-                <select id="formatSelect" onchange="applyFilters()"
-                        class="appearance-none h-11 pl-4 pr-9 text-[13px] font-semibold rounded-full bg-black/5 dark:bg-white/5 border border-transparent hover:bg-black/10 dark:hover:bg-white/10 focus:border-[var(--border-color)] outline-none cursor-pointer transition">
-                    <option value="all">Alle formater</option>
-                    <% formatOptions.forEach(opt => { %>
-                    <option value="<%= opt.id %>" <%= currentFormat === opt.id ? 'selected' : '' %>><%= opt.label %></option>
-                    <% }) %>
-                </select>
-                <i class="fa-solid fa-chevron-down absolute right-3.5 top-1/2 -translate-y-1/2 text-sub text-[9px] pointer-events-none"></i>
-            </div>
-            <% } %>
+            <div class="flex gap-2 w-full sm:w-auto">
+                <% if (formatOptions && formatOptions.length > 0) { %>
+                <div class="relative flex-1 sm:flex-none min-w-0">
+                    <select id="formatSelect" onchange="applyFilters()"
+                            class="appearance-none w-full sm:w-auto h-11 pl-4 pr-8 text-[13px] font-semibold rounded-full bg-black/5 dark:bg-white/5 border border-transparent hover:bg-black/10 dark:hover:bg-white/10 focus:border-[var(--border-color)] outline-none cursor-pointer transition truncate">
+                        <option value="all">Alle formater</option>
+                        <% formatOptions.forEach(opt => { %>
+                        <option value="<%= opt.id %>" <%= currentFormat === opt.id ? 'selected' : '' %>><%= opt.label %></option>
+                        <% }) %>
+                    </select>
+                    <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-sub text-[9px] pointer-events-none"></i>
+                </div>
+                <% } %>
 
-            <div class="relative shrink-0">
-                <select id="sortSelect" onchange="applyFilters()"
-                        class="appearance-none h-11 pl-4 pr-9 text-[13px] font-semibold rounded-full bg-black/5 dark:bg-white/5 border border-transparent hover:bg-black/10 dark:hover:bg-white/10 focus:border-[var(--border-color)] outline-none cursor-pointer transition">
-                    <% const sortOpts = [
-                        { v: 'added_desc', l: 'Nyest' },
-                        { v: 'added_asc',  l: 'Ældst' },
-                        { v: 'title_asc',  l: 'A–Z' },
-                        { v: 'title_desc', l: 'Z–A' },
-                        { v: 'year_desc',  l: 'Nyeste år' },
-                        { v: 'year_asc',   l: 'Ældste år' }
-                    ]; %>
-                    <% sortOpts.forEach(o => { %>
-                    <option value="<%= o.v %>" <%= currentSort === o.v ? 'selected' : '' %>><%= o.l %></option>
-                    <% }) %>
-                </select>
-                <i class="fa-solid fa-chevron-down absolute right-3.5 top-1/2 -translate-y-1/2 text-sub text-[9px] pointer-events-none"></i>
+                <div class="relative flex-1 sm:flex-none min-w-0">
+                    <select id="sortSelect" onchange="applyFilters()"
+                            class="appearance-none w-full sm:w-auto h-11 pl-4 pr-8 text-[13px] font-semibold rounded-full bg-black/5 dark:bg-white/5 border border-transparent hover:bg-black/10 dark:hover:bg-white/10 focus:border-[var(--border-color)] outline-none cursor-pointer transition truncate">
+                        <% const sortOpts = [
+                            { v: 'added_desc', l: 'Nyest' },
+                            { v: 'added_asc',  l: 'Ældst' },
+                            { v: 'title_asc',  l: 'A–Z' },
+                            { v: 'title_desc', l: 'Z–A' },
+                            { v: 'year_desc',  l: 'Nyeste år' },
+                            { v: 'year_asc',   l: 'Ældste år' }
+                        ]; %>
+                        <% sortOpts.forEach(o => { %>
+                        <option value="<%= o.v %>" <%= currentSort === o.v ? 'selected' : '' %>><%= o.l %></option>
+                        <% }) %>
+                    </select>
+                    <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-sub text-[9px] pointer-events-none"></i>
+                </div>
             </div>
         </div>
     </div>
@@ -268,14 +270,14 @@
 
     <%# ───────── Pagination ───────── %>
     <% if (albums.length > 0 && totalPages > 1) { %>
-    <div class="mt-16 pt-8 border-t border-[var(--border-color)] flex flex-col md:flex-row items-center justify-between gap-5">
+    <div class="mt-14 pt-7 border-t border-[var(--border-color)] flex flex-col-reverse md:flex-row items-center justify-between gap-5">
 
-        <div class="flex items-center gap-3 text-[12px] text-sub">
+        <div class="flex items-center gap-2 text-[12px] text-sub">
             <span class="font-semibold uppercase tracking-wider">Vis</span>
             <div class="inline-flex bg-black/5 dark:bg-white/5 p-1 rounded-full">
                 <% [25, 50, 100].forEach(num => { %>
                 <button type="button" onclick="setLimit(<%= num %>)"
-                    class="px-3 py-1 text-[12px] font-bold rounded-full transition tabular-nums
+                    class="px-2.5 py-1 text-[12px] font-bold rounded-full transition tabular-nums
                     <%= (queryLimit == num)
                         ? 'bg-[var(--text-main)] text-[var(--bg-page)]'
                         : 'text-sub hover:text-[var(--text-main)]' %>">
@@ -285,10 +287,10 @@
             </div>
         </div>
 
-        <nav aria-label="Sider" class="flex items-center gap-1">
+        <nav aria-label="Sider" class="flex items-center gap-0.5 sm:gap-1 max-w-full overflow-x-auto scrollbar-hide">
             <button type="button" onclick="changePage(<%= currentPage - 1 %>)" <%= currentPage <= 1 ? 'disabled' : '' %>
                 aria-label="Forrige"
-                class="w-9 h-9 flex items-center justify-center rounded-full text-sub hover:text-[var(--text-main)] hover:bg-black/5 dark:hover:bg-white/5 transition disabled:opacity-20 disabled:pointer-events-none">
+                class="shrink-0 w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full text-sub hover:text-[var(--text-main)] hover:bg-black/5 dark:hover:bg-white/5 transition disabled:opacity-20 disabled:pointer-events-none">
                 <i class="fa-solid fa-chevron-left text-[11px]"></i>
             </button>
 
@@ -296,19 +298,19 @@
                 if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
             %>
             <button type="button" onclick="changePage(<%= i %>)"
-                class="w-9 h-9 flex items-center justify-center rounded-full text-[13px] font-bold transition tabular-nums
+                class="shrink-0 w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full text-[12px] sm:text-[13px] font-bold transition tabular-nums
                 <%= currentPage === i
                     ? 'bg-[var(--text-main)] text-[var(--bg-page)]'
                     : 'text-sub hover:text-[var(--text-main)] hover:bg-black/5 dark:hover:bg-white/5' %>">
                 <%= i %>
             </button>
             <%   } else if (i === currentPage - 2 || i === currentPage + 2) { %>
-            <span class="px-1 text-sub opacity-50">…</span>
+            <span class="shrink-0 px-1 text-sub opacity-50">…</span>
             <%   } } %>
 
             <button type="button" onclick="changePage(<%= currentPage + 1 %>)" <%= currentPage >= totalPages ? 'disabled' : '' %>
                 aria-label="Næste"
-                class="w-9 h-9 flex items-center justify-center rounded-full text-sub hover:text-[var(--text-main)] hover:bg-black/5 dark:hover:bg-white/5 transition disabled:opacity-20 disabled:pointer-events-none">
+                class="shrink-0 w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full text-sub hover:text-[var(--text-main)] hover:bg-black/5 dark:hover:bg-white/5 transition disabled:opacity-20 disabled:pointer-events-none">
                 <i class="fa-solid fa-chevron-right text-[11px]"></i>
             </button>
         </nav>
