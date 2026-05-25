@@ -1,15 +1,24 @@
 function parseAuthUsers() {
-    const raw = process.env.AUTH_USERS || '';
-    return raw.split(',').map(pair => {
+    let raw = process.env.AUTH_USERS || '';
+    // Strip wrapping quotes that some env hosts (Dokploy/Docker) save literally
+    raw = raw.trim().replace(/^['"]|['"]$/g, '');
+
+    const users = raw.split(',').map(pair => {
         const [name, password] = pair.split(':').map(s => (s || '').trim());
         if (!name || !password) return null;
         return { name, password };
     }).filter(Boolean);
+
+    console.log(`[AUTH] AUTH_USERS parsed: ${users.length} user(s) — [${users.map(u => u.name).join(', ')}]`);
+    if (users.length === 0) {
+        console.warn('[AUTH] No users configured. Set AUTH_USERS="name:password,name:password" in your environment.');
+    }
+    return users;
 }
 
-let _cached = null;
+// Parse once at module load so startup logs show count
+let _cached = parseAuthUsers();
 function getUsers() {
-    if (!_cached) _cached = parseAuthUsers();
     return _cached;
 }
 
