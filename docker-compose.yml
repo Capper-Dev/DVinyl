@@ -1,8 +1,6 @@
-version: '3.8'
 services:
   dvinyl-app:
     build: .
-    container_name: dvinyl_app
     restart: unless-stopped
     ports:
       - "3099:80"
@@ -10,8 +8,8 @@ services:
       - MONGODB_URL=mongodb://mongodb:27017/dvinyl
       - VINYL_PORT=80
       - PROD=true
-      - PASSJWT=${PASSJWT}
       - SESSION_SECRET=${SESSION_SECRET}
+      - AUTH_USERS=${AUTH_USERS}
       - TMDB_API_KEY=${TMDB_API_KEY}
       - EAN_SEARCH_TOKEN=${EAN_SEARCH_TOKEN}
       - TWITCH_CLIENT_ID=${TWITCH_CLIENT_ID}
@@ -26,7 +24,6 @@ services:
 
   mongodb:
     image: mongo:latest
-    container_name: dvinyl_db
     restart: unless-stopped
     volumes:
       - mongo_data:/data/db
@@ -35,7 +32,6 @@ services:
 
   cloudflared:
     image: cloudflare/cloudflared:latest
-    container_name: dvinyl_cloudflared
     restart: unless-stopped
     command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN}
     depends_on:
